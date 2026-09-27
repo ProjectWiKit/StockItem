@@ -371,27 +371,15 @@
             <div style="display: flex; gap: 15px; flex-wrap: wrap;">
                 <div id="addStockBox" class="section-box hidden" style="flex:1; min-width: 280px; border-left: 5px solid var(--success);">
                     <h3 style="color: #059669;">➕ เพิ่มสต็อกอุปกรณ์ (Admin)</h3>
-                    <div class="input-group"><label>รหัสอุปกรณ์:</label><input type="text" id="addId" placeholder="รหัสอุปกรณ์" oninput="updateUnitDisplay('add')"></div>
-                    <div class="input-group">
-                        <label>จำนวนที่ต้องการเพิ่ม:</label>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <input type="number" id="addQty" value="1" min="1" style="flex: 1; margin-bottom: 0;">
-                            <span id="addStockUnit" style="font-weight: 600; color: #059669; min-width: 50px;">ชิ้น</span>
-                        </div>
-                    </div>
-                    <button class="btn-add" style="margin-top: 10px;" onclick="updateStock('add')">ยืนยันเพิ่มสต็อก</button>
+                    <div class="input-group"><label>รหัสอุปกรณ์:</label><input type="text" id="addId" placeholder="รหัสอุปกรณ์"></div>
+                    <div class="input-group"><label>จำนวนที่ต้องการเพิ่ม:</label><input type="number" id="addQty" value="1" min="1"></div>
+                    <button class="btn-add" style="margin-top: 5px;" onclick="updateStock('add')">ยืนยันเพิ่มสต็อก</button>
                 </div>
                 <div class="section-box" style="flex:1; min-width: 280px; border-left: 5px solid var(--danger);">
                     <h3 style="color: #dc2626;">➖ เบิกใช้อุปกรณ์</h3>
-                    <div class="input-group"><label>รหัสอุปกรณ์:</label><input type="text" id="reduceId" placeholder="รหัสอุปกรณ์" oninput="updateUnitDisplay('reduce')"></div>
-                    <div class="input-group">
-                        <label>จำนวนที่ต้องการเบิก:</label>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <input type="number" id="reduceQty" value="1" min="1" style="flex: 1; margin-bottom: 0;">
-                            <span id="reduceStockUnit" style="font-weight: 600; color: #dc2626; min-width: 50px;">ชิ้น</span>
-                        </div>
-                    </div>
-                    <button class="btn-reduce" onclick="updateStock('reduce')" style="margin-top: 10px;">ยืนยันเบิกใช้งาน</button>
+                    <div class="input-group"><label>รหัสอุปกรณ์:</label><input type="text" id="reduceId" placeholder="รหัสอุปกรณ์"></div>
+                    <div class="input-group"><label>จำนวนที่ต้องการเบิก:</label><input type="number" id="reduceQty" value="1" min="1"></div>
+                    <button class="btn-reduce" onclick="updateStock('reduce')">ยืนยันเบิกใช้งาน</button>
                 </div>
             </div>
 
@@ -555,7 +543,7 @@
 </div>
 
 <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzq8F0pfWPprQ3vQjLmDMqkPifCxsDO5LFFpWt9jNgtvOej8SM6sOfc209mCwDUsWFJ1Q/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwn2gxPNaYF3jt9AgDdMa4O7hgQMGjFKdeUtIC2cT3-jku1qUKVY8HKtT6wMaosKZkQhQ/exec";
     let currentUserRole = "";
     let currentUserName = "";
     let currentUsernameId = "";
@@ -566,6 +554,23 @@
     let globalToolsHistory = [];
     let activeTab = 'add';
     let activeHistTab = 'add';
+
+    // โหลด Session ทันทีที่เปิดหน้าเว็บเพื่อป้องกันการรีเฟรชแล้วหลุด
+    window.onload = function() {
+        checkSession();
+    };
+
+    function checkSession() {
+        let savedUser = sessionStorage.getItem("user");
+        if (savedUser) {
+            let userObj = JSON.parse(savedUser);
+            currentUserRole = userObj.role;
+            currentUserName = userObj.name;
+            currentUsernameId = userObj.username;
+
+            setupUIForUser();
+        }
+    }
 
     function toggleAuth(mode) {
         if (mode === 'register') {
@@ -628,33 +633,45 @@
                 currentUserName = result.name;
                 currentUsernameId = user;
                 
-                let roleText = currentUserRole === 'admin' ? 'แอดมิน (Admin)' : 'ช่างติดตั้ง (Technician)';
-                document.getElementById("userWelcome").innerText = `ผู้ใช้งาน: ${result.name}`;
-                document.getElementById("userRoleBadge").innerText = `สถานะ: ${roleText}`;
-                
-                document.getElementById("authContainer").classList.add("hidden");
-                document.getElementById("appSection").classList.remove("hidden");
+                // บันทึกลง Session Storage
+                sessionStorage.setItem("user", JSON.stringify({
+                    role: result.role,
+                    name: result.name,
+                    username: user
+                }));
 
-                if (currentUserRole === 'admin') {
-                    document.querySelectorAll('.admin-only').forEach(el => el.classList.remove('hidden'));
-                    document.getElementById("adminProductSection").classList.remove("hidden");
-                    document.getElementById("addStockBox").classList.remove("hidden");
-                    document.getElementById("adminToolSection").classList.remove("hidden");
-                } else {
-                    document.querySelectorAll('.admin-only').forEach(el => el.classList.add('hidden'));
-                    document.getElementById("adminProductSection").classList.add("hidden");
-                    document.getElementById("addStockBox").classList.add("hidden");
-                    document.getElementById("adminToolSection").classList.add("hidden");
-                }
-
-                loadData();
+                setupUIForUser();
             } else {
                 alert(result.message);
             }
         });
     }
 
+    function setupUIForUser() {
+        let roleText = currentUserRole === 'admin' ? 'แอดมิน (Admin)' : 'ช่างติดตั้ง (Technician)';
+        document.getElementById("userWelcome").innerText = `ผู้ใช้งาน: ${currentUserName}`;
+        document.getElementById("userRoleBadge").innerText = `สถานะ: ${roleText}`;
+        
+        document.getElementById("authContainer").classList.add("hidden");
+        document.getElementById("appSection").classList.remove("hidden");
+
+        if (currentUserRole === 'admin') {
+            document.querySelectorAll('.admin-only').forEach(el => el.classList.remove('hidden'));
+            document.getElementById("adminProductSection").classList.remove("hidden");
+            document.getElementById("addStockBox").classList.remove("hidden");
+            document.getElementById("adminToolSection").classList.remove("hidden");
+        } else {
+            document.querySelectorAll('.admin-only').forEach(el => el.classList.add('hidden'));
+            document.getElementById("adminProductSection").classList.add("hidden");
+            document.getElementById("addStockBox").classList.add("hidden");
+            document.getElementById("adminToolSection").classList.add("hidden");
+        }
+
+        loadData();
+    }
+
     function handleLogout() {
+        sessionStorage.removeItem("user"); // เคลียร์ session ออก
         currentUserRole = ""; currentUserName = ""; currentUsernameId = "";
         document.getElementById("authContainer").classList.remove("hidden");
         document.getElementById("appSection").classList.add("hidden");
@@ -705,24 +722,6 @@
             updateAnalyticsDashboard();
             renderToolsData();
         });
-    }
-
-    // ฟังก์ชันอัปเดตหน่วยอัตโนมัติตามรหัสอุปกรณ์ที่พิมพ์
-    function updateUnitDisplay(type) {
-        let inputId = document.getElementById(type === 'add' ? "addId" : "reduceId").value.trim();
-        let unitSpan = document.getElementById(type === 'add' ? "addStockUnit" : "reduceStockUnit");
-
-        if (!inputId) {
-            unitSpan.innerText = "ชิ้น";
-            return;
-        }
-
-        let foundItem = globalStockData.find(item => item.id.toString().toLowerCase() === inputId.toLowerCase());
-        if (foundItem && foundItem.unit) {
-            unitSpan.innerText = foundItem.unit;
-        } else {
-            unitSpan.innerText = "ชิ้น";
-        }
     }
 
     function updateAnalyticsDashboard() {
