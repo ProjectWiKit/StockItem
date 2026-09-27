@@ -353,6 +353,17 @@
                 <div class="input-group"><label>รหัสอุปกรณ์ (เช่น ANT-01):</label><input type="text" id="newProdId" placeholder="รหัสอุปกรณ์"></div>
                 <div class="input-group"><label>ชื่ออุปกรณ์:</label><input type="text" id="newProdName" placeholder="ชื่ออุปกรณ์สายอากาศ / สายสัญญาณ"></div>
                 <div class="input-group"><label>จำนวนเริ่มต้น:</label><input type="number" id="newProdStock" value="0" min="0"></div>
+                <div class="input-group">
+                    <label>หน่วยนับ:</label>
+                    <select id="newProdUnit">
+                        <option value="ชิ้น">ชิ้น</option>
+                        <option value="เมตร">เมตร</option>
+                        <option value="เส้น">เส้น</option>
+                        <option value="ม้วน">ม้วน</option>
+                        <option value="ชุด">ชุด</option>
+                        <option value="อัน">อัน</option>
+                    </select>
+                </div>
                 <button style="background:var(--warning); margin-top: 5px;" onclick="addNewProduct()">บันทึกอุปกรณ์ใหม่</button>
             </div>
 
@@ -532,7 +543,7 @@
 </div>
 
 <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw805zzZpTrN0iW0uzaphJmrUJBFps7zqApwGIVbOtNciYxYPACIzaCKdJ_j3vtQMBjYA/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyUjv891C7gwlv1RXbRcniSxTqFMC_dPsKs5PoL8BvW9HlF7xKd67KDN1uD4qUWR0kZYQ/exec";
     let currentUserRole = "";
     let currentUserName = "";
     let currentUsernameId = "";
@@ -726,11 +737,9 @@
                 <td><span class="badge-stock ${badgeClass}">${badgeText}</span></td>
             </tr>`;
 
-            // เงื่อนไขสำหรับ Dropdown ยืม (ถ้ายังมีเหลือ ให้เลือกยืมได้)
             if (rem > 0) {
                 borrowOpts += `<option value="${tool.id}">${tool.id} - ${tool.name} (เหลือ ${rem} เครื่อง)</option>`;
             }
-            // เงื่อนไขสำหรับ Dropdown คืน (ถ้ามีถูกยืมไป ให้เลือกคืนได้)
             if (tool.borrowed > 0) {
                 returnOpts += `<option value="${tool.id}">${tool.id} - ${tool.name} (กำลังยืม ${tool.borrowed} เครื่อง)</option>`;
             }
@@ -772,12 +781,14 @@
         if (stocks.length > 0) {
             stocks.forEach(item => {
                 let stockNum = parseInt(item.stock) || 0;
+                let unitText = item.unit ? ` ${item.unit}` : ' ชิ้น'; // ดึงหน่วยมาแสดงต่อท้าย
                 let badgeClass = "badge-normal";
-                let badgeText = stockNum;
+                let badgeText = `${stockNum}${unitText}`;
+                
                 if (stockNum <= 0) {
-                    badgeClass = "badge-out"; badgeText = "หมด (0)"; hasOutOfStock = true;
+                    badgeClass = "badge-out"; badgeText = `หมด (0${unitText})`; hasOutOfStock = true;
                 } else if (stockNum <= 5) {
-                    badgeClass = "badge-low"; badgeText = `${stockNum} (ใกล้หมด)`;
+                    badgeClass = "badge-low"; badgeText = `${stockNum}${unitText} (ใกล้หมด)`;
                 }
 
                 stockHtml += `<tr>
@@ -842,11 +853,12 @@
         let id = document.getElementById("newProdId").value.trim();
         let name = document.getElementById("newProdName").value.trim();
         let stock = document.getElementById("newProdStock").value;
+        let unit = document.getElementById("newProdUnit").value; // ดึงค่าหน่วยที่เลือก
         if (!id || !name) { alert("กรุณากรอกรหัสและชื่ออุปกรณ์"); return; }
 
         fetch(WEB_APP_URL, {
             method: "POST",
-            body: JSON.stringify({ action: "addProduct", id: id, name: name, stock: stock })
+            body: JSON.stringify({ action: "addProduct", id: id, name: name, stock: stock, unit: unit })
         })
         .then(res => res.json())
         .then(result => {
