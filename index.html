@@ -810,7 +810,7 @@
         if (stocks.length > 0) {
             stocks.forEach(item => {
                 let stockNum = parseInt(item.stock) || 0;
-                let unitText = item.unit ? ` ${item.unit}` : ' ชิ้น';
+                let unitText = item.unit ? ` ${item.unit}` : ' ชิ้น'; // ดึงหน่วยนับมาใช้งาน
                 let badgeClass = "badge-normal";
                 let badgeText = `${stockNum}${unitText}`;
                 
@@ -833,7 +833,6 @@
         document.getElementById("stockTable").innerHTML = stockHtml;
         document.getElementById("outOfStockAlert").style.display = hasOutOfStock ? "block" : "none";
     }
-
     function filterStock() {
         let keyword = document.getElementById("searchBox").value.toLowerCase();
         let filtered = globalStockData.filter(item => 
