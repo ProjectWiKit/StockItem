@@ -248,6 +248,28 @@
 
         .tab-btn { background: #e2e8f0; color: #475569; display: inline-block; width: auto; padding: 8px 18px; margin-right: 6px; border-radius: 8px; box-shadow: none; font-weight: 500; }
         .tab-btn.active { background: #0f172a; color: white; }
+
+        /* CSS สำหรับจัดช่อง Input ให้มีหน่วยแปะติดอยู่ด้านขวา */
+        .input-with-unit {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .input-with-unit input {
+            margin-bottom: 0 !important;
+            padding-right: 65px; /* เว้นพื้นที่ด้านขวาให้ข้อความหน่วย */
+        }
+        .unit-badge-right {
+            position: absolute;
+            right: 14px;
+            color: #64748b;
+            font-weight: 600;
+            font-size: 13px;
+            pointer-events: none;
+            background: #f1f5f9;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
     </style>
 </head>
 <body>
@@ -373,12 +395,14 @@
                     <h3 style="color: #059669;">➕ เพิ่มสต็อกอุปกรณ์ (Admin)</h3>
                     <div class="input-group">
                         <label>รหัสอุปกรณ์ที่ต้องการเพิ่ม:</label>
-                        <!-- เช็คตอนพิมพ์ (onkeyup) เพื่ออัปเดตหน่วย -->
                         <input type="text" id="addId" placeholder="เช่น ANT-01" onkeyup="updateUnitLabel('add')">
                     </div>
                     <div class="input-group">
-                        <label>จำนวนที่ต้องการเพิ่ม (<span id="addUnitLabel" style="color:var(--success); font-weight:bold;">ชิ้น</span>):</label>
-                        <input type="number" id="addQty" value="1" min="1">
+                        <label>จำนวนที่ต้องการเพิ่ม:</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="addQty" value="1" min="1">
+                            <span id="addUnitLabel" class="unit-badge-right">ชิ้น</span>
+                        </div>
                     </div>
                     <button class="btn-add" style="margin-top: 5px;" onclick="updateStock('add')">ยืนยันเพิ่มสต็อก</button>
                 </div>
@@ -386,12 +410,14 @@
                     <h3 style="color: #dc2626;">➖ เบิกใช้อุปกรณ์</h3>
                     <div class="input-group">
                         <label>รหัสอุปกรณ์ที่ต้องการเบิก:</label>
-                        <!-- เช็คตอนพิมพ์ (onkeyup) เพื่ออัปเดตหน่วย -->
                         <input type="text" id="reduceId" placeholder="เช่น ANT-01" onkeyup="updateUnitLabel('reduce')">
                     </div>
                     <div class="input-group">
-                        <label>จำนวนที่ต้องการเบิก (<span id="reduceUnitLabel" style="color:var(--danger); font-weight:bold;">ชิ้น</span>):</label>
-                        <input type="number" id="reduceQty" value="1" min="1">
+                        <label>จำนวนที่ต้องการเบิก:</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="reduceQty" value="1" min="1">
+                            <span id="reduceUnitLabel" class="unit-badge-right">ชิ้น</span>
+                        </div>
                     </div>
                     <button class="btn-reduce" onclick="updateStock('reduce')">ยืนยันเบิกใช้งาน</button>
                 </div>
@@ -557,7 +583,7 @@
 </div>
 
 <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxyegXtaESlK3TFpjg7vPR2B76ry5bVeGIkoPzbjghcCSbKZGrr43BrtKBcqEEob4djwg/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxOqkMRjTaWM1SPnzI_cddpG7MrHiqcCkioON2AVzicl_1jGak9LS8uAJxwdfQmlobIhw/exec";
     let currentUserRole = "";
     let currentUserName = "";
     let currentUsernameId = "";
@@ -848,7 +874,6 @@
         document.getElementById("outOfStockAlert").style.display = hasOutOfStock ? "block" : "none";
     }
 
-    // ฟังก์ชันใหม่สำหรับการเปลี่ยนชื่อหน่วยตามรหัสที่พิมพ์
     function updateUnitLabel(action) {
         let inputId = document.getElementById(action === 'add' ? 'addId' : 'reduceId').value.trim().toUpperCase();
         let labelId = action === 'add' ? 'addUnitLabel' : 'reduceUnitLabel';
@@ -959,7 +984,6 @@
     }
 
     function updateStock(action) {
-        // แก้ไขไปใช้ช่องกรอกข้อความ (addId / reduceId)
         let id = document.getElementById(action === "add" ? "addId" : "reduceId").value.trim();
         if (!id) { alert("กรุณากรอกรหัสอุปกรณ์"); return; }
 
@@ -975,7 +999,6 @@
             if (result.status === "success") {
                 alert("บันทึกสำเร็จ! คงเหลือ: " + result.newStock);
                 
-                // เคลียร์ช่องพิมพ์หลังจากบันทึกเสร็จ
                 document.getElementById(action === "add" ? "addId" : "reduceId").value = "";
                 document.getElementById(action === "add" ? "addUnitLabel" : "reduceUnitLabel").innerText = "ชิ้น";
                 document.getElementById(action === "add" ? "addQty" : "reduceQty").value = "1";
