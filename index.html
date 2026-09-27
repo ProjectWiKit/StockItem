@@ -371,14 +371,28 @@
             <div style="display: flex; gap: 15px; flex-wrap: wrap;">
                 <div id="addStockBox" class="section-box hidden" style="flex:1; min-width: 280px; border-left: 5px solid var(--success);">
                     <h3 style="color: #059669;">➕ เพิ่มสต็อกอุปกรณ์ (Admin)</h3>
-                    <div class="input-group"><label>รหัสอุปกรณ์:</label><input type="text" id="addId" placeholder="รหัสอุปกรณ์"></div>
-                    <div class="input-group"><label>จำนวนที่ต้องการเพิ่ม:</label><input type="number" id="addQty" value="1" min="1"></div>
+                    <div class="input-group">
+                        <label>รหัสอุปกรณ์ที่ต้องการเพิ่ม:</label>
+                        <!-- เช็คตอนพิมพ์ (onkeyup) เพื่ออัปเดตหน่วย -->
+                        <input type="text" id="addId" placeholder="เช่น ANT-01" onkeyup="updateUnitLabel('add')">
+                    </div>
+                    <div class="input-group">
+                        <label>จำนวนที่ต้องการเพิ่ม (<span id="addUnitLabel" style="color:var(--success); font-weight:bold;">ชิ้น</span>):</label>
+                        <input type="number" id="addQty" value="1" min="1">
+                    </div>
                     <button class="btn-add" style="margin-top: 5px;" onclick="updateStock('add')">ยืนยันเพิ่มสต็อก</button>
                 </div>
                 <div class="section-box" style="flex:1; min-width: 280px; border-left: 5px solid var(--danger);">
                     <h3 style="color: #dc2626;">➖ เบิกใช้อุปกรณ์</h3>
-                    <div class="input-group"><label>รหัสอุปกรณ์:</label><input type="text" id="reduceId" placeholder="รหัสอุปกรณ์"></div>
-                    <div class="input-group"><label>จำนวนที่ต้องการเบิก:</label><input type="number" id="reduceQty" value="1" min="1"></div>
+                    <div class="input-group">
+                        <label>รหัสอุปกรณ์ที่ต้องการเบิก:</label>
+                        <!-- เช็คตอนพิมพ์ (onkeyup) เพื่ออัปเดตหน่วย -->
+                        <input type="text" id="reduceId" placeholder="เช่น ANT-01" onkeyup="updateUnitLabel('reduce')">
+                    </div>
+                    <div class="input-group">
+                        <label>จำนวนที่ต้องการเบิก (<span id="reduceUnitLabel" style="color:var(--danger); font-weight:bold;">ชิ้น</span>):</label>
+                        <input type="number" id="reduceQty" value="1" min="1">
+                    </div>
                     <button class="btn-reduce" onclick="updateStock('reduce')">ยืนยันเบิกใช้งาน</button>
                 </div>
             </div>
@@ -543,7 +557,7 @@
 </div>
 
 <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwn2gxPNaYF3jt9AgDdMa4O7hgQMGjFKdeUtIC2cT3-jku1qUKVY8HKtT6wMaosKZkQhQ/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxyegXtaESlK3TFpjg7vPR2B76ry5bVeGIkoPzbjghcCSbKZGrr43BrtKBcqEEob4djwg/exec";
     let currentUserRole = "";
     let currentUserName = "";
     let currentUsernameId = "";
@@ -555,7 +569,6 @@
     let activeTab = 'add';
     let activeHistTab = 'add';
 
-    // โหลด Session ทันทีที่เปิดหน้าเว็บเพื่อป้องกันการรีเฟรชแล้วหลุด
     window.onload = function() {
         checkSession();
     };
@@ -633,7 +646,6 @@
                 currentUserName = result.name;
                 currentUsernameId = user;
                 
-                // บันทึกลง Session Storage
                 sessionStorage.setItem("user", JSON.stringify({
                     role: result.role,
                     name: result.name,
@@ -671,7 +683,7 @@
     }
 
     function handleLogout() {
-        sessionStorage.removeItem("user"); // เคลียร์ session ออก
+        sessionStorage.removeItem("user");
         currentUserRole = ""; currentUserName = ""; currentUsernameId = "";
         document.getElementById("authContainer").classList.remove("hidden");
         document.getElementById("appSection").classList.add("hidden");
@@ -807,10 +819,11 @@
     function renderStockTable(stocks) {
         let stockHtml = "";
         let hasOutOfStock = false;
+
         if (stocks.length > 0) {
             stocks.forEach(item => {
                 let stockNum = parseInt(item.stock) || 0;
-                let unitText = item.unit ? ` ${item.unit}` : ' ชิ้น'; // ดึงหน่วยนับมาใช้งาน
+                let unitText = item.unit ? ` ${item.unit}` : ' ชิ้น';
                 let badgeClass = "badge-normal";
                 let badgeText = `${stockNum}${unitText}`;
                 
@@ -830,9 +843,25 @@
         } else {
             stockHtml = `<tr><td colspan="${currentUserRole === 'admin' ? 4 : 3}">ไม่พบอุปกรณ์สายอากาศ</td></tr>`;
         }
+
         document.getElementById("stockTable").innerHTML = stockHtml;
         document.getElementById("outOfStockAlert").style.display = hasOutOfStock ? "block" : "none";
     }
+
+    // ฟังก์ชันใหม่สำหรับการเปลี่ยนชื่อหน่วยตามรหัสที่พิมพ์
+    function updateUnitLabel(action) {
+        let inputId = document.getElementById(action === 'add' ? 'addId' : 'reduceId').value.trim().toUpperCase();
+        let labelId = action === 'add' ? 'addUnitLabel' : 'reduceUnitLabel';
+        
+        let foundItem = globalStockData.find(item => item.id.toUpperCase() === inputId);
+        
+        if (foundItem && foundItem.unit) {
+            document.getElementById(labelId).innerText = foundItem.unit;
+        } else {
+            document.getElementById(labelId).innerText = "ชิ้น";
+        }
+    }
+
     function filterStock() {
         let keyword = document.getElementById("searchBox").value.toLowerCase();
         let filtered = globalStockData.filter(item => 
@@ -930,9 +959,12 @@
     }
 
     function updateStock(action) {
+        // แก้ไขไปใช้ช่องกรอกข้อความ (addId / reduceId)
         let id = document.getElementById(action === "add" ? "addId" : "reduceId").value.trim();
+        if (!id) { alert("กรุณากรอกรหัสอุปกรณ์"); return; }
+
         let qty = document.getElementById(action === "add" ? "addQty" : "reduceQty").value;
-        if (!id || !qty) { alert("กรุณากรอกรหัสอุปกรณ์และจำนวน"); return; }
+        if (!qty) { alert("กรุณากรอกจำนวน"); return; }
 
         fetch(WEB_APP_URL, {
             method: "POST",
@@ -942,6 +974,12 @@
         .then(result => {
             if (result.status === "success") {
                 alert("บันทึกสำเร็จ! คงเหลือ: " + result.newStock);
+                
+                // เคลียร์ช่องพิมพ์หลังจากบันทึกเสร็จ
+                document.getElementById(action === "add" ? "addId" : "reduceId").value = "";
+                document.getElementById(action === "add" ? "addUnitLabel" : "reduceUnitLabel").innerText = "ชิ้น";
+                document.getElementById(action === "add" ? "addQty" : "reduceQty").value = "1";
+                
                 loadData();
             } else { alert("เกิดข้อผิดพลาด: " + result.message); }
         });
