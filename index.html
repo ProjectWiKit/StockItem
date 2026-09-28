@@ -3,7 +3,8 @@
 <head>
     <link rel="apple-touch-icon" href="icon.png">
     <meta charset="UTF-8">
-    <title>JKP Engineering</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JKP Engineering - Pre-Site Inspection Checklist</title>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -34,7 +35,6 @@
             border-radius: 20px; 
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05); 
             margin: auto; 
-            transition: all 0.3s ease;
         }
 
         .logo-header {
@@ -65,88 +65,8 @@
 
         .antenna-icon { font-size: 30px; color: white; }
 
-        .logo-header h1 {
-            margin: 5px 0 0 0;
-            font-size: 22px;
-            color: #0f172a;
-            font-weight: 600;
-        }
-
-        .logo-header p {
-            margin: 4px 0 0 0;
-            font-size: 13px;
-            color: #64748b;
-        }
-
-        .main-nav-tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 25px;
-            background: #f1f5f9;
-            padding: 6px;
-            border-radius: 12px;
-            flex-wrap: wrap;
-        }
-
-        .main-nav-btn {
-            flex: 1;
-            min-width: 180px;
-            padding: 12px;
-            text-align: center;
-            background: transparent;
-            border: none;
-            border-radius: 8px;
-            font-family: 'Prompt', sans-serif;
-            font-weight: 600;
-            font-size: 14px;
-            color: #64748b;
-            cursor: pointer;
-            box-shadow: none;
-            transition: all 0.2s;
-        }
-
-        .main-nav-btn.active {
-            background: #ffffff;
-            color: var(--primary);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-        }
-
-        .analytics-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 24px;
-        }
-
-        .stat-card {
-            background: #ffffff;
-            border: 1px solid var(--border-color);
-            padding: 18px;
-            border-radius: 14px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.05);
-        }
-
-        .stat-icon {
-            width: 45px;
-            height: 45px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-        }
-
-        .stat-info h4 { margin: 0; font-size: 12px; color: #64748b; font-weight: 500; }
-        .stat-info p { margin: 4px 0 0 0; font-size: 20px; font-weight: 600; color: #0f172a; }
+        .logo-header h1 { margin: 5px 0 0 0; font-size: 22px; color: #0f172a; font-weight: 600; }
+        .logo-header p { margin: 4px 0 0 0; font-size: 13px; color: #64748b; }
 
         .user-panel {
             display: flex; 
@@ -161,55 +81,30 @@
             gap: 12px;
         }
 
-        .input-group {
-            margin-bottom: 15px;
-            text-align: left;
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 24px;
         }
 
-        .input-group label {
-            display: block;
-            font-size: 13px;
-            font-weight: 600;
-            color: #475569;
-            margin-bottom: 6px;
+        .stat-card {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            padding: 18px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
-        input, button, select { 
-            padding: 12px 16px; 
-            margin: 0 0 10px 0; 
-            width: 100%; 
-            box-sizing: border-box; 
-            border: 1px solid var(--border-color); 
-            border-radius: 10px; 
-            font-family: 'Prompt', sans-serif;
-            font-size: 14px;
-            transition: all 0.2s ease;
-            background-color: #fff;
+        .stat-icon {
+            width: 45px; height: 45px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center; font-size: 20px;
         }
 
-        input:focus, select:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.12);
-        }
-
-        button { 
-            color: white; 
-            border: none; 
-            cursor: pointer; 
-            border-radius: 10px; 
-            font-weight: 600; 
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
-            transition: transform 0.1s, background-color 0.2s;
-        }
-
-        button:active { transform: scale(0.98); }
-
-        .btn-add { background: var(--success); }
-        .btn-add:hover { background: #059669; }
-        .btn-reduce { background: var(--danger); width: 100%; margin-top: 5px; padding: 14px; }
-        .btn-reduce:hover { background: #dc2626; }
-        .btn-member { background: var(--primary); }
+        .stat-info h4 { margin: 0; font-size: 12px; color: #64748b; font-weight: 500; }
+        .stat-info p { margin: 4px 0 0 0; font-size: 20px; font-weight: 600; color: #0f172a; }
 
         .section-box { 
             background: #ffffff; 
@@ -217,60 +112,67 @@
             padding: 24px; 
             border-radius: 16px; 
             margin-bottom: 24px; 
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
         }
 
         .section-box h3 { 
-            margin-top: 0; 
-            font-size: 17px; 
-            border-bottom: 2px solid #f1f5f9; 
-            padding-bottom: 10px; 
-            color: #334155; 
+            margin-top: 0; font-size: 17px; 
+            border-bottom: 2px solid #f1f5f9; padding-bottom: 10px; color: #334155; 
         }
 
+        .input-group { margin-bottom: 15px; text-align: left; }
+        .input-group label { display: block; font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 6px; }
+
+        input, button, select { 
+            padding: 12px 16px; margin: 0 0 10px 0; width: 100%; 
+            box-sizing: border-box; border: 1px solid var(--border-color); 
+            border-radius: 10px; font-family: 'Prompt', sans-serif; font-size: 14px;
+        }
+
+        button { color: white; border: none; cursor: pointer; font-weight: 600; }
+        .btn-add { background: var(--success); }
+        .btn-member { background: var(--primary); }
         .auth-box { max-width: 450px; margin: auto; }
-        .auth-title { text-align: center; border: none !important; font-size: 18px; }
-
-        table { width: 100%; margin-top: 12px; border-collapse: separate; border-spacing: 0; font-size: 14px; border-radius: 10px; overflow: hidden; border: 1px solid var(--border-color); }
-        th, td { padding: 12px 14px; text-align: center; vertical-align: middle; border-bottom: 1px solid var(--border-color); border-right: 1px solid var(--border-color); }
-        th:last-child, td:last-child { border-right: none; }
-        th { background: #f8fafc; color: #475569; font-weight: 600; }
-        tr:nth-child(even) { background-color: #fafafa; }
-        tr:hover td { background-color: #f1f5f9; }
-
-        .badge-stock { padding: 4px 10px; border-radius: 20px; font-weight: 600; font-size: 12px; display: inline-block;}
-        .badge-normal { background-color: #d1fae5; color: #065f46; }
-        .badge-low { background-color: #fef3c7; color: #92400e; }
-        .badge-out { background-color: #fee2e2; color: #991b1b; }
-
-        .alert-box { background: #fee2e2; color: #991b1b; padding: 12px; border-radius: 10px; margin-bottom: 15px; display: none; font-weight: 600; text-align: center; border: 1px solid #fca5a5; }
         .hidden { display: none !important; }
-        .link-text { color: var(--primary); cursor: pointer; text-align: center; margin-top: 12px; font-size: 14px; font-weight: 500; }
-        .link-text:hover { text-decoration: underline; }
 
-        .tab-btn { background: #e2e8f0; color: #475569; display: inline-block; width: auto; padding: 8px 18px; margin-right: 6px; border-radius: 8px; box-shadow: none; font-weight: 500; }
-        .tab-btn.active { background: #0f172a; color: white; }
-
-        .input-with-unit {
-            position: relative;
+        /* Checklist Group Styling */
+        .category-block {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        .category-header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e2e8f0;
         }
-        .input-with-unit input {
-            margin-bottom: 0 !important;
-            padding-right: 65px;
+        .category-header h5 {
+            margin: 0; font-size: 15px; color: #0f172a; font-weight: 600;
         }
-        .unit-badge-right {
-            position: absolute;
-            right: 14px;
-            color: #64748b;
-            font-weight: 600;
-            font-size: 13px;
-            pointer-events: none;
-            background: #f1f5f9;
-            padding: 4px 8px;
-            border-radius: 6px;
+        .btn-select-all {
+            width: auto; padding: 4px 10px; font-size: 12px; background: #64748b; margin: 0;
         }
+
+        .checklist-container { display: flex; flex-direction: column; gap: 8px; }
+        .checklist-item {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 10px 14px; border: 1px solid var(--border-color);
+            border-radius: 8px; background: #ffffff; transition: all 0.2s;
+        }
+        .checklist-item.checked { background: #e0f2fe; border-color: var(--primary); }
+        .checklist-item label { display: flex; align-items: center; gap: 10px; cursor: pointer; font-weight: 500; margin: 0; width: 100%; }
+        .checklist-item input[type="checkbox"] { width: 18px; height: 18px; margin: 0; cursor: pointer; }
+
+        table { width: 100%; margin-top: 12px; border-collapse: separate; border-spacing: 0; font-size: 14px; border: 1px solid var(--border-color); border-radius: 10px; overflow: hidden; }
+        th, td { padding: 12px 14px; text-align: center; border-bottom: 1px solid var(--border-color); border-right: 1px solid var(--border-color); }
+        th { background: #f8fafc; color: #475569; font-weight: 600; }
+        .badge { padding: 4px 10px; border-radius: 20px; font-weight: 600; font-size: 12px; }
+        .badge-success { background: #d1fae5; color: #065f46; }
+        .badge-danger { background: #fee2e2; color: #991b1b; }
     </style>
 </head>
 <body>
@@ -280,287 +182,123 @@
     <div class="logo-header">
         <div class="antenna-logo"><span class="antenna-icon">📡</span></div>
         <h1>JKP Engineering</h1>
-        <p>ระบบจัดการคลังอุปกรณ์สายอากาศและเครื่องมือช่าง</p>
+        <p>ระบบตรวจเช็คอุปกรณ์และเครื่องมือช่างก่อนออกหน้างาน (Pre-Site Departure Checklist)</p>
     </div>
 
     <!-- ส่วน Login & Register -->
     <div id="authContainer">
         <div id="loginSection" class="section-box auth-box">
-            <h3 class="auth-title">🔒 เข้าสู่ระบบใช้งาน</h3>
+            <h3 style="text-align: center;">🔒 เข้าสู่ระบบใช้งาน</h3>
             <div class="input-group"><label>รหัสผู้ใช้ / รหัสสมาชิก:</label><input type="text" id="username" placeholder="Username"></div>
             <div class="input-group"><label>รหัสผ่าน:</label><input type="password" id="password" placeholder="Password"></div>
-            <button class="btn-add" onclick="handleLogin()" style="margin-top: 5px;">เข้าสู่ระบบ</button>
-            <div class="link-text" onclick="toggleAuth('register')">ยังไม่มีบัญชี? สมัครสมาชิกใหม่</div>
+            <button class="btn-add" onclick="handleLogin()">เข้าสู่ระบบ</button>
+            <div style="text-align: center; margin-top: 12px; color: var(--primary); cursor: pointer;" onclick="toggleAuth('register')">ยังไม่มีบัญชี? สมัครสมาชิกใหม่</div>
         </div>
 
         <div id="registerSection" class="section-box auth-box hidden">
-            <h3 class="auth-title">👤 สมัครสมาชิกใหม่</h3>
+            <h3 style="text-align: center;">👤 สมัครสมาชิกใหม่</h3>
             <div class="input-group"><label>รหัสสมาชิก (Username):</label><input type="text" id="newMemberId" placeholder="เช่น M001"></div>
             <div class="input-group"><label>ชื่อ-นามสกุล:</label><input type="text" id="newMemberName" placeholder="กรอกชื่อ-นามสกุล"></div>
             <div class="input-group"><label>รหัสผ่าน:</label><input type="password" id="newMemberPass" placeholder="ตั้งรหัสผ่าน"></div>
             <div class="input-group"><label>เบอร์โทรศัพท์:</label><input type="text" id="newMemberPhone" placeholder="เบอร์โทร"></div>
-            <button class="btn-member" onclick="registerMember()" style="margin-top: 5px;">ส่งคำขอสมัครสมาชิก</button>
-            <div class="link-text" onclick="toggleAuth('login')">มีบัญชีแล้ว? กลับไปหน้าเข้าสู่ระบบ</div>
+            <button class="btn-member" onclick="registerMember()">ส่งคำขอสมัครสมาชิก</button>
+            <div style="text-align: center; margin-top: 12px; color: var(--primary); cursor: pointer;" onclick="toggleAuth('login')">มีบัญชีแล้ว? กลับไปหน้าเข้าสู่ระบบ</div>
         </div>
     </div>
 
-    <!-- หน้า Dashboard หลัก -->
+    <!-- หน้า Dashboard และฟอร์มเช็คของหลัก -->
     <div id="appSection" class="hidden">
         
-        <!-- แผงผู้ใช้งาน -->
         <div class="user-panel">
             <div>
-                <h3 id="userWelcome" style="margin: 0; font-size: 16px; color: #0f172a; border: none; padding: 0;"></h3>
+                <h3 id="userWelcome" style="margin: 0; font-size: 16px; color: #0f172a;"></h3>
                 <small id="userRoleBadge" style="color: #64748b; font-weight: 500;"></small>
             </div>
             <div>
-                <button onclick="openPasswordModal()" style="width: auto; padding: 8px 14px; background: var(--warning); font-size: 13px; margin-right: 6px;">🔑 เปลี่ยนรหัสผ่าน</button>
                 <button onclick="handleLogout()" style="width: auto; padding: 8px 14px; background: #64748b; font-size: 13px;">ออกจากระบบ</button>
             </div>
         </div>
 
-        <!-- ส่วนเปลี่ยนรหัสผ่าน -->
-        <div id="passwordSection" class="section-box hidden" style="border-left: 5px solid var(--warning);">
-            <h3 style="color: #d97706;">🔑 เปลี่ยนรหัสผ่านส่วนตัว</h3>
-            <div class="input-group"><label>รหัสผ่านเดิม:</label><input type="password" id="oldPass" placeholder="กรอกรหัสผ่านเดิม"></div>
-            <div class="input-group"><label>รหัสผ่านใหม่:</label><input type="password" id="newPass" placeholder="กรอกรหัสผ่านใหม่"></div>
-            <div style="display: flex; gap: 8px; margin-top: 10px;">
-                <button style="background:var(--warning); flex:1; margin:0;" onclick="changePassword()">ยืนยันเปลี่ยนรหัสผ่าน</button>
-                <button style="background:#94a3b8; width: auto; padding: 10px 15px; margin:0;" onclick="cancelPasswordChange()">ยกเลิก</button>
+        <!-- 📊 Dashboard การ์ดสรุป -->
+        <div class="analytics-grid">
+            <div class="stat-card">
+                <div class="stat-icon" style="background: #e0f2fe; color: #0284c7;">📋</div>
+                <div class="stat-info">
+                    <h4>จำนวนการเช็คทั้งหมด</h4>
+                    <p id="statTotalChecks">0</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: #d1fae5; color: #059669;">✅</div>
+                <div class="stat-info">
+                    <h4>อุปกรณ์ครบถ้วน</h4>
+                    <p id="statCompleteChecks">0</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: #fee2e2; color: #dc2626;">⚠️</div>
+                <div class="stat-info">
+                    <h4>รายการลืมของ / ไม่ครบ</h4>
+                    <p id="statIncompleteChecks">0</p>
+                </div>
             </div>
         </div>
 
-        <!-- เมนูหลักสลับระหว่าง "เบิกอุปกรณ์" และ "เบิกเครื่องมือช่าง" -->
-        <div class="main-nav-tabs">
-            <button class="main-nav-btn active" id="navEquipTab" onclick="switchMainTab('equipment')">📦 อุปกรณ์สายอากาศ</button>
-            <button class="main-nav-btn" id="navToolTab" onclick="switchMainTab('tools')">🛠️ เครื่องมือช่าง</button>
-        </div>
-
-        <!-- ================= หมวดที่ 1: เบิกอุปกรณ์ (Equipment Stock) ================= -->
-        <div id="equipmentSectionContent">
-            <!-- 📊 Dashboard การ์ดอุปกรณ์ -->
-            <div class="analytics-grid">
-                <div class="stat-card">
-                    <div class="stat-icon" style="background: #e0f2fe; color: #0284c7;">📦</div>
-                    <div class="stat-info">
-                        <h4>อุปกรณ์ทั้งหมดในระบบ</h4>
-                        <p id="statTotalItems">0</p>
-                    </div>
+        <!-- 📝 ฟอร์มตรวจเช็คของก่อนออกปฏิบัติงาน -->
+        <div class="section-box" style="border-left: 5px solid var(--primary);">
+            <h3 style="color: var(--primary);">🚚 แบบฟอร์มตรวจเช็คอุปกรณ์ก่อนออกหน้างาน</h3>
+            
+            <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                <div class="input-group" style="flex: 1; min-width: 250px;">
+                    <label>รหัสงาน / ไซท์งาน (Site ID / Job No.):</label>
+                    <input type="text" id="siteIdInput" placeholder="เช่น SITE-BKK-01">
                 </div>
-                <div class="stat-card">
-                    <div class="stat-icon" style="background: #fef3c7; color: #d97706;">⚠️</div>
-                    <div class="stat-info">
-                        <h4>สินค้าใกล้หมด / หมด</h4>
-                        <p id="statLowStock">0</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon" style="background: #d1fae5; color: #059669;">📥</div>
-                    <div class="stat-info">
-                        <h4>รายการเพิ่มสต็อกรวม</h4>
-                        <p id="statTotalAdd">0</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon" style="background: #fee2e2; color: #dc2626;">📤</div>
-                    <div class="stat-info">
-                        <h4>รายการเบิกออกรวม</h4>
-                        <p id="statTotalReduce">0</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- เพิ่มสินค้าใหม่ (เฉพาะแอดมิน) -->
-            <div id="adminProductSection" class="section-box hidden" style="border-left: 5px solid var(--warning);">
-                <h3 style="color: #d97706;">✨ เพิ่มอุปกรณ์สายอากาศใหม่เข้าสู่ระบบ</h3>
-                <div class="input-group"><label>รหัสอุปกรณ์ ():</label><input type="text" id="newProdId" placeholder="รหัสอุปกรณ์"></div>
-                <div class="input-group"><label>ชื่ออุปกรณ์:</label><input type="text" id="newProdName" placeholder="ชื่ออุปกรณ์สายอากาศ"></div>
-                <div class="input-group"><label>จำนวนเริ่มต้น:</label><input type="number" id="newProdStock" value="0" min="0"></div>
-                <div class="input-group">
-                    <label>หน่วยนับ:</label>
-                    <select id="newProdUnit">
-                        <option value="ชิ้น">ชิ้น</option>
-                        <option value="เมตร">เมตร</option>
-                        <option value="เส้น">เส้น</option>
-                        <option value="ม้วน">ม้วน</option>
-                        <option value="ชุด">ชุด</option>
-                        <option value="อัน">อัน</option>
+                <div class="input-group" style="flex: 1; min-width: 250px;">
+                    <label>เลือกประเภทงาน (Job Template):</label>
+                    <select id="jobTypeSelect" onchange="loadJobChecklist()">
+                        <option value="">-- กรุณาเลือกประเภทงาน --</option>
+                        <option value="INSTALL_ANTENNA">งานติดตั้งสายอากาศใหม่</option>
+                        <option value="TUNE_S11">งานปรับจูน S11 / Impedance (SWR/VNA)</option>
+                        <option value="REPLACE_CABLE">งานเปลี่ยนสายสัญญาณ / Coaxial Cable</option>
+                        <option value="GENERAL_MAINTENANCE">งานตรวจเช็คซ่อมบำรุงทั่วไป</option>
                     </select>
                 </div>
-                <button style="background:var(--warning); margin-top: 5px;" onclick="addNewProduct()">บันทึกอุปกรณ์ใหม่</button>
             </div>
 
-            <!-- เพิ่ม/เบิกสต็อก -->
-            <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                <div id="addStockBox" class="section-box hidden" style="flex:1; min-width: 280px; border-left: 5px solid var(--success);">
-                    <h3 style="color: #059669;">➕ เพิ่มสต็อกอุปกรณ์ (Admin)</h3>
-                    <div class="input-group">
-                        <label>รหัสอุปกรณ์ที่ต้องการเพิ่ม:</label>
-                        <input type="text" id="addId" placeholder="" oninput="updateUnitLabel('add')" onkeyup="updateUnitLabel('add')">
-                    </div>
-                    <div class="input-group">
-                        <label>จำนวนที่ต้องการเพิ่ม:</label>
-                        <div class="input-with-unit">
-                            <input type="number" id="addQty" value="1" min="1">
-                            <span id="addUnitLabel" class="unit-badge-right">ชิ้น</span>
-                        </div>
-                    </div>
-                    <button class="btn-add" style="margin-top: 5px;" onclick="updateStock('add')">ยืนยันเพิ่มสต็อก</button>
-                </div>
-                <div class="section-box" style="flex:1; min-width: 280px; border-left: 5px solid var(--danger);">
-                    <h3 style="color: #dc2626;">➖ เบิกใช้อุปกรณ์</h3>
-                    <div class="input-group">
-                        <label>รหัสอุปกรณ์ที่ต้องการเบิก:</label>
-                        <input type="text" id="reduceId" placeholder="" oninput="updateUnitLabel('reduce')" onkeyup="updateUnitLabel('reduce')">
-                    </div>
-                    <div class="input-group">
-                        <label>จำนวนที่ต้องการเบิก:</label>
-                        <div class="input-with-unit">
-                            <input type="number" id="reduceQty" value="1" min="1">
-                            <span id="reduceUnitLabel" class="unit-badge-right">ชิ้น</span>
-                        </div>
-                    </div>
-                    <button class="btn-reduce" onclick="updateStock('reduce')">ยืนยันเบิกใช้งาน</button>
-                </div>
-            </div>
+            <!-- กล่องแสดง Checklist อุปกรณ์แยกตามหมวดหมู่ -->
+            <div id="checklistSection" class="hidden">
+                <h4 style="margin-bottom: 8px; color: #334155;">รายการอุปกรณ์แยกตามหมวดหมู่:</h4>
+                <p style="font-size: 12px; color: #64748b; margin-top: 0;">* กรุณาตรวจเช็คอุปกรณ์ทีละชิ้นก่อนออกเดินทาง</p>
+                
+                <div id="checklistCategories"></div>
 
-            <!-- ตารางค้นหาและรายการอุปกรณ์ -->
-            <div id="outOfStockAlert" class="alert-box">⚠️ แจ้งเตือน: มีอุปกรณ์สายอากาศในสต็อกหมด!</div>
-            <div class="section-box">
-                <h3 style="margin-top: 0;">📋 รายการอุปกรณ์สายอากาศในระบบ</h3>
-                <input type="text" id="searchBox" placeholder="🔍 ค้นหาด้วยรหัสหรือชื่ออุปกรณ์..." onkeyup="filterStock()" style="margin-bottom: 12px;">
-                <table>
-                    <thead>
-                        <tr><th>รหัส</th><th>ชื่ออุปกรณ์</th><th>คงเหลือ</th><th class="admin-only hidden">จัดการ</th></tr>
-                    </thead>
-                    <tbody id="stockTable"><tr><td colspan="4">กำลังโหลดข้อมูล...</td></tr></tbody>
-                </table>
-            </div>
-
-            <!-- ประวัติและตัวกรองประวัติ -->
-            <div class="section-box">
-                <h3 style="margin-top: 0;">📜 ประวัติการทำรายการ</h3>
-                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-                    <div>
-                        <button class="tab-btn active" onclick="switchHistTab('add')" id="btnTabAdd">ประวัติการเพิ่ม</button>
-                        <button class="tab-btn" onclick="switchHistTab('reduce')" id="btnTabReduce">ประวัติการเบิก</button>
-                    </div>
-                    <button onclick="exportCSV()" style="width: auto; background: #475569; padding: 8px 14px; font-size: 13px; margin:0;">📥 ดาวน์โหลด CSV</button>
+                <div class="input-group" style="margin-top: 15px;">
+                    <label>หมายเหตุเพิ่มเติม (ถ้ามี):</label>
+                    <input type="text" id="dispatchNote" placeholder="ระบุเหตุผลหากนำอุปกรณ์ไปทดแทน หรืออุปกรณ์ไม่สมบูรณ์">
                 </div>
 
-                <input type="text" id="historySearchBox" placeholder="🔍 กรองประวัติ..." onkeyup="renderHistories()" style="margin-top: 15px; margin-bottom: 10px;">
-
-                <div id="historyAddContainer">
-                    <table>
-                        <thead><tr><th>วัน-เวลา</th><th>ผู้ทำ</th><th>รหัส</th><th>ชื่ออุปกรณ์</th><th>จำนวน</th></tr></thead>
-                        <tbody id="historyAddTable"><tr><td colspan="5">ไม่มีประวัติ</td></tr></tbody>
-                    </table>
-                </div>
-
-                <div id="historyReduceContainer" class="hidden">
-                    <table>
-                        <thead><tr><th>วัน-เวลา</th><th>ผู้เบิก</th><th>รหัส</th><th>ชื่ออุปกรณ์</th><th>จำนวน</th></tr></thead>
-                        <tbody id="historyReduceTable"><tr><td colspan="5">ไม่มีประวัติ</td></tr></tbody>
-                    </table>
-                </div>
+                <button class="btn-add" style="margin-top: 10px; padding: 14px;" onclick="submitDispatchCheck()">ยืนยันการตรวจเช็คและพร้อมออกเดินทาง</button>
             </div>
         </div>
 
-        <!-- ================= หมวดที่ 2: เบิกเครื่องมือช่าง / ยืม-คืนเครื่องมือ (Tools & Equipment) ================= -->
-        <div id="toolsSectionContent" class="hidden">
-            <!-- 📊 Dashboard การ์ดเครื่องมือช่าง -->
-            <div class="analytics-grid">
-                <div class="stat-card">
-                    <div class="stat-icon" style="background: #e0f2fe; color: #0284c7;">🛠️</div>
-                    <div class="stat-info">
-                        <h4>เครื่องมือทั้งหมด</h4>
-                        <p id="toolStatTotal">0</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon" style="background: #d1fae5; color: #059669;">✅</div>
-                    <div class="stat-info">
-                        <h4>พร้อมใช้งาน</h4>
-                        <p id="toolStatReady">0</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon" style="background: #fef3c7; color: #d97706;">🔄</div>
-                    <div class="stat-info">
-                        <h4>กำลังใช้งาน / ยืม</h4>
-                        <p id="toolStatBorrow">0</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon" style="background: #fee2e2; color: #dc2626;">⚠️</div>
-                    <div class="stat-info">
-                        <h4>ชำรุด / ส่งซ่อม</h4>
-                        <p id="toolStatBroken">0</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- เพิ่มเครื่องมือใหม่ / เพิ่มจำนวนเครื่องมือ (เฉพาะแอดมิน) -->
-            <div id="adminToolSection" class="section-box hidden" style="border-left: 5px solid var(--warning);">
-                <h3 style="color: #d97706;">✨ เพิ่มเครื่องมือช่างใหม่ / เพิ่มจำนวนเครื่องเดิม (Admin)</h3>
-                <div class="input-group"><label>รหัสเครื่องมือ (เช่น T001):</label><input type="text" id="newToolId" placeholder="รหัสเครื่องมือ"></div>
-                <div class="input-group"><label>ชื่อเครื่องมือ:</label><input type="text" id="newToolName" placeholder="ชื่อเครื่องมือช่าง"></div>
-                <div class="input-group"><label>จำนวนที่ต้องการเพิ่ม:</label><input type="number" id="newToolStock" value="1" min="1"></div>
-                <button style="background:var(--warning); margin-top: 5px;" onclick="addNewTool()">บันทึก / เพิ่มจำนวนเครื่องมือ</button>
-            </div>
-
-            <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                <div class="section-box" style="flex:1; min-width: 280px; border-left: 5px solid var(--primary);">
-                    <h3 style="color: var(--primary);">📤 ยืมเครื่องมือช่าง</h3>
-                    <div class="input-group"><label>เลือกเครื่องมือ (พร้อมใช้งาน):</label>
-                        <select id="borrowToolSelect"><option value="">กำลังโหลด...</option></select>
-                    </div>
-                    <div class="input-group"><label>จำนวนที่ต้องการยืม:</label><input type="number" id="borrowQtyInput" value="1" min="1"></div>
-                    <div class="input-group"><label>หมายเหตุ / หน้างาน:</label><input type="text" id="borrowNote" placeholder=""></div>
-                    <button class="btn-member" onclick="submitToolAction('ยืมเครื่องมือ')" style="margin-top: 5px;">ยืนยันการยืม</button>
-                </div>
-
-                <div class="section-box" style="flex:1; min-width: 280px; border-left: 5px solid var(--success);">
-                    <h3 style="color: var(--success);">📥 คืนเครื่องมือช่าง</h3>
-                    <div class="input-group"><label>เลือกเครื่องมือ (กำลังยืม):</label>
-                        <select id="returnToolSelect"><option value="">กำลังโหลด...</option></select>
-                    </div>
-                    <div class="input-group"><label>จำนวนที่ต้องการคืน:</label><input type="number" id="returnQtyInput" value="1" min="1"></div>
-                    <div class="input-group"><label>หมายเหตุ :</label><input type="text" id="returnNote" placeholder=""></div>
-                    <button class="btn-add" onclick="submitToolAction('คืนเครื่องมือ')" style="margin-top: 5px;">ยืนยันการคืน</button>
-                </div>
-            </div>
-
-            <div class="section-box" style="border-left: 5px solid var(--danger);">
-                <h3 style="color: var(--danger);">⚠️ แจ้งปัญหาเครื่องมือชำรุด / ส่งซ่อม</h3>
-                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                    <div class="input-group" style="flex:1; margin-bottom:0;"><label>เลือกเครื่องมือที่มีปัญหา:</label>
-                        <select id="brokenToolSelect"><option value="">กำลังโหลด...</option></select>
-                    </div>
-                    <div class="input-group" style="flex:1; margin-bottom:0;"><label>รายละเอียดอาการชำรุด:</label><input type="text" id="brokenDesc" placeholder="ระบุอาการเสีย / ความเสียหาย"></div>
-                </div>
-                <button class="btn-reduce" onclick="submitToolBroken()" style="margin-top: 12px; background: var(--danger);">ส่งแจ้งซ่อม / ชำรุด</button>
-            </div>
-
-            <div class="section-box">
-                <h3 style="margin-top: 0;">📋 รายการเครื่องมือช่างและสถานะปัจจุบัน</h3>
-                <table>
-                    <thead>
-                        <tr><th>รหัสเครื่องมือ</th><th>ชื่อเครื่องมือ</th><th>ทั้งหมด</th><th>คงเหลือ</th><th>สถานะ</th></tr>
-                    </thead>
-                    <tbody id="toolStockTable"><tr><td colspan="5">กำลังโหลดข้อมูล...</td></tr></tbody>
-                </table>
-            </div>
-
-            <div class="section-box">
-                <h3 style="margin-top: 0;">📜 ประวัติการยืม-คืน / แจ้งซ่อมเครื่องมือช่าง</h3>
-                <table>
-                    <thead>
-                        <tr><th>วัน-เวลา</th><th>ผู้ทำรายการ</th><th>รหัส</th><th>ชื่อเครื่องมือ</th><th>รายการ</th><th>หมายเหตุ</th></tr>
-                    </thead>
-                    <tbody id="toolsHistoryTable"><tr><td colspan="6">ไม่มีประวัติ</td></tr></tbody>
-                </table>
-            </div>
+        <!-- 📜 ตารางประวัติการตรวจเช็ค -->
+        <div class="section-box">
+            <h3>📜 ประวัติการตรวจเช็คก่อนออกหน้างาน</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>วัน-เวลา</th>
+                        <th>ผู้ตรวจเช็ค</th>
+                        <th>รหัสงาน/ไซท์</th>
+                        <th>ประเภทงาน</th>
+                        <th>ผลการเช็ค</th>
+                        <th>รายการที่ขาด/หมายเหตุ</th>
+                    </tr>
+                </thead>
+                <tbody id="historyTableBody">
+                    <tr><td colspan="6">กำลังโหลดข้อมูล...</td></tr>
+                </tbody>
+            </table>
         </div>
 
     </div>
@@ -568,18 +306,108 @@
 </div>
 
 <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzLlzAuM5F8l-ODF791vGP-nENVFvTyMyZLD-F5aOGFISedVt0Y-xM5TGOQ9i-1b9qN8Q/exec";
-    let currentUserRole = "";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyCNJz1qNR4raaXzw5PIMTikzBq-DZFVhYQ6-uOJG78VrN2hnCL5Sv0PLneTWRUxh65iQ/exec";
+    
     let currentUserName = "";
     let currentUsernameId = "";
-    let globalStockData = [];
-    let globalAddHistory = [];
-    let globalReduceHistory = [];
-    let globalToolsData = [];
-    let globalToolsHistory = [];
-    
-    let activeTab = 'add';
-    let activeHistTab = 'add';
+    let currentUserRole = "";
+
+    // 📦 แม่แบบจัดหมวดหมู่อุปกรณ์ (5 หมวดหลัก)
+    const JOB_TEMPLATES = {
+        "INSTALL_ANTENNA": {
+            "📊 หมวดเครื่องมือวัด & เครื่องส่ง": [
+                "เครื่องส่งสัญญาณ (Transmitter)",
+                "เครื่องวัด SWR / VNA Meter",
+                "มัลติมิเตอร์ (Digital Multimeter)"
+            ],
+            "📡 หมวดอุปกรณ์สายอากาศ & สายสัญญาณ": [
+                "ชุดสายอากาศ (Antenna Elements / Yagi / Dipole)",
+                "สายสัญญาณ Jumper Cable / Coaxial",
+                "แคลมป์ยึดสายอากาศ & U-Bolt",
+                "หัวคอนเนคเตอร์ (N-Type / PL-259)"
+            ],
+            "🛠️ หมวดเครื่องมือช่างพื้นฐาน": [
+                "ชุดประแจปากตาย (เบอร์ 8, 10, 12, 14, 17, 19)",
+                "ประแจเลื่อน / ประแจจับท่อ",
+                "ชุดไขควง (ปากแบน / ปากแฉก)",
+                "คีมตัดสาย / คีมปอกสาย / คีมล๊อก"
+            ],
+            "🩹 หมวดวัสดุสิ้นเปลือง & ซีลกันน้ำ": [
+                "เทปพันละลาย (Rubber Splicing Tape 3M 23)",
+                "เทปพันสายไฟ (Electrical Tape)",
+                "เคเบิลไทร์ทน UV (Cable Ties)",
+                "ซิลิโคนซีลแลนท์ / ท่อหด"
+            ],
+            "🦺 หมวดอุปกรณ์เซฟตี้ & ปีนเสา": [
+                "ชุดเข็มขัดนิรภัยแบบเต็มตัว (Full Body Harness)",
+                "หมวกเซฟตี้ พร้อมสายรัดคาง",
+                "ถุงมือช่าง / ถุงมือกันบาด",
+                "เชือกชักรอก + รอกยกของ"
+            ]
+        },
+        "TUNE_S11": {
+            "📊 หมวดเครื่องมือวัด & เครื่องส่ง": [
+                "Vector Network Analyzer (VNA) / SWR Meter",
+                "Calibration Kit (Open / Short / Load)",
+                "หัวแปลงคอนเนคเตอร์ (Adapters N-Type / SMA / BNC)",
+                "มัลติมิเตอร์ (Digital Multimeter)"
+            ],
+            "🛠️ หมวดเครื่องมือช่างพื้นฐาน": [
+                "ชุดไขควงด้ามหุ้มฉนวน",
+                "ชุดประแจปากตาย (เบอร์ 10, 12, 13, 14)",
+                "ประแจเลื่อน"
+            ],
+            "🩹 หมวดวัสดุสิ้นเปลือง & ซีลกันน้ำ": [
+                "เทปพันละลาย (3M 23)",
+                "เทปพันสายไฟ",
+                "สมุดบันทึกค่า Impedance / S11 Log"
+            ],
+            "🦺 หมวดอุปกรณ์เซฟตี้ & ปีนเสา": [
+                "ชุดเข็มขัดนิรภัย (Safety Harness)",
+                "หมวกเซฟตี้"
+            ]
+        },
+        "REPLACE_CABLE": {
+            "📡 หมวดอุปกรณ์สายอากาศ & สายสัญญาณ": [
+                "สายสัญญาณ Coaxial Cable (RG-8 / 1/2\")",
+                "หัวคอนเนคเตอร์ (N-Male / PL-259)"
+            ],
+            "🛠️ หมวดเครื่องมือช่างพื้นฐาน": [
+                "คีมย้ำหัว Coax + คีมปอกสาย",
+                "คัตเตอร์ / กรรไกรตัดสายไฟ",
+                "ชุดเตารีดบัดกรี + ตะกั่ว / ปืนเป่าลมร้อน",
+                "ประแจเลื่อน / ประแจจับท่อ"
+            ],
+            "🩹 หมวดวัสดุสิ้นเปลือง & ซีลกันน้ำ": [
+                "เทปพันละลาย (3M 23)",
+                "เทปพันสายไฟ",
+                "ท่อหด (Heat Shrink)"
+            ],
+            "🦺 หมวดอุปกรณ์เซฟตี้ & ปีนเสา": [
+                "ชุดเข็มขัดนิรภัยปีนเสา",
+                "หมวกเซฟตี้ + ถุงมือช่าง"
+            ]
+        },
+        "GENERAL_MAINTENANCE": {
+            "🛠️ หมวดเครื่องมือช่างพื้นฐาน": [
+                "กล่องเครื่องมือช่างรวม (Hand Tools Box)",
+                "ชุดประแจเลื่อน + ประแจจับท่อ",
+                "ชุดคีมรวม (ตัด/ปอก/จับ)"
+            ],
+            "📊 หมวดเครื่องมือวัด & เครื่องส่ง": [
+                "มัลติมิเตอร์ (Digital Multimeter)",
+                "เครื่องวัด SWR Meter"
+            ],
+            "🩹 หมวดวัสดุสิ้นเปลือง & ซีลกันน้ำ": [
+                "เทปพันสายไฟ + เทปพันละลาย",
+                "เคเบิลไทร์ + ซิลิโคน"
+            ],
+            "🦺 หมวดอุปกรณ์เซฟตี้ & ปีนเสา": [
+                "บันได aluminium / อุปกรณ์เซฟตี้ปีนเสา",
+                "หมวกเซฟตี้"
+            ]
+        }
+    };
 
     window.onload = function() {
         checkSession();
@@ -592,7 +420,6 @@
             currentUserRole = userObj.role;
             currentUserName = userObj.name;
             currentUsernameId = userObj.username;
-
             setupUIForUser();
         }
     }
@@ -605,43 +432,6 @@
             document.getElementById("registerSection").classList.add("hidden");
             document.getElementById("loginSection").classList.remove("hidden");
         }
-    }
-
-    function switchMainTab(type) {
-        document.getElementById("equipmentSectionContent").classList.add("hidden");
-        document.getElementById("toolsSectionContent").classList.add("hidden");
-        
-        document.getElementById("navEquipTab").classList.remove("active");
-        document.getElementById("navToolTab").classList.remove("active");
-
-        if (type === 'equipment') {
-            document.getElementById("equipmentSectionContent").classList.remove("hidden");
-            document.getElementById("navEquipTab").classList.add("active");
-        } else if (type === 'tools') {
-            document.getElementById("toolsSectionContent").classList.remove("hidden");
-            document.getElementById("navToolTab").classList.add("active");
-        }
-    }
-
-    function switchTab(type) {
-        activeTab = type;
-        if (type === 'add') {
-            document.getElementById("historyAddContainer").classList.remove("hidden");
-            document.getElementById("historyReduceContainer").classList.add("hidden");
-            document.getElementById("btnTabAdd").classList.add("active");
-            document.getElementById("btnTabReduce").classList.remove("active");
-        } else {
-            document.getElementById("historyAddContainer").classList.add("hidden");
-            document.getElementById("historyReduceContainer").classList.remove("hidden");
-            document.getElementById("btnTabAdd").classList.remove("active");
-            document.getElementById("btnTabReduce").classList.add("active");
-        }
-        renderHistories();
-    }
-
-    function switchHistTab(type) {
-        activeHistTab = type;
-        switchTab(type);
     }
 
     function handleLogin() {
@@ -675,232 +465,185 @@
     }
 
     function setupUIForUser() {
-        let roleText = currentUserRole === 'admin' ? 'แอดมิน (Admin)' : 'ช่างติดตั้ง (Technician)';
         document.getElementById("userWelcome").innerText = `ผู้ใช้งาน: ${currentUserName}`;
-        document.getElementById("userRoleBadge").innerText = `สถานะ: ${roleText}`;
+        document.getElementById("userRoleBadge").innerText = `สถานะ: ${currentUserRole === 'admin' ? 'แอดมิน (Admin)' : 'ช่างติดตั้ง (Technician)'}`;
         
         document.getElementById("authContainer").classList.add("hidden");
         document.getElementById("appSection").classList.remove("hidden");
 
-        if (currentUserRole === 'admin') {
-            document.querySelectorAll('.admin-only').forEach(el => el.classList.remove('hidden'));
-            document.getElementById("adminProductSection").classList.remove("hidden");
-            document.getElementById("addStockBox").classList.remove("hidden");
-            document.getElementById("adminToolSection").classList.remove("hidden");
-        } else {
-            document.querySelectorAll('.admin-only').forEach(el => el.classList.add('hidden'));
-            document.getElementById("adminProductSection").classList.add("hidden");
-            document.getElementById("addStockBox").classList.add("hidden");
-            document.getElementById("adminToolSection").classList.add("hidden");
-        }
-
-        loadData();
+        loadHistoryData();
     }
 
     function handleLogout() {
         sessionStorage.removeItem("user");
-        currentUserRole = ""; currentUserName = ""; currentUsernameId = "";
         document.getElementById("authContainer").classList.remove("hidden");
         document.getElementById("appSection").classList.add("hidden");
-        document.getElementById("username").value = "";
-        document.getElementById("password").value = "";
-        document.getElementById("passwordSection").classList.add("hidden");
         toggleAuth('login');
     }
 
-    function openPasswordModal() {
-        document.getElementById("passwordSection").classList.toggle("hidden");
+    // 🔄 โหลดรายการ Checklist แยกตามหมวดหมู่
+    function loadJobChecklist() {
+        let jobType = document.getElementById("jobTypeSelect").value;
+        let categoriesContainer = document.getElementById("checklistCategories");
+        let section = document.getElementById("checklistSection");
+
+        if (!jobType || !JOB_TEMPLATES[jobType]) {
+            section.classList.add("hidden");
+            return;
+        }
+
+        let template = JOB_TEMPLATES[jobType];
+        let html = "";
+        let globalIndex = 0;
+
+        for (let categoryName in template) {
+            let items = template[categoryName];
+            
+            html += `
+                <div class="category-block">
+                    <div class="category-header">
+                        <h5>${categoryName}</h5>
+                        <button class="btn-select-all" onclick="selectAllInCategory('${categoryName}')">เลือกทั้งหมด</button>
+                    </div>
+                    <div class="checklist-container" data-category="${categoryName}">
+            `;
+
+            items.forEach((item) => {
+                html += `
+                    <div class="checklist-item" id="item_box_${globalIndex}">
+                        <label>
+                            <input type="checkbox" value="${item}" class="item-chk" onchange="toggleItemCheck(${globalIndex})">
+                            <span>${item}</span>
+                        </label>
+                        <span id="badge_status_${globalIndex}" style="font-size:12px; color:var(--danger); font-weight:600;">⚠️ ยังไม่เช็ค</span>
+                    </div>
+                `;
+                globalIndex++;
+            });
+
+            html += `</div></div>`;
+        }
+
+        categoriesContainer.innerHTML = html;
+        section.classList.remove("hidden");
     }
 
-    function cancelPasswordChange() {
-        document.getElementById("passwordSection").classList.add("hidden");
-        document.getElementById("oldPass").value = "";
-        document.getElementById("newPass").value = "";
+    function toggleItemCheck(index) {
+        let box = document.getElementById(`item_box_${index}`);
+        let badge = document.getElementById(`badge_status_${index}`);
+        let checkbox = box.querySelector('input[type="checkbox"]');
+
+        if (checkbox.checked) {
+            box.classList.add("checked");
+            badge.innerText = "✅ เช็คแล้ว";
+            badge.style.color = "var(--success)";
+        } else {
+            box.classList.remove("checked");
+            badge.innerText = "⚠️ ยังไม่เช็ค";
+            badge.style.color = "var(--danger)";
+        }
     }
 
-    function changePassword() {
-        let oldP = document.getElementById("oldPass").value.trim();
-        let newP = document.getElementById("newPass").value.trim();
-        if (!oldP || !newP) { alert("กรุณากรอกรหัสผ่านเดิมและรหัสผ่านใหม่ให้ครบถ้วน"); return; }
+    // 🔘 ฟังก์ชันกดเลือกทั้งหมดในหมวดหมู่นั้นๆ
+    function selectAllInCategory(categoryName) {
+        let container = document.querySelector(`[data-category="${categoryName}"]`);
+        if (!container) return;
+
+        let checkboxes = container.querySelectorAll('.item-chk');
+        let allChecked = Array.from(checkboxes).every(cb => cb.checked);
+
+        checkboxes.forEach(cb => {
+            cb.checked = !allChecked;
+            let index = cb.getAttribute('onchange').match(/\d+/)[0];
+            toggleItemCheck(index);
+        });
+    }
+
+    // 📤 บันทึกการตรวจเช็คออกหน้างาน
+    function submitDispatchCheck() {
+        let siteId = document.getElementById("siteIdInput").value.trim();
+        let jobType = document.getElementById("jobTypeSelect").value;
+        let note = document.getElementById("dispatchNote").value.trim();
+
+        if (!siteId) { alert("กรุณากรอกรหัสงาน / ไซท์งาน"); return; }
+        if (!jobType) { alert("กรุณาเลือกประเภทงาน"); return; }
+
+        let missingItems = [];
+        let checkboxes = document.querySelectorAll('.item-chk');
+        
+        checkboxes.forEach((cb) => {
+            if (!cb.checked) {
+                missingItems.push(cb.value);
+            }
+        });
+
+        let isComplete = missingItems.length === 0;
+
+        if (!isComplete) {
+            let confirmProceed = confirm(`⚠️ คำเตือน: คุณยังไม่ได้จัดเตรียมอุปกรณ์ ${missingItems.length} รายการ:\n- ${missingItems.join('\n- ')}\n\nคุณยังคงต้องการบันทึกและออกเดินทางใช่หรือไม่?`);
+            if (!confirmProceed) return;
+        }
 
         fetch(WEB_APP_URL, {
             method: "POST",
             headers: { "Content-Type": "text/plain;charset=utf-8" },
-            body: JSON.stringify({ action: "changePassword", username: currentUsernameId, oldPass: oldP, newPass: newP })
+            body: JSON.stringify({
+                action: "saveChecklist",
+                siteId: siteId,
+                jobType: jobType,
+                userName: currentUserName,
+                status: isComplete ? "อุปกรณ์ครบถ้วน" : "อุปกรณ์ไม่ครบ",
+                missingItems: missingItems.length > 0 ? missingItems.join(", ") : "-",
+                note: note
+            })
         })
         .then(res => res.json())
         .then(result => {
-            alert(result.message);
-            if (result.status === "success") { cancelPasswordChange(); }
+            if (result.status === "success") {
+                alert("✅ บันทึกข้อมูลและอัปเดตลง Google Sheet เรียบร้อยแล้ว!");
+                document.getElementById("siteIdInput").value = "";
+                document.getElementById("jobTypeSelect").value = "";
+                document.getElementById("dispatchNote").value = "";
+                document.getElementById("checklistSection").classList.add("hidden");
+                loadHistoryData();
+            } else {
+                alert(result.message);
+            }
         });
     }
 
-    function loadData() {
+    // 📥 ดึงประวัติจาก Google Apps Script
+    function loadHistoryData() {
         fetch(WEB_APP_URL)
         .then(res => res.json())
         .then(data => {
-            globalStockData = data.stock || [];
-            globalAddHistory = data.historyAdd || [];
-            globalReduceHistory = data.historyReduce || [];
-            globalToolsData = data.tools || [];
-            globalToolsHistory = data.toolsHistory || [];
+            let logs = data.logs || [];
+            let total = logs.length;
+            let completeCount = 0;
+            let incompleteCount = 0;
 
-            renderStockTable(globalStockData);
-            renderHistories();
-            updateAnalyticsDashboard();
-            renderToolsData();
-        });
-    }
+            let html = "";
+            logs.slice().reverse().forEach(log => {
+                if (log.status === "อุปกรณ์ครบถ้วน") completeCount++;
+                else incompleteCount++;
 
-    function updateAnalyticsDashboard() {
-        let totalItems = globalStockData.length;
-        let lowOrOutCount = 0;
+                let badgeClass = log.status === "อุปกรณ์ครบถ้วน" ? "badge-success" : "badge-danger";
 
-        globalStockData.forEach(item => {
-            let stockNum = parseInt(item.stock) || 0;
-            if (stockNum <= 5) lowOrOutCount++;
-        });
-
-        document.getElementById("statTotalItems").innerText = totalItems;
-        document.getElementById("statLowStock").innerText = lowOrOutCount;
-        document.getElementById("statTotalAdd").innerText = globalAddHistory.length;
-        document.getElementById("statTotalReduce").innerText = globalReduceHistory.length;
-    }
-
-    function renderToolsData() {
-        let totalTools = globalToolsData.length;
-        let readyTools = 0;
-        let borrowTools = 0;
-        let brokenTools = 0;
-
-        let toolTableHtml = "";
-        let borrowOpts = "";
-        let returnOpts = "";
-        let brokenOpts = "";
-
-        globalToolsData.forEach(tool => {
-            let rem = (tool.remaining !== undefined) ? tool.remaining : tool.stock;
-            if (tool.status === "พร้อมใช้งาน" || rem > 0) readyTools++;
-            if (tool.borrowed > 0) borrowTools++;
-
-            let badgeClass = (rem === 0) ? "badge-out" : (tool.borrowed > 0 ? "badge-low" : "badge-normal");
-            let badgeText = tool.status;
-
-            toolTableHtml += `<tr>
-                <td><b>${tool.id}</b></td>
-                <td>${tool.name}</td>
-                <td>${tool.stock}</td>
-                <td><b>${rem}</b></td>
-                <td><span class="badge-stock ${badgeClass}">${badgeText}</span></td>
-            </tr>`;
-
-            if (rem > 0) {
-                borrowOpts += `<option value="${tool.id}">${tool.id} - ${tool.name} (เหลือ ${rem} เครื่อง)</option>`;
-            }
-            if (tool.borrowed > 0) {
-                returnOpts += `<option value="${tool.id}">${tool.id} - ${tool.name} (กำลังยืม ${tool.borrowed} เครื่อง)</option>`;
-            }
-            brokenOpts += `<option value="${tool.id}">${tool.id} - ${tool.name}</option>`;
-        });
-
-        document.getElementById("toolStatTotal").innerText = totalTools;
-        document.getElementById("toolStatReady").innerText = readyTools;
-        document.getElementById("toolStatBorrow").innerText = borrowTools;
-        document.getElementById("toolStatBroken").innerText = brokenTools;
-
-        document.getElementById("toolStockTable").innerHTML = toolTableHtml || `<tr><td colspan="5">ไม่พบข้อมูลเครื่องมือช่าง</td></tr>`;
-        
-        document.getElementById("borrowToolSelect").innerHTML = borrowOpts || `<option value="">ไม่มีเครื่องมือที่พร้อมยืม</option>`;
-        document.getElementById("returnToolSelect").innerHTML = returnOpts || `<option value="">ไม่มีเครื่องมือที่กำลังถูกยืม</option>`;
-        document.getElementById("brokenToolSelect").innerHTML = brokenOpts || `<option value="">ไม่พบเครื่องมือ</option>`;
-
-        let histHtml = "";
-        if (globalToolsHistory.length > 0) {
-            globalToolsHistory.slice().reverse().forEach(h => {
-                histHtml += `<tr>
-                    <td>${new Date(h.time).toLocaleString()}</td>
-                    <td>${h.user}</td>
-                    <td><b>${h.id}</b></td>
-                    <td>${h.name}</td>
-                    <td style="font-weight:bold; color:${h.action.includes('ยืม') ? 'var(--primary)' : (h.action.includes('แจ้งซ่อม') ? 'var(--danger)' : 'var(--success)')}">${h.action}</td>
-                    <td>${h.note || '-'}</td>
+                html += `<tr>
+                    <td>${new Date(log.time).toLocaleString()}</td>
+                    <td>${log.user}</td>
+                    <td><b>${log.siteId}</b></td>
+                    <td>${log.jobType}</td>
+                    <td><span class="badge ${badgeClass}">${log.status}</span></td>
+                    <td>${log.missing || log.note || '-'}</td>
                 </tr>`;
             });
-        } else {
-            histHtml = `<tr><td colspan="6">ไม่มีประวัติ</td></tr>`;
-        }
-        document.getElementById("toolsHistoryTable").innerHTML = histHtml;
-    }
 
-    function renderStockTable(stocks) {
-        let stockHtml = "";
-        let hasOutOfStock = false;
-
-        if (stocks.length > 0) {
-            stocks.forEach(item => {
-                let stockNum = parseInt(item.stock) || 0;
-                let unitText = item.unit ? ` ${item.unit}` : ' ชิ้น';
-                let badgeClass = "badge-normal";
-                let badgeText = `${stockNum}${unitText}`;
-                
-                if (stockNum <= 0) {
-                    badgeClass = "badge-out"; badgeText = `หมด (0${unitText})`; hasOutOfStock = true;
-                } else if (stockNum <= 5) {
-                    badgeClass = "badge-low"; badgeText = `${stockNum}${unitText} (ใกล้หมด)`;
-                }
-
-                stockHtml += `<tr>
-                    <td><b>${item.id}</b></td>
-                    <td>${item.name}</td>
-                    <td><span class="badge-stock ${badgeClass}">${badgeText}</span></td>
-                    ${currentUserRole === 'admin' ? `<td><button class="btn-action" onclick="deleteProduct('${item.id}')" style="background:var(--danger); margin:0; padding:6px 12px; width:auto; font-size:12px;">ลบ</button></td>` : ''}
-                </tr>`;
-            });
-        } else {
-            stockHtml = `<tr><td colspan="${currentUserRole === 'admin' ? 4 : 3}">ไม่พบอุปกรณ์สายอากาศ</td></tr>`;
-        }
-
-        document.getElementById("stockTable").innerHTML = stockHtml;
-        document.getElementById("outOfStockAlert").style.display = hasOutOfStock ? "block" : "none";
-    }
-
-    function updateUnitLabel(action) {
-        let inputId = document.getElementById(action === 'add' ? 'addId' : 'reduceId').value.trim().toUpperCase();
-        let labelId = action === 'add' ? 'addUnitLabel' : 'reduceUnitLabel';
-        
-        let foundItem = globalStockData.find(item => item.id.toUpperCase() === inputId);
-        
-        if (foundItem && foundItem.unit) {
-            document.getElementById(labelId).innerText = foundItem.unit;
-        } else {
-            document.getElementById(labelId).innerText = "ชิ้น";
-        }
-    }
-
-    function filterStock() {
-        let keyword = document.getElementById("searchBox").value.toLowerCase();
-        let filtered = globalStockData.filter(item => 
-            item.id.toLowerCase().includes(keyword) || item.name.toLowerCase().includes(keyword)
-        );
-        renderStockTable(filtered);
-    }
-
-    function renderHistories() {
-        let keyword = document.getElementById("historySearchBox").value.toLowerCase();
-
-        let filteredAdd = globalAddHistory.filter(h => 
-            h.id.toLowerCase().includes(keyword) || h.name.toLowerCase().includes(keyword) || h.user.toLowerCase().includes(keyword)
-        );
-        document.getElementById("historyAddTable").innerHTML = filteredAdd.length > 0 ? filteredAdd.map(h => 
-            `<tr><td>${new Date(h.time).toLocaleString()}</td><td>${h.user}</td><td>${h.id}</td><td>${h.name}</td><td style="color:var(--success);font-weight:bold;">+${h.qty}</td></tr>`
-        ).join('') : `<tr><td colspan="5">ไม่พบประวัติที่ค้นหา</td></tr>`;
-
-        let filteredReduce = globalReduceHistory.filter(h => 
-            h.id.toLowerCase().includes(keyword) || h.name.toLowerCase().includes(keyword) || h.user.toLowerCase().includes(keyword)
-        );
-        document.getElementById("historyReduceTable").innerHTML = filteredReduce.length > 0 ? filteredReduce.map(h => 
-            `<tr><td>${new Date(h.time).toLocaleString()}</td><td>${h.user}</td><td>${h.id}</td><td>${h.name}</td><td style="color:var(--danger);font-weight:bold;">-${h.qty}</td></tr>`
-        ).join('') : `<tr><td colspan="5">ไม่พบประวัติที่ค้นหา</td></tr>`;
+            document.getElementById("statTotalChecks").innerText = total;
+            document.getElementById("statCompleteChecks").innerText = completeCount;
+            document.getElementById("statIncompleteChecks").innerText = incompleteCount;
+            document.getElementById("historyTableBody").innerHTML = html || `<tr><td colspan="6">ยังไม่มีประวัติการตรวจเช็ค</td></tr>`;
+        });
     }
 
     function registerMember() {
@@ -920,157 +663,6 @@
             alert(result.message);
             if (result.status === "success") { toggleAuth('login'); }
         });
-    }
-
-    function addNewProduct() {
-        let id = document.getElementById("newProdId").value.trim();
-        let name = document.getElementById("newProdName").value.trim();
-        let stock = document.getElementById("newProdStock").value;
-        let unit = document.getElementById("newProdUnit").value;
-        if (!id || !name) { alert("กรุณากรอกรหัสและชื่ออุปกรณ์"); return; }
-
-        fetch(WEB_APP_URL, {
-            method: "POST",
-            headers: { "Content-Type": "text/plain;charset=utf-8" },
-            body: JSON.stringify({ action: "addProduct", id: id, name: name, stock: stock, unit: unit })
-        })
-        .then(res => res.json())
-        .then(result => {
-            if (result.status === "success") {
-                alert("เพิ่มอุปกรณ์สำเร็จ!");
-                document.getElementById("newProdId").value = "";
-                document.getElementById("newProdName").value = "";
-                document.getElementById("newProdStock").value = "0";
-                loadData();
-            } else { alert(result.message); }
-        });
-    }
-
-    function addNewTool() {
-        let id = document.getElementById("newToolId").value.trim();
-        let name = document.getElementById("newToolName").value.trim();
-        let stock = document.getElementById("newToolStock").value;
-        if (!id || !name) { alert("กรุณากรอกรหัสและชื่อเครื่องมือ"); return; }
-
-        fetch(WEB_APP_URL, {
-            method: "POST",
-            headers: { "Content-Type": "text/plain;charset=utf-8" },
-            body: JSON.stringify({ action: "addTool", id: id, name: name, stock: stock })
-        })
-        .then(res => res.json())
-        .then(result => {
-            if (result.status === "success") {
-                alert(result.message || "บันทึกเครื่องมือสำเร็จ!");
-                document.getElementById("newToolId").value = "";
-                document.getElementById("newToolName").value = "";
-                document.getElementById("newToolStock").value = "1";
-                loadData();
-            } else { alert(result.message); }
-        });
-    }
-
-    function deleteProduct(id) {
-        if(confirm("ต้องการลบอุปกรณ์นี้ออกจากระบบใช่หรือไม่?")) {
-            fetch(WEB_APP_URL, { 
-                method: "POST", 
-                headers: { "Content-Type": "text/plain;charset=utf-8" },
-                body: JSON.stringify({ action: "deleteProduct", id: id }) 
-            })
-            .then(() => loadData());
-        }
-    }
-
-    function updateStock(action) {
-        let id = document.getElementById(action === "add" ? "addId" : "reduceId").value.trim();
-        if (!id) { alert("กรุณากรอกรหัสอุปกรณ์"); return; }
-
-        let qty = document.getElementById(action === "add" ? "addQty" : "reduceQty").value;
-        if (!qty) { alert("กรุณากรอกจำนวน"); return; }
-
-        fetch(WEB_APP_URL, {
-            method: "POST",
-            headers: { "Content-Type": "text/plain;charset=utf-8" },
-            body: JSON.stringify({ action: action, id: id, qty: qty, userName: currentUserName })
-        })
-        .then(res => res.json())
-        .then(result => {
-            if (result.status === "success") {
-                alert("บันทึกสำเร็จ! คงเหลือ: " + result.newStock);
-                
-                document.getElementById(action === "add" ? "addId" : "reduceId").value = "";
-                document.getElementById(action === "add" ? "addUnitLabel" : "reduceUnitLabel").innerText = "ชิ้น";
-                document.getElementById(action === "add" ? "addQty" : "reduceQty").value = "1";
-                
-                loadData();
-            } else { alert("เกิดข้อผิดพลาด: " + result.message); }
-        });
-    }
-
-    function submitToolAction(actionType) {
-        let toolId = document.getElementById(actionType === 'ยืมเครื่องมือ' ? "borrowToolSelect" : "returnToolSelect").value;
-        let qty = document.getElementById(actionType === 'ยืมเครื่องมือ' ? "borrowQtyInput" : "returnQtyInput").value;
-        let note = document.getElementById(actionType === 'ยืมเครื่องมือ' ? "borrowNote" : "returnNote").value.trim();
-        if (!toolId) { alert("กรุณาเลือกเครื่องมือ"); return; }
-
-        let selectedTool = globalToolsData.find(t => t.id === toolId);
-        let toolName = selectedTool ? selectedTool.name : toolId;
-
-        fetch(WEB_APP_URL, {
-            method: "POST",
-            headers: { "Content-Type": "text/plain;charset=utf-8" },
-            body: JSON.stringify({ action: "toolAction", userName: currentUserName, toolId: toolId, toolName: toolName, actionType: actionType, qty: qty, note: note })
-        })
-        .then(res => res.json())
-        .then(result => {
-            if (result.status === "success") {
-                alert(`บันทึกรายการ "${actionType}" สำเร็จ!`);
-                document.getElementById("borrowNote").value = "";
-                document.getElementById("returnNote").value = "";
-                loadData();
-            } else { alert(result.message || "เกิดข้อผิดพลาด"); }
-        }).catch(() => {
-            alert("เกิดข้อผิดพลาดในการเชื่อมต่อ");
-        });
-    }
-
-    function submitToolBroken() {
-        let toolId = document.getElementById("brokenToolSelect").value;
-        let desc = document.getElementById("brokenDesc").value.trim();
-        if (!desc) { alert("กรุณาระบุรายละเอียดอาการชำรุด"); return; }
-
-        let selectedTool = globalToolsData.find(t => t.id === toolId);
-        let toolName = selectedTool ? selectedTool.name : toolId;
-
-        fetch(WEB_APP_URL, {
-            method: "POST",
-            headers: { "Content-Type": "text/plain;charset=utf-8" },
-            body: JSON.stringify({ action: "toolAction", userName: currentUserName, toolId: toolId, toolName: toolName, actionType: "แจ้งซ่อม/ชำรุด", qty: 1, note: desc })
-        })
-        .then(res => res.json())
-        .then(result => {
-            if (result.status === "success") {
-                alert(`ส่งแจ้งซ่อมสำเร็จ: อาการ ${desc}`);
-                document.getElementById("brokenDesc").value = "";
-                loadData();
-            } else { alert("เกิดข้อผิดพลาด"); }
-        }).catch(() => {
-            alert("เกิดข้อผิดพลาดในการเชื่อมต่อ");
-        });
-    }
-
-    function exportCSV() {
-        let dataToExport = activeTab === 'add' ? globalAddHistory : globalReduceHistory;
-        if (dataToExport.length === 0) { alert("ไม่มีข้อมูลประวัติสำหรับดาวน์โหลด"); return; }
-        let csvContent = "\uFEFF" + "DateTime,User,ProductID,ProductName,Quantity\r\n";
-        dataToExport.forEach(row => {
-            csvContent += `"${new Date(row.time).toLocaleString()}","${row.user}","${row.id}","${row.name}",${row.qty}\r\n`;
-        });
-        let blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        let url = URL.createObjectURL(blob);
-        let a = document.createElement('a');
-        a.href = url;
-        a.download = `${activeTab === 'add' ? 'History_Add' : 'History_Reduce'}_Report.csv`;
-        document.body.appendChild(a); a.click(); document.body.removeChild(a);
     }
 </script>
 
