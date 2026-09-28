@@ -609,9 +609,12 @@
                     </div>
                 </div>
 
-                <!-- ดึงอุปกรณ์ทั่วไป (ไขควง ประแจ ฯลฯ) - จำกัดสิทธิ์ Admin สำหรับการเพิ่ม -->
+                <!-- ดึงอุปกรณ์ทั่วไป (ไขควง ประแจ ฯลฯ) - ดึงข้อมูลจาก Sheet และ Admin สามารถเพิ่มได้ -->
                 <div style="background: #f8fafc; padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 15px;">
-                    <h4 style="margin-top: 0; font-size: 14px; color: #334155;">🔧 ดึงอุปกรณ์ทั่วไป (ไขควง ประแจ ฯลฯ)</h4>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <h4 style="margin: 0; font-size: 14px; color: #334155;">🔧 ดึงอุปกรณ์ทั่วไป (ไขควง ประแจ ฯลฯ)</h4>
+                        <button id="adminAddGeneralBtn" class="admin-only hidden" onclick="openAddGeneralModal()" style="width: auto; background: var(--warning); padding: 4px 10px; font-size: 12px; margin: 0;">+ เพิ่มอุปกรณ์ทั่วไปใหม่</button>
+                    </div>
                     <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                         <div class="input-group" style="flex: 2; margin-bottom: 0;">
                             <label>เลือกอุปกรณ์ทั่วไป:</label>
@@ -675,7 +678,7 @@
 </div>
 
 <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwtMvdfYXioXS5H7WqPWVpn8O6XvLGuXKmoEFp8JpJIWtLGy3eUU9TlJUk__Cqhy9_jqQ/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxYHmsLK8GXaxvEbzaV310b_3X0-UCFcY7CoHLiE4lRHNz15dcTz-R6-NjafIATcYlKsw/exec";
     let currentUserRole = "";
     let currentUserName = "";
     let currentUsernameId = "";
@@ -685,18 +688,8 @@
     let globalToolsData = [];
     let globalToolsHistory = [];
     
-    // รายการอุปกรณ์ทั่วไปเริ่มต้น (ไขควง, ประแจ, ประแจเลื่อน ฯลฯ)
-    let globalGeneralItems = [
-        { id: "G001", name: "ไขควงแฉก (Phillips Screwdriver)", unit: "อัน" },
-        { id: "G002", name: "ไขควงแบน (Flathead Screwdriver)", unit: "อัน" },
-        { id: "G003", name: "ประแจปากตาย (Combination Wrench Set)", unit: "ชุด" },
-        { id: "G004", name: "ประแจเลื่อน (Adjustable Wrench 8นิ้ว/10นิ้ว)", unit: "ตัว" },
-        { id: "G005", name: "คีมตัดปากเฉียง (Diagonal Pliers)", unit: "ตัว" },
-        { id: "G006", name: "คีมล็อค (Locking Pliers)", unit: "ตัว" },
-        { id: "G007", name: "ค้อนช่างทอง (Ball-peen Hammer)", unit: "เต้า" },
-        { id: "G008", name: "เทปพันสายไฟ (Electrical Tape)", unit: "ม้วน" },
-        { id: "G009", name: "เคเบิ้ลไทร์ (Cable Ties)", unit: "ถุง" }
-    ];
+    // โหลดอุปกรณ์ทั่วไปจาก Google Sheet (data.general) แทน Hardcode
+    let globalGeneralItems = [];
 
     let activeTab = 'add';
     let activeHistTab = 'add';
@@ -873,6 +866,7 @@
             globalReduceHistory = data.historyReduce || [];
             globalToolsData = data.tools || [];
             globalToolsHistory = data.toolsHistory || [];
+            globalGeneralItems = data.general || []; // 📥 ดึงข้อมูลอุปกรณ์ทั่วไปจาก Google Sheet
 
             renderStockTable(globalStockData);
             renderHistories();
@@ -1064,9 +1058,43 @@
     function renderJobGeneralSelect() {
         let selectEl = document.getElementById("jobSelectGeneral");
         if (!selectEl) return;
-        selectEl.innerHTML = globalGeneralItems.map(item => 
-            `<option value="${item.id}">${item.id} - ${item.name} (${item.unit})</option>`
-        ).join('');
+        if (globalGeneralItems.length > 0) {
+            selectEl.innerHTML = globalGeneralItems.map(item => 
+                `<option value="${item.id}">${item.id} - ${item.name} (${item.unit})</option>`
+            ).join('');
+        } else {
+            selectEl.innerHTML = `<option value="">ไม่พบข้อมูลอุปกรณ์ทั่วไปใน Google Sheet</option>`;
+        }
+    }
+
+    // ฟังก์ชันให้แอดมินเพิ่มอุปกรณ์ทั่วไปผ่านหน้าเว็บ
+    function openAddGeneralModal() {
+        if (currentUserRole !== 'admin') {
+            alert("❌ เฉพาะแอดมินเท่านั้นที่สามารถเพิ่มอุปกรณ์ทั่วไปได้");
+            return;
+        }
+        let id = prompt("กรอกรหัสอุปกรณ์ทั่วไป (เช่น G010):");
+        if (!id) return;
+        let name = prompt("กรอกชื่ออุปกรณ์ทั่วไป:");
+        if (!name) return;
+        let unit = prompt("กรอกหน่วย (เช่น อัน, ตัว, ชุด, ชิ้น):", "อัน");
+        if (!unit) return;
+
+        fetch(WEB_APP_URL, {
+            method: "POST",
+            body: JSON.stringify({ action: "addGeneralItem", id: id, name: name, unit: unit })
+        })
+        .then(res => res.json())
+        .then(result => {
+            if (result.status === "success") {
+                alert("เพิ่มอุปกรณ์ทั่วไปสำเร็จ!");
+                loadData();
+            } else {
+                alert("เกิดข้อผิดพลาด: " + (result.message || "ไม่สามารถบันทึกได้"));
+            }
+        }).catch(() => {
+            alert("เกิดข้อผิดพลาดในการเชื่อมต่อเครือข่าย");
+        });
     }
 
     function addJobItemToList() {
@@ -1126,12 +1154,6 @@
     }
 
     function addJobGeneralToList() {
-        // จำกัดสิทธิ์เฉพาะแอดมิน (Admin) ในการเพิ่มอุปกรณ์ทั่วไป
-        if (currentUserRole !== 'admin') {
-            alert("❌ ขออภัย! อภิสิทธิ์การเพิ่มหรือลดอุปกรณ์ทั่วไปเป็นของแอดมินเท่านั้น");
-            return;
-        }
-
         let genId = document.getElementById("jobSelectGeneral").value;
         let qty = parseInt(document.getElementById("jobGeneralQty").value) || 1;
         
@@ -1179,13 +1201,6 @@
     }
 
     function removeJobItem(index) {
-        let item = currentJobItems[index];
-        // ตรวจสอบสิทธิ์หากเป็นอุปกรณ์ทั่วไป (General) อนุญาตให้เฉพาะแอดมินลบออกได้
-        if (item && item.type === 'general' && currentUserRole !== 'admin') {
-            alert("❌ ขออภัย! อภิสิทธิ์การเพิ่มหรือลดอุปกรณ์ทั่วไปเป็นของแอดมินเท่านั้น");
-            return;
-        }
-
         currentJobItems.splice(index, 1);
         renderJobItemsTable();
     }
