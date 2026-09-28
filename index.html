@@ -85,10 +85,12 @@
             background: #f1f5f9;
             padding: 6px;
             border-radius: 12px;
+            flex-wrap: wrap;
         }
 
         .main-nav-btn {
             flex: 1;
+            min-width: 180px;
             padding: 12px;
             text-align: center;
             background: transparent;
@@ -249,7 +251,6 @@
         .tab-btn { background: #e2e8f0; color: #475569; display: inline-block; width: auto; padding: 8px 18px; margin-right: 6px; border-radius: 8px; box-shadow: none; font-weight: 500; }
         .tab-btn.active { background: #0f172a; color: white; }
 
-        /* CSS สำหรับจัดช่อง Input ให้มีหน่วยแปะติดอยู่ด้านขวา */
         .input-with-unit {
             position: relative;
             display: flex;
@@ -257,7 +258,7 @@
         }
         .input-with-unit input {
             margin-bottom: 0 !important;
-            padding-right: 65px; /* เว้นพื้นที่ด้านขวาให้ข้อความหน่วย */
+            padding-right: 65px;
         }
         .unit-badge-right {
             position: absolute;
@@ -329,10 +330,11 @@
             </div>
         </div>
 
-        <!-- เมนูหลักสลับระหว่าง "เบิกอุปกรณ์" และ "เบิกเครื่องมือช่าง" -->
+        <!-- เมนูหลักสลับระหว่าง "เบิกอุปกรณ์", "เบิกเครื่องมือช่าง" และ "จัดเตรียมอุปกรณ์หน้างาน" -->
         <div class="main-nav-tabs">
             <button class="main-nav-btn active" id="navEquipTab" onclick="switchMainTab('equipment')">📦 ระบบเบิกอุปกรณ์สายอากาศ</button>
             <button class="main-nav-btn" id="navToolTab" onclick="switchMainTab('tools')">🛠️ ระบบเบิก/ยืมเครื่องมือช่าง</button>
+            <button class="main-nav-btn" id="navJobTab" onclick="switchMainTab('jobChecklist')">📋 จัดเตรียมอุปกรณ์หน้างาน</button>
         </div>
 
         <!-- ================= หมวดที่ 1: เบิกอุปกรณ์ (Equipment Stock) ================= -->
@@ -508,73 +510,109 @@
                 <button style="background:var(--warning); margin-top: 5px;" onclick="addNewTool()">บันทึก / เพิ่มจำนวนเครื่องมือ</button>
             </div>
 
-            <!-- ฟอร์มแยกช่อง "ยืมเครื่องมือ" และ "คืนเครื่องมือ" ออกจากกัน -->
             <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                <!-- ฟอร์มยืมเครื่องมือ -->
                 <div class="section-box" style="flex:1; min-width: 280px; border-left: 5px solid var(--primary);">
                     <h3 style="color: var(--primary);">📤 ยืมเครื่องมือช่าง</h3>
                     <div class="input-group"><label>เลือกเครื่องมือ (พร้อมใช้งาน):</label>
-                        <select id="borrowToolSelect">
-                            <option value="">กำลังโหลด...</option>
-                        </select>
+                        <select id="borrowToolSelect"><option value="">กำลังโหลด...</option></select>
                     </div>
                     <div class="input-group"><label>จำนวนที่ต้องการยืม:</label><input type="number" id="borrowQtyInput" value="1" min="1"></div>
-                    <div class="input-group"><label>หมายเหตุ / หน้างาน:</label><input type="text" id="borrowNote" placeholder="ระบุรายละเอียด"></div>
+                    <div class="input-group"><label>หมายเหตุ / หน้างาน:</label><input type="text" id="borrowNote" placeholder="ระบุสถานที่ใช้งานหรือโครงการ"></div>
                     <button class="btn-member" onclick="submitToolAction('ยืมเครื่องมือ')" style="margin-top: 5px;">ยืนยันการยืม</button>
                 </div>
 
-                <!-- ฟอร์มคืนเครื่องมือ -->
                 <div class="section-box" style="flex:1; min-width: 280px; border-left: 5px solid var(--success);">
                     <h3 style="color: var(--success);">📥 คืนเครื่องมือช่าง</h3>
                     <div class="input-group"><label>เลือกเครื่องมือ (กำลังยืม):</label>
-                        <select id="returnToolSelect">
-                            <option value="">กำลังโหลด...</option>
-                        </select>
+                        <select id="returnToolSelect"><option value="">กำลังโหลด...</option></select>
                     </div>
                     <div class="input-group"><label>จำนวนที่ต้องการคืน:</label><input type="number" id="returnQtyInput" value="1" min="1"></div>
-                    <div class="input-group"><label>หมายเหตุ :</label><input type="text" id="returnNote" placeholder="ระบุรายละเอียด"></div>
+                    <div class="input-group"><label>หมายเหตุ :</label><input type="text" id="returnNote" placeholder=""></div>
                     <button class="btn-add" onclick="submitToolAction('คืนเครื่องมือ')" style="margin-top: 5px;">ยืนยันการคืน</button>
                 </div>
             </div>
 
-            <!-- ฟอร์มแจ้งซ่อมแยกต่างหาก -->
             <div class="section-box" style="border-left: 5px solid var(--danger);">
                 <h3 style="color: var(--danger);">⚠️ แจ้งปัญหาเครื่องมือชำรุด / ส่งซ่อม</h3>
                 <div style="display: flex; gap: 15px; flex-wrap: wrap;">
                     <div class="input-group" style="flex:1; margin-bottom:0;"><label>เลือกเครื่องมือที่มีปัญหา:</label>
-                        <select id="brokenToolSelect">
-                            <option value="">กำลังโหลด...</option>
-                        </select>
+                        <select id="brokenToolSelect"><option value="">กำลังโหลด...</option></select>
                     </div>
                     <div class="input-group" style="flex:1; margin-bottom:0;"><label>รายละเอียดอาการชำรุด:</label><input type="text" id="brokenDesc" placeholder="ระบุอาการเสีย / ความเสียหาย"></div>
                 </div>
                 <button class="btn-reduce" onclick="submitToolBroken()" style="margin-top: 12px; background: var(--danger);">ส่งแจ้งซ่อม / ชำรุด</button>
             </div>
 
-            <!-- ตารางรายการเครื่องมือช่างทั้งหมด -->
             <div class="section-box">
                 <h3 style="margin-top: 0;">📋 รายการเครื่องมือช่างและสถานะปัจจุบัน</h3>
                 <table>
                     <thead>
                         <tr><th>รหัสเครื่องมือ</th><th>ชื่อเครื่องมือ</th><th>ทั้งหมด</th><th>คงเหลือ</th><th>สถานะ</th></tr>
                     </thead>
-                    <tbody id="toolStockTable">
-                        <tr><td colspan="5">กำลังโหลดข้อมูล...</td></tr>
-                    </tbody>
+                    <tbody id="toolStockTable"><tr><td colspan="5">กำลังโหลดข้อมูล...</td></tr></tbody>
                 </table>
             </div>
 
-            <!-- ตารางประวัติเครื่องมือช่าง (ToolsHistory) -->
             <div class="section-box">
                 <h3 style="margin-top: 0;">📜 ประวัติการยืม-คืน / แจ้งซ่อมเครื่องมือช่าง</h3>
                 <table>
                     <thead>
                         <tr><th>วัน-เวลา</th><th>ผู้ทำรายการ</th><th>รหัส</th><th>ชื่อเครื่องมือ</th><th>รายการ</th><th>หมายเหตุ</th></tr>
                     </thead>
-                    <tbody id="toolsHistoryTable">
-                        <tr><td colspan="6">ไม่มีประวัติ</td></tr>
+                    <tbody id="toolsHistoryTable"><tr><td colspan="6">ไม่มีประวัติ</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ================= หมวดที่ 3: จัดเตรียมอุปกรณ์หน้างาน (Job Pre-check) ================= -->
+        <div id="jobChecklistSectionContent" class="hidden">
+            <div class="section-box" style="border-left: 5px solid var(--primary);">
+                <h3 style="color: var(--primary);">🎯 สร้างใบรายการตรวจสอบอุปกรณ์หน้างาน (Job Pre-check)</h3>
+                <div class="input-group">
+                    <label>หัวข้องาน / ชื่อโครงการ / หน้างาน:</label>
+                    <input type="text" id="jobTitleInput" placeholder="เช่น ติดตั้งเสาอากาศ Site A, งานซ่อมบำรุงอาคาร B">
+                </div>
+                
+                <div style="background: #f8fafc; padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 15px;">
+                    <h4 style="margin-top: 0; font-size: 14px; color: #334155;">📦 ดึงอุปกรณ์จากคลังมาใส่ใบงาน</h4>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <div class="input-group" style="flex: 2; margin-bottom: 0;">
+                            <label>เลือกอุปกรณ์จากคลัง:</label>
+                            <select id="jobSelectProd"><option value="">กำลังโหลดรายการอุปกรณ์...</option></select>
+                        </div>
+                        <div class="input-group" style="flex: 1; margin-bottom: 0;">
+                            <label>จำนวนที่ต้องใช้:</label>
+                            <input type="number" id="jobItemQty" value="1" min="1">
+                        </div>
+                        <div style="display: flex; align-items: flex-end;">
+                            <button class="btn-add" onclick="addJobItemToList()" style="height: 46px; padding: 0 20px; margin:0;">+ เพิ่ม</button>
+                        </div>
+                    </div>
+                </div>
+
+                <h4 style="font-size: 14px; color: #334155; margin-bottom: 5px;">รายการอุปกรณ์ที่ต้องเตรียมสำหรับงานนี้:</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>รหัส</th>
+                            <th>ชื่ออุปกรณ์</th>
+                            <th>จำนวนที่ต้องใช้</th>
+                            <th>จัดการ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="jobItemsTable">
+                        <tr><td colspan="4">ยังไม่มีอุปกรณ์ในรายการ (เลือกเพิ่มด้านบน)</td></tr>
                     </tbody>
                 </table>
+
+                <button class="btn-member" onclick="saveJobChecklist()" style="margin-top: 20px; padding: 14px;">💾 บันทึกและสร้างใบเช็คลิสต์หน้างาน</button>
+            </div>
+
+            <div class="section-box">
+                <h3 style="margin-top: 0;">📁 รายการใบเตรียมอุปกรณ์หน้างานที่บันทึกไว้</h3>
+                <div id="savedJobsContainer">
+                    <p style="color: #64748b; text-align: center;">ยังไม่มีใบงานที่บันทึกไว้</p>
+                </div>
             </div>
         </div>
 
@@ -583,7 +621,7 @@
 </div>
 
 <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxOqkMRjTaWM1SPnzI_cddpG7MrHiqcCkioON2AVzicl_1jGak9LS8uAJxwdfQmlobIhw/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyKvK3geztnaGOY3B54BJM0-_9hshynsihi7WCc5S3j0LibsBK9Fy2JUj4eI_TtkcFp/exec";
     let currentUserRole = "";
     let currentUserName = "";
     let currentUsernameId = "";
@@ -594,6 +632,7 @@
     let globalToolsHistory = [];
     let activeTab = 'add';
     let activeHistTab = 'add';
+    let currentJobItems = []; // ตัวแปรเก็บรายการชั่วคราวสำหรับจัดเตรียมหน้างาน
 
     window.onload = function() {
         checkSession();
@@ -622,16 +661,25 @@
     }
 
     function switchMainTab(type) {
+        document.getElementById("equipmentSectionContent").classList.add("hidden");
+        document.getElementById("toolsSectionContent").classList.add("hidden");
+        document.getElementById("jobChecklistSectionContent").classList.add("hidden");
+        
+        document.getElementById("navEquipTab").classList.remove("active");
+        document.getElementById("navToolTab").classList.remove("active");
+        document.getElementById("navJobTab").classList.remove("active");
+
         if (type === 'equipment') {
             document.getElementById("equipmentSectionContent").classList.remove("hidden");
-            document.getElementById("toolsSectionContent").classList.add("hidden");
             document.getElementById("navEquipTab").classList.add("active");
-            document.getElementById("navToolTab").classList.remove("active");
-        } else {
-            document.getElementById("equipmentSectionContent").classList.add("hidden");
+        } else if (type === 'tools') {
             document.getElementById("toolsSectionContent").classList.remove("hidden");
-            document.getElementById("navEquipTab").classList.remove("active");
             document.getElementById("navToolTab").classList.add("active");
+        } else if (type === 'jobChecklist') {
+            document.getElementById("jobChecklistSectionContent").classList.remove("hidden");
+            document.getElementById("navJobTab").classList.add("active");
+            renderJobProductSelect();
+            renderSavedJobs();
         }
     }
 
@@ -759,6 +807,7 @@
             renderHistories();
             updateAnalyticsDashboard();
             renderToolsData();
+            renderJobProductSelect();
         });
     }
 
@@ -913,6 +962,150 @@
         ).join('') : `<tr><td colspan="5">ไม่พบประวัติที่ค้นหา</td></tr>`;
     }
 
+    // ================= ฟังก์ชันสำหรับระบบจัดเตรียมอุปกรณ์หน้างาน (Job Checklist) =================
+    function renderJobProductSelect() {
+        let selectEl = document.getElementById("jobSelectProd");
+        if (!selectEl) return;
+        if (globalStockData.length > 0) {
+            selectEl.innerHTML = globalStockData.map(item => 
+                `<option value="${item.id}">${item.id} - ${item.name} (คงเหลือ: ${item.stock} ${item.unit || 'ชิ้น'})</option>`
+            ).join('');
+        } else {
+            selectEl.innerHTML = `<option value="">ไม่พบข้อมูลอุปกรณ์ในคลัง</option>`;
+        }
+    }
+
+    function addJobItemToList() {
+        let prodId = document.getElementById("jobSelectProd").value;
+        let qty = parseInt(document.getElementById("jobItemQty").value) || 1;
+        
+        let found = globalStockData.find(i => i.id === prodId);
+        if (!found) { alert("กรุณาเลือกอุปกรณ์"); return; }
+
+        let stockRemaining = parseInt(found.stock) || 0;
+        if (qty > stockRemaining) {
+            alert(`⚠️ คำเตือน: จำนวนที่ต้องการใช้ (${qty}) มากกว่าสต็อกคงเหลือในคลัง (${stockRemaining})`);
+        }
+
+        let existing = currentJobItems.find(i => i.id === prodId);
+        if (existing) {
+            existing.qty += qty;
+        } else {
+            currentJobItems.push({
+                id: found.id,
+                name: found.name,
+                qty: qty,
+                unit: found.unit || 'ชิ้น',
+                checked: false
+            });
+        }
+        renderJobItemsTable();
+    }
+
+    function renderJobItemsTable() {
+        let tableEl = document.getElementById("jobItemsTable");
+        if (!tableEl) return;
+        if (currentJobItems.length === 0) {
+            tableEl.innerHTML = `<tr><td colspan="4">ยังไม่มีอุปกรณ์ในรายการ</td></tr>`;
+            return;
+        }
+        tableEl.innerHTML = currentJobItems.map((item, index) => `
+            <tr>
+                <td><b>${item.id}</b></td>
+                <td>${item.name}</td>
+                <td>${item.qty} ${item.unit}</td>
+                <td><button onclick="removeJobItem(${index})" style="background:var(--danger); padding:4px 10px; width:auto; margin:0; font-size:12px;">ลบ</button></td>
+            </tr>
+        `).join('');
+    }
+
+    function removeJobItem(index) {
+        currentJobItems.splice(index, 1);
+        renderJobItemsTable();
+    }
+
+    function saveJobChecklist() {
+        let jobTitle = document.getElementById("jobTitleInput").value.trim();
+        if (!jobTitle) { alert("กรุณาระบุหัวข้องาน / ชื่อโครงการ"); return; }
+        if (currentJobItems.length === 0) { alert("กรุณาเพิ่มอุปกรณ์อย่างน้อย 1 รายการ"); return; }
+
+        let savedJobs = JSON.parse(localStorage.getItem("jkp_jobs_project") || "[]");
+        let newJob = {
+            id: "JOB-" + Date.now().toString().slice(-6),
+            title: jobTitle,
+            creator: currentUserName,
+            date: new Date().toLocaleString(),
+            items: [...currentJobItems]
+        };
+
+        savedJobs.push(newJob);
+        localStorage.setItem("jkp_jobs_project", JSON.stringify(savedJobs));
+
+        alert("บันทึกใบเตรียมอุปกรณ์หน้างานสำเร็จ!");
+        document.getElementById("jobTitleInput").value = "";
+        currentJobItems = [];
+        renderJobItemsTable();
+        renderSavedJobs();
+    }
+
+    function renderSavedJobs() {
+        let container = document.getElementById("savedJobsContainer");
+        if (!container) return;
+        let savedJobs = JSON.parse(localStorage.getItem("jkp_jobs_project") || "[]");
+
+        if (savedJobs.length === 0) {
+            container.innerHTML = `<p style="color: #64748b; text-align: center;">ยังไม่มีใบงานที่บันทึกไว้</p>`;
+            return;
+        }
+
+        container.innerHTML = savedJobs.slice().reverse().map((job, jobIdx) => {
+            let originalIdx = savedJobs.length - 1 - jobIdx;
+            let itemsHtml = job.items.map((item, itemIdx) => `
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed #f1f5f9;">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; margin:0;">
+                        <input type="checkbox" ${item.checked ? 'checked' : ''} onchange="toggleJobItemCheck(${originalIdx}, ${itemIdx})" style="width: 18px; height: 18px; margin:0;">
+                        <span style="${item.checked ? 'text-decoration: line-through; color: #94a3b8;' : ''}">${item.id} - ${item.name}</span>
+                    </label>
+                    <span style="font-weight: 600; font-size: 13px; color: ${item.checked ? '#94a3b8' : 'var(--primary)'};">${item.qty} ${item.unit}</span>
+                </div>
+            `).join('');
+
+            return `
+                <div style="background: #f8fafc; border: 1px solid var(--border-color); padding: 15px; border-radius: 12px; margin-bottom: 15px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <div>
+                            <h4 style="margin: 0; font-size: 15px; color: #0f172a;">📌 ${job.title}</h4>
+                            <small style="color: #64748b;">สร้างโดย: ${job.creator || 'ระบบ'} | บันทึกเมื่อ: ${job.date}</small>
+                        </div>
+                        <button onclick="deleteSavedJob(${originalIdx})" style="background: var(--danger); padding: 6px 12px; width: auto; font-size: 12px; margin:0;">ลบใบงาน</button>
+                    </div>
+                    <div style="background: #ffffff; padding: 10px 15px; border-radius: 8px; border: 1px solid var(--border-color);">
+                        ${itemsHtml}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function toggleJobItemCheck(jobIndex, itemIndex) {
+        let savedJobs = JSON.parse(localStorage.getItem("jkp_jobs_project") || "[]");
+        if (savedJobs[jobIndex] && savedJobs[jobIndex].items[itemIndex]) {
+            savedJobs[jobIndex].items[itemIndex].checked = !savedJobs[jobIndex].items[itemIndex].checked;
+            localStorage.setItem("jkp_jobs_project", JSON.stringify(savedJobs));
+            renderSavedJobs();
+        }
+    }
+
+    function deleteSavedJob(index) {
+        if (confirm("ต้องการลบใบรายการนี้ใช่หรือไม่?")) {
+            let savedJobs = JSON.parse(localStorage.getItem("jkp_jobs_project") || "[]");
+            savedJobs.splice(index, 1);
+            localStorage.setItem("jkp_jobs_project", JSON.stringify(savedJobs));
+            renderSavedJobs();
+        }
+    }
+
+    // ================= ระบบจัดการผู้ใช้และ API เดิม =================
     function registerMember() {
         let mId = document.getElementById("newMemberId").value.trim();
         let mName = document.getElementById("newMemberName").value.trim();
