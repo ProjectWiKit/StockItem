@@ -609,12 +609,9 @@
                     </div>
                 </div>
 
-                <!-- ดึงอุปกรณ์ทั่วไป (ไขควง ประแจ ฯลฯ) - ดึงข้อมูลจาก Sheet และ Admin สามารถเพิ่มได้ -->
+                <!-- ดึงอุปกรณ์ทั่วไป (ไขควง ประแจ ฯลฯ) - จำกัดสิทธิ์ Admin สำหรับการเพิ่ม -->
                 <div style="background: #f8fafc; padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 15px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                        <h4 style="margin: 0; font-size: 14px; color: #334155;">🔧 ดึงอุปกรณ์ทั่วไป (ไขควง ประแจ ฯลฯ)</h4>
-                        <button id="adminAddGeneralBtn" class="admin-only hidden" onclick="openAddGeneralModal()" style="width: auto; background: var(--warning); padding: 4px 10px; font-size: 12px; margin: 0;">+ เพิ่มอุปกรณ์ทั่วไปใหม่</button>
-                    </div>
+                    <h4 style="margin-top: 0; font-size: 14px; color: #334155;">🔧 ดึงอุปกรณ์ทั่วไป (ไขควง ประแจ ฯลฯ)</h4>
                     <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                         <div class="input-group" style="flex: 2; margin-bottom: 0;">
                             <label>เลือกอุปกรณ์ทั่วไป:</label>
@@ -673,12 +670,12 @@
         <div id="modalJobItemsList" style="border: 1px solid var(--border-color); border-radius: 10px; padding: 10px 15px; background: #f8fafc;">
             <!-- รายการสินค้าข้างใน -->
         </div>
-        <button class="btn-add" onclick="closeJobModal()" style="margin-top: 20px;">เสร็จสิ้น / บันทึกการตรวจสอบ</button>
+        <button class="btn-add" onclick="handleCompleteJob()" style="margin-top: 20px;">เสร็จสิ้น / บันทึกการตรวจสอบ</button>
     </div>
 </div>
 
 <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxYHmsLK8GXaxvEbzaV310b_3X0-UCFcY7CoHLiE4lRHNz15dcTz-R6-NjafIATcYlKsw/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzwgMXmkL0VyMJa570Eez2_tT1iiAAYRKkQrdS9FVUOpooowNV2znY8NLgsMohbFypLUw/exec";
     let currentUserRole = "";
     let currentUserName = "";
     let currentUsernameId = "";
@@ -688,8 +685,18 @@
     let globalToolsData = [];
     let globalToolsHistory = [];
     
-    // โหลดอุปกรณ์ทั่วไปจาก Google Sheet (data.general) แทน Hardcode
-    let globalGeneralItems = [];
+    // รายการอุปกรณ์ทั่วไปเริ่มต้น (ไขควง, ประแจ, ประแจเลื่อน ฯลฯ)
+    let globalGeneralItems = [
+        { id: "G001", name: "ไขควงแฉก (Phillips Screwdriver)", unit: "อัน" },
+        { id: "G002", name: "ไขควงแบน (Flathead Screwdriver)", unit: "อัน" },
+        { id: "G003", name: "ประแจปากตาย (Combination Wrench Set)", unit: "ชุด" },
+        { id: "G004", name: "ประแจเลื่อน (Adjustable Wrench 8นิ้ว/10นิ้ว)", unit: "ตัว" },
+        { id: "G005", name: "คีมตัดปากเฉียง (Diagonal Pliers)", unit: "ตัว" },
+        { id: "G006", name: "คีมล็อค (Locking Pliers)", unit: "ตัว" },
+        { id: "G007", name: "ค้อนช่างทอง (Ball-peen Hammer)", unit: "เต้า" },
+        { id: "G008", name: "เทปพันสายไฟ (Electrical Tape)", unit: "ม้วน" },
+        { id: "G009", name: "เคเบิ้ลไทร์ (Cable Ties)", unit: "ถุง" }
+    ];
 
     let activeTab = 'add';
     let activeHistTab = 'add';
@@ -866,7 +873,6 @@
             globalReduceHistory = data.historyReduce || [];
             globalToolsData = data.tools || [];
             globalToolsHistory = data.toolsHistory || [];
-            globalGeneralItems = data.general || []; // 📥 ดึงข้อมูลอุปกรณ์ทั่วไปจาก Google Sheet
 
             renderStockTable(globalStockData);
             renderHistories();
@@ -1058,43 +1064,9 @@
     function renderJobGeneralSelect() {
         let selectEl = document.getElementById("jobSelectGeneral");
         if (!selectEl) return;
-        if (globalGeneralItems.length > 0) {
-            selectEl.innerHTML = globalGeneralItems.map(item => 
-                `<option value="${item.id}">${item.id} - ${item.name} (${item.unit})</option>`
-            ).join('');
-        } else {
-            selectEl.innerHTML = `<option value="">ไม่พบข้อมูลอุปกรณ์ทั่วไปใน Google Sheet</option>`;
-        }
-    }
-
-    // ฟังก์ชันให้แอดมินเพิ่มอุปกรณ์ทั่วไปผ่านหน้าเว็บ
-    function openAddGeneralModal() {
-        if (currentUserRole !== 'admin') {
-            alert("❌ เฉพาะแอดมินเท่านั้นที่สามารถเพิ่มอุปกรณ์ทั่วไปได้");
-            return;
-        }
-        let id = prompt("กรอกรหัสอุปกรณ์ทั่วไป (เช่น G010):");
-        if (!id) return;
-        let name = prompt("กรอกชื่ออุปกรณ์ทั่วไป:");
-        if (!name) return;
-        let unit = prompt("กรอกหน่วย (เช่น อัน, ตัว, ชุด, ชิ้น):", "อัน");
-        if (!unit) return;
-
-        fetch(WEB_APP_URL, {
-            method: "POST",
-            body: JSON.stringify({ action: "addGeneralItem", id: id, name: name, unit: unit })
-        })
-        .then(res => res.json())
-        .then(result => {
-            if (result.status === "success") {
-                alert("เพิ่มอุปกรณ์ทั่วไปสำเร็จ!");
-                loadData();
-            } else {
-                alert("เกิดข้อผิดพลาด: " + (result.message || "ไม่สามารถบันทึกได้"));
-            }
-        }).catch(() => {
-            alert("เกิดข้อผิดพลาดในการเชื่อมต่อเครือข่าย");
-        });
+        selectEl.innerHTML = globalGeneralItems.map(item => 
+            `<option value="${item.id}">${item.id} - ${item.name} (${item.unit})</option>`
+        ).join('');
     }
 
     function addJobItemToList() {
@@ -1154,6 +1126,11 @@
     }
 
     function addJobGeneralToList() {
+        if (currentUserRole !== 'admin') {
+            alert("❌ ขออภัย! อภิสิทธิ์การเพิ่มหรือลดอุปกรณ์ทั่วไปเป็นของแอดมินเท่านั้น");
+            return;
+        }
+
         let genId = document.getElementById("jobSelectGeneral").value;
         let qty = parseInt(document.getElementById("jobGeneralQty").value) || 1;
         
@@ -1201,6 +1178,12 @@
     }
 
     function removeJobItem(index) {
+        let item = currentJobItems[index];
+        if (item && item.type === 'general' && currentUserRole !== 'admin') {
+            alert("❌ ขออภัย! อภิสิทธิ์การเพิ่มหรือลดอุปกรณ์ทั่วไปเป็นของแอดมินเท่านั้น");
+            return;
+        }
+
         currentJobItems.splice(index, 1);
         renderJobItemsTable();
     }
@@ -1319,6 +1302,49 @@
             localStorage.setItem("jkp_jobs_project", JSON.stringify(savedJobs));
             renderSavedJobs();
         }
+    }
+
+    // ฟังก์ชันกด "เสร็จสิ้น / บันทึกการตรวจสอบ" เพื่อตัดสต็อกสินค้าและเพิ่มยอดเครื่องมืออัตโนมัติ
+    function handleCompleteJob() {
+        if (activeViewingJobIndex === null) return;
+        let savedJobs = JSON.parse(localStorage.getItem("jkp_jobs_project") || "[]");
+        let job = savedJobs[activeViewingJobIndex];
+        if (!job || !job.items || job.items.length === 0) {
+            alert("ไม่พบรายการอุปกรณ์ในใบงานนี้");
+            return;
+        }
+
+        let payloadItems = job.items.map(i => ({
+            id: i.id,
+            qty: i.qty,
+            type: i.type // product, tool, general
+        }));
+
+        fetch(WEB_APP_URL, {
+            method: "POST",
+            body: JSON.stringify({
+                action: "completeJob",
+                jobId: job.id,
+                userName: currentUserName,
+                items: payloadItems
+            })
+        })
+        .then(res => res.json())
+        .then(result => {
+            if (result.status === "success") {
+                alert("บันทึกการตรวจสอบและตัดสต็อก/เครื่องมือเรียบร้อยแล้ว!");
+                job.items.forEach(i => i.checked = true);
+                localStorage.setItem("jkp_jobs_project", JSON.stringify(savedJobs));
+                closeJobModal();
+                loadData();
+            } else {
+                alert("เกิดข้อผิดพลาด: " + result.message);
+            }
+        })
+        .catch(err => {
+            console.error("Error:", err);
+            alert("เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์");
+        });
     }
 
     // ================= ระบบจัดการผู้ใช้และ API เดิม =================
