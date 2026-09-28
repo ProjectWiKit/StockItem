@@ -609,7 +609,7 @@
                     </div>
                 </div>
 
-                <!-- ดึงอุปกรณ์ทั่วไป (ไขควง ประแจ ฯลฯ) -->
+                <!-- ดึงอุปกรณ์ทั่วไป (ไขควง ประแจ ฯลฯ) - จำกัดสิทธิ์ Admin สำหรับการเพิ่ม -->
                 <div style="background: #f8fafc; padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 15px;">
                     <h4 style="margin-top: 0; font-size: 14px; color: #334155;">🔧 ดึงอุปกรณ์ทั่วไป (ไขควง ประแจ ฯลฯ)</h4>
                     <div style="display: flex; gap: 10px; flex-wrap: wrap;">
@@ -675,7 +675,7 @@
 </div>
 
 <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwONp4aSJNsJ2_RzbFgGXF6w_QOyk39F1L-V0yYl_rzDtucyOJ9M0TZ-YAp-w_EV7DznQ/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwtMvdfYXioXS5H7WqPWVpn8O6XvLGuXKmoEFp8JpJIWtLGy3eUU9TlJUk__Cqhy9_jqQ/exec";
     let currentUserRole = "";
     let currentUserName = "";
     let currentUsernameId = "";
@@ -1126,6 +1126,12 @@
     }
 
     function addJobGeneralToList() {
+        // จำกัดสิทธิ์เฉพาะแอดมิน (Admin) ในการเพิ่มอุปกรณ์ทั่วไป
+        if (currentUserRole !== 'admin') {
+            alert("❌ ขออภัย! อภิสิทธิ์การเพิ่มหรือลดอุปกรณ์ทั่วไปเป็นของแอดมินเท่านั้น");
+            return;
+        }
+
         let genId = document.getElementById("jobSelectGeneral").value;
         let qty = parseInt(document.getElementById("jobGeneralQty").value) || 1;
         
@@ -1173,6 +1179,13 @@
     }
 
     function removeJobItem(index) {
+        let item = currentJobItems[index];
+        // ตรวจสอบสิทธิ์หากเป็นอุปกรณ์ทั่วไป (General) อนุญาตให้เฉพาะแอดมินลบออกได้
+        if (item && item.type === 'general' && currentUserRole !== 'admin') {
+            alert("❌ ขออภัย! อภิสิทธิ์การเพิ่มหรือลดอุปกรณ์ทั่วไปเป็นของแอดมินเท่านั้น");
+            return;
+        }
+
         currentJobItems.splice(index, 1);
         renderJobItemsTable();
     }
