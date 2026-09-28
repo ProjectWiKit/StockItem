@@ -4,7 +4,7 @@
     <link rel="apple-touch-icon" href="icon.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JKP Engineering - Pre-Site Inspection Checklist</title>
+    <title>JKP Engineering - Pre-Site Checklist & Stock Control</title>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -167,6 +167,16 @@
         .checklist-item label { display: flex; align-items: center; gap: 10px; cursor: pointer; font-weight: 500; margin: 0; width: 100%; }
         .checklist-item input[type="checkbox"] { width: 18px; height: 18px; margin: 0; cursor: pointer; }
 
+        .stock-badge {
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .stock-ok { background: #d1fae5; color: #065f46; }
+        .stock-low { background: #fee2e2; color: #991b1b; }
+
         table { width: 100%; margin-top: 12px; border-collapse: separate; border-spacing: 0; font-size: 14px; border: 1px solid var(--border-color); border-radius: 10px; overflow: hidden; }
         th, td { padding: 12px 14px; text-align: center; border-bottom: 1px solid var(--border-color); border-right: 1px solid var(--border-color); }
         th { background: #f8fafc; color: #475569; font-weight: 600; }
@@ -182,7 +192,7 @@
     <div class="logo-header">
         <div class="antenna-logo"><span class="antenna-icon">📡</span></div>
         <h1>JKP Engineering</h1>
-        <p>ระบบตรวจเช็คอุปกรณ์และเครื่องมือช่างก่อนออกหน้างาน (Pre-Site Departure Checklist)</p>
+        <p>ระบบตรวจเช็คอุปกรณ์และเครื่องมือช่างก่อนออกหน้างาน (Pre-Site Departure Checklist & Stock Control)</p>
     </div>
 
     <!-- ส่วน Login & Register -->
@@ -268,7 +278,7 @@
             <!-- กล่องแสดง Checklist อุปกรณ์แยกตามหมวดหมู่ -->
             <div id="checklistSection" class="hidden">
                 <h4 style="margin-bottom: 8px; color: #334155;">รายการอุปกรณ์แยกตามหมวดหมู่:</h4>
-                <p style="font-size: 12px; color: #64748b; margin-top: 0;">* กรุณาตรวจเช็คอุปกรณ์ทีละชิ้นก่อนออกเดินทาง</p>
+                <p style="font-size: 12px; color: #64748b; margin-top: 0;">* ระบบจะตัดสต็อกอุปกรณ์ยิบย่อยให้อัตโนมัติเมื่อกดบันทึกออกหน้างาน</p>
                 
                 <div id="checklistCategories"></div>
 
@@ -279,6 +289,24 @@
 
                 <button class="btn-add" style="margin-top: 10px; padding: 14px;" onclick="submitDispatchCheck()">ยืนยันการตรวจเช็คและพร้อมออกเดินทาง</button>
             </div>
+        </div>
+
+        <!-- 📦 ตารางรายการสต็อกอุปกรณ์ยิบย่อยในคลัง -->
+        <div class="section-box">
+            <h3>📦 สต็อกคงเหลือปัจจุบันในคลัง</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>รหัส</th>
+                        <th>ชื่ออุปกรณ์/วัสดุ</th>
+                        <th>จำนวนคงเหลือในคลัง</th>
+                        <th>หน่วยนับ</th>
+                    </tr>
+                </thead>
+                <tbody id="stockTableBody">
+                    <tr><td colspan="4">กำลังโหลดข้อมูลสต็อก...</td></tr>
+                </tbody>
+            </table>
         </div>
 
         <!-- 📜 ตารางประวัติการตรวจเช็ค -->
@@ -306,105 +334,103 @@
 </div>
 
 <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyCNJz1qNR4raaXzw5PIMTikzBq-DZFVhYQ6-uOJG78VrN2hnCL5Sv0PLneTWRUxh65iQ/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw8ZE5zU-AR6AdHqfJirzElJEX3b0gk_aiy_iDj4CeE4yrOHOJvTW9fGGjGEdcnywsRTA/exec";
     
     let currentUserName = "";
     let currentUsernameId = "";
     let currentUserRole = "";
+    let globalStockMap = {}; // เก็บข้อมูลสต็อกคงเหลือ Real-time
 
-    // 📦 แม่แบบจัดหมวดหมู่อุปกรณ์ (5 หมวดหลัก)
+    // 📦 แม่แบบจัดหมวดหมู่อุปกรณ์ พร้อมผูกรหัสสต็อก (stockId) เพื่อตัดสต็อกอัตโนมัติ
     const JOB_TEMPLATES = {
         "INSTALL_ANTENNA": {
             "📊 หมวดเครื่องมือวัด & เครื่องส่ง": [
-                "เครื่องส่งสัญญาณ (Transmitter)",
-                "เครื่องวัด SWR / VNA Meter",
-                "มัลติมิเตอร์ (Digital Multimeter)"
+                { name: "เครื่องส่งสัญญาณ (Transmitter)" },
+                { name: "เครื่องวัด SWR / VNA Meter" },
+                { name: "มัลติมิเตอร์ (Digital Multimeter)" }
             ],
             "📡 หมวดอุปกรณ์สายอากาศ & สายสัญญาณ": [
-                "ชุดสายอากาศ (Antenna Elements / Yagi / Dipole)",
-                "สายสัญญาณ Jumper Cable / Coaxial",
-                "แคลมป์ยึดสายอากาศ & U-Bolt",
-                "หัวคอนเนคเตอร์ (N-Type / PL-259)"
+                { name: "ชุดสายอากาศ (Antenna Elements / Yagi / Dipole)" },
+                { name: "สายสัญญาณ Jumper Cable RG-8", stockId: "CAB-01", deductQty: 2 },
+                { name: "แคลมป์ยึดสายอากาศ & U-Bolt" },
+                { name: "หัวคอนเนคเตอร์ N-Type", stockId: "CON-01", deductQty: 2 }
             ],
             "🛠️ หมวดเครื่องมือช่างพื้นฐาน": [
-                "ชุดประแจปากตาย (เบอร์ 8, 10, 12, 14, 17, 19)",
-                "ประแจเลื่อน / ประแจจับท่อ",
-                "ชุดไขควง (ปากแบน / ปากแฉก)",
-                "คีมตัดสาย / คีมปอกสาย / คีมล๊อก"
+                { name: "ชุดประแจปากตาย (เบอร์ 8, 10, 12, 14, 17, 19)" },
+                { name: "ประแจเลื่อน / ประแจจับท่อ" },
+                { name: "ชุดไขควง (ปากแบน / ปากแฉก)" },
+                { name: "คีมตัดสาย / คีมปอกสาย / คีมล๊อก" }
             ],
             "🩹 หมวดวัสดุสิ้นเปลือง & ซีลกันน้ำ": [
-                "เทปพันละลาย (Rubber Splicing Tape 3M 23)",
-                "เทปพันสายไฟ (Electrical Tape)",
-                "เคเบิลไทร์ทน UV (Cable Ties)",
-                "ซิลิโคนซีลแลนท์ / ท่อหด"
+                { name: "เทปพันละลาย 3M 23", stockId: "TAP-01", deductQty: 1 },
+                { name: "เทปพันสายไฟ", stockId: "TAP-02", deductQty: 2 },
+                { name: "เคเบิลไทร์ทน UV", stockId: "TIE-01", deductQty: 1 }
             ],
             "🦺 หมวดอุปกรณ์เซฟตี้ & ปีนเสา": [
-                "ชุดเข็มขัดนิรภัยแบบเต็มตัว (Full Body Harness)",
-                "หมวกเซฟตี้ พร้อมสายรัดคาง",
-                "ถุงมือช่าง / ถุงมือกันบาด",
-                "เชือกชักรอก + รอกยกของ"
+                { name: "ชุดเข็มขัดนิรภัยแบบเต็มตัว (Full Body Harness)" },
+                { name: "หมวกเซฟตี้ พร้อมสายรัดคาง" },
+                { name: "ถุงมือช่าง / ถุงมือกันบาด" },
+                { name: "เชือกชักรอก + รอกยกของ" }
             ]
         },
         "TUNE_S11": {
             "📊 หมวดเครื่องมือวัด & เครื่องส่ง": [
-                "Vector Network Analyzer (VNA) / SWR Meter",
-                "Calibration Kit (Open / Short / Load)",
-                "หัวแปลงคอนเนคเตอร์ (Adapters N-Type / SMA / BNC)",
-                "มัลติมิเตอร์ (Digital Multimeter)"
+                { name: "Vector Network Analyzer (VNA) / SWR Meter" },
+                { name: "Calibration Kit (Open / Short / Load)" },
+                { name: "หัวแปลงคอนเนคเตอร์ (Adapters N-Type / SMA / BNC)" },
+                { name: "มัลติมิเตอร์ (Digital Multimeter)" }
             ],
             "🛠️ หมวดเครื่องมือช่างพื้นฐาน": [
-                "ชุดไขควงด้ามหุ้มฉนวน",
-                "ชุดประแจปากตาย (เบอร์ 10, 12, 13, 14)",
-                "ประแจเลื่อน"
+                { name: "ชุดไขควงด้ามหุ้มฉนวน" },
+                { name: "ชุดประแจปากตาย (เบอร์ 10, 12, 13, 14)" },
+                { name: "ประแจเลื่อน" }
             ],
             "🩹 หมวดวัสดุสิ้นเปลือง & ซีลกันน้ำ": [
-                "เทปพันละลาย (3M 23)",
-                "เทปพันสายไฟ",
-                "สมุดบันทึกค่า Impedance / S11 Log"
+                { name: "เทปพันละลาย 3M 23", stockId: "TAP-01", deductQty: 1 },
+                { name: "เทปพันสายไฟ", stockId: "TAP-02", deductQty: 1 }
             ],
             "🦺 หมวดอุปกรณ์เซฟตี้ & ปีนเสา": [
-                "ชุดเข็มขัดนิรภัย (Safety Harness)",
-                "หมวกเซฟตี้"
+                { name: "ชุดเข็มขัดนิรภัย (Safety Harness)" },
+                { name: "หมวกเซฟตี้" }
             ]
         },
         "REPLACE_CABLE": {
             "📡 หมวดอุปกรณ์สายอากาศ & สายสัญญาณ": [
-                "สายสัญญาณ Coaxial Cable (RG-8 / 1/2\")",
-                "หัวคอนเนคเตอร์ (N-Male / PL-259)"
+                { name: "สายสัญญาณ Jumper Cable RG-8", stockId: "CAB-01", deductQty: 1 },
+                { name: "หัวคอนเนคเตอร์ N-Type", stockId: "CON-01", deductQty: 2 }
             ],
             "🛠️ หมวดเครื่องมือช่างพื้นฐาน": [
-                "คีมย้ำหัว Coax + คีมปอกสาย",
-                "คัตเตอร์ / กรรไกรตัดสายไฟ",
-                "ชุดเตารีดบัดกรี + ตะกั่ว / ปืนเป่าลมร้อน",
-                "ประแจเลื่อน / ประแจจับท่อ"
+                { name: "คีมย้ำหัว Coax + คีมปอกสาย" },
+                { name: "คัตเตอร์ / กรรไกรตัดสายไฟ" },
+                { name: "ชุดเตารีดบัดกรี + ตะกั่ว / ปืนเป่าลมร้อน" },
+                { name: "ประแจเลื่อน / ประแจจับท่อ" }
             ],
             "🩹 หมวดวัสดุสิ้นเปลือง & ซีลกันน้ำ": [
-                "เทปพันละลาย (3M 23)",
-                "เทปพันสายไฟ",
-                "ท่อหด (Heat Shrink)"
+                { name: "เทปพันละลาย 3M 23", stockId: "TAP-01", deductQty: 1 },
+                { name: "เทปพันสายไฟ", stockId: "TAP-02", deductQty: 2 }
             ],
             "🦺 หมวดอุปกรณ์เซฟตี้ & ปีนเสา": [
-                "ชุดเข็มขัดนิรภัยปีนเสา",
-                "หมวกเซฟตี้ + ถุงมือช่าง"
+                { name: "ชุดเข็มขัดนิรภัยปีนเสา" },
+                { name: "หมวกเซฟตี้ + ถุงมือช่าง" }
             ]
         },
         "GENERAL_MAINTENANCE": {
             "🛠️ หมวดเครื่องมือช่างพื้นฐาน": [
-                "กล่องเครื่องมือช่างรวม (Hand Tools Box)",
-                "ชุดประแจเลื่อน + ประแจจับท่อ",
-                "ชุดคีมรวม (ตัด/ปอก/จับ)"
+                { name: "กล่องเครื่องมือช่างรวม (Hand Tools Box)" },
+                { name: "ชุดประแจเลื่อน + ประแจจับท่อ" }
             ],
             "📊 หมวดเครื่องมือวัด & เครื่องส่ง": [
-                "มัลติมิเตอร์ (Digital Multimeter)",
-                "เครื่องวัด SWR Meter"
+                { name: "มัลติมิเตอร์ (Digital Multimeter)" },
+                { name: "เครื่องวัด SWR Meter" }
             ],
             "🩹 หมวดวัสดุสิ้นเปลือง & ซีลกันน้ำ": [
-                "เทปพันสายไฟ + เทปพันละลาย",
-                "เคเบิลไทร์ + ซิลิโคน"
+                { name: "เทปพันสายไฟ", stockId: "TAP-02", deductQty: 1 },
+                { name: "เทปพันละลาย 3M 23", stockId: "TAP-01", deductQty: 1 },
+                { name: "เคเบิลไทร์ทน UV", stockId: "TIE-01", deductQty: 1 }
             ],
             "🦺 หมวดอุปกรณ์เซฟตี้ & ปีนเสา": [
-                "บันได aluminium / อุปกรณ์เซฟตี้ปีนเสา",
-                "หมวกเซฟตี้"
+                { name: "บันได aluminium / อุปกรณ์เซฟตี้ปีนเสา" },
+                { name: "หมวกเซฟตี้" }
             ]
         }
     };
@@ -481,7 +507,7 @@
         toggleAuth('login');
     }
 
-    // 🔄 โหลดรายการ Checklist แยกตามหมวดหมู่
+    // 🔄 โหลดรายการ Checklist แยกตามหมวดหมู่ พร้อมป้ายบอกจำนวนสต็อก
     function loadJobChecklist() {
         let jobType = document.getElementById("jobTypeSelect").value;
         let categoriesContainer = document.getElementById("checklistCategories");
@@ -509,13 +535,27 @@
             `;
 
             items.forEach((item) => {
+                let stockText = "";
+                let stockBadgeClass = "stock-ok";
+                
+                // หากมีการผูกรหัสสต็อกไว้ ให้ดึงข้อมูลมาแสดงผล
+                if (item.stockId && globalStockMap[item.stockId]) {
+                    let st = globalStockMap[item.stockId];
+                    if (st.qty <= 0 || st.qty < (item.deductQty || 1)) {
+                        stockBadgeClass = "stock-low";
+                        stockText = `<span class="stock-badge ${stockBadgeClass}">⚠️ คลังเหลือ: ${st.qty} ${st.unit} (ไม่พอใช้ออกงาน)</span>`;
+                    } else {
+                        stockText = `<span class="stock-badge ${stockBadgeClass}">📦 คลังเหลือ: ${st.qty} ${st.unit}</span>`;
+                    }
+                }
+
                 html += `
                     <div class="checklist-item" id="item_box_${globalIndex}">
                         <label>
-                            <input type="checkbox" value="${item}" class="item-chk" onchange="toggleItemCheck(${globalIndex})">
-                            <span>${item}</span>
+                            <input type="checkbox" value="${item.name}" data-stock-id="${item.stockId || ''}" data-deduct-qty="${item.deductQty || 0}" class="item-chk" onchange="toggleItemCheck(${globalIndex})">
+                            <span>${item.name} ${stockText}</span>
                         </label>
-                        <span id="badge_status_${globalIndex}" style="font-size:12px; color:var(--danger); font-weight:600;">⚠️ ยังไม่เช็ค</span>
+                        <span id="badge_status_${globalIndex}" style="font-size:12px; color:var(--danger); font-weight:600; white-space:nowrap;">⚠️ ยังไม่เช็ค</span>
                     </div>
                 `;
                 globalIndex++;
@@ -559,7 +599,7 @@
         });
     }
 
-    // 📤 บันทึกการตรวจเช็คออกหน้างาน
+    // 📤 บันทึกการตรวจเช็คออกหน้างาน พร้อมส่งข้อมูลไปตัดสต็อก
     function submitDispatchCheck() {
         let siteId = document.getElementById("siteIdInput").value.trim();
         let jobType = document.getElementById("jobTypeSelect").value;
@@ -569,10 +609,17 @@
         if (!jobType) { alert("กรุณาเลือกประเภทงาน"); return; }
 
         let missingItems = [];
+        let usedItems = []; // รายการวัสดุที่จะส่งไปตัดสต็อก
         let checkboxes = document.querySelectorAll('.item-chk');
         
         checkboxes.forEach((cb) => {
-            if (!cb.checked) {
+            if (cb.checked) {
+                let stockId = cb.getAttribute('data-stock-id');
+                let deductQty = parseInt(cb.getAttribute('data-deduct-qty')) || 0;
+                if (stockId && deductQty > 0) {
+                    usedItems.push({ id: stockId, deductQty: deductQty });
+                }
+            } else {
                 missingItems.push(cb.value);
             }
         });
@@ -594,34 +641,51 @@
                 userName: currentUserName,
                 status: isComplete ? "อุปกรณ์ครบถ้วน" : "อุปกรณ์ไม่ครบ",
                 missingItems: missingItems.length > 0 ? missingItems.join(", ") : "-",
-                note: note
+                note: note,
+                usedItems: usedItems // รายการวัสดุสำหรับหักลบสต็อก
             })
         })
         .then(res => res.json())
         .then(result => {
             if (result.status === "success") {
-                alert("✅ บันทึกข้อมูลและอัปเดตลง Google Sheet เรียบร้อยแล้ว!");
+                alert("✅ บันทึกข้อมูลและตัดสต็อกสินค้าใน Google Sheet เรียบร้อยแล้ว!");
                 document.getElementById("siteIdInput").value = "";
                 document.getElementById("jobTypeSelect").value = "";
                 document.getElementById("dispatchNote").value = "";
                 document.getElementById("checklistSection").classList.add("hidden");
-                loadHistoryData();
+                loadHistoryData(); // โหลดข้อมูลสต็อกและประวัติใหม่
             } else {
                 alert(result.message);
             }
         });
     }
 
-    // 📥 ดึงประวัติจาก Google Apps Script
+    // 📥 ดึงประวัติและข้อมูลสต็อก Real-time จาก Google Apps Script
     function loadHistoryData() {
         fetch(WEB_APP_URL)
         .then(res => res.json())
         .then(data => {
+            globalStockMap = data.stock || {};
             let logs = data.logs || [];
             let total = logs.length;
             let completeCount = 0;
             let incompleteCount = 0;
 
+            // Render ตารางสต็อกสินค้าในคลัง
+            let stockHtml = "";
+            for (let id in globalStockMap) {
+                let st = globalStockMap[id];
+                let badgeClass = st.qty <= 2 ? "badge-danger" : "badge-success";
+                stockHtml += `<tr>
+                    <td><b>${st.id}</b></td>
+                    <td>${st.name}</td>
+                    <td><span class="badge ${badgeClass}">${st.qty}</span></td>
+                    <td>${st.unit}</td>
+                </tr>`;
+            }
+            document.getElementById("stockTableBody").innerHTML = stockHtml || `<tr><td colspan="4">ไม่มีข้อมูลสต็อก</td></tr>`;
+
+            // Render ตารางประวัติ
             let html = "";
             logs.slice().reverse().forEach(log => {
                 if (log.status === "อุปกรณ์ครบถ้วน") completeCount++;
