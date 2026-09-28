@@ -568,7 +568,7 @@
 </div>
 
 <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz-6UNXTsqpXVn_sp_B02YF1C8p06GlcP6oi4sJI07AFfMPBnWxQJVF7ANzNTUOZI9mQQ/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzVuGWlQCfJyF2IE6XJtwV9HTA8AORJ309SNEGq17u5Dq0a50YAdg3vtI2bu5ZMR_y7zw/exec";
     let currentUserRole = "";
     let currentUserName = "";
     let currentUsernameId = "";
@@ -651,6 +651,7 @@
 
         fetch(WEB_APP_URL, {
             method: "POST",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
             body: JSON.stringify({ action: "login", username: user, password: pass })
         })
         .then(res => res.json())
@@ -724,6 +725,7 @@
 
         fetch(WEB_APP_URL, {
             method: "POST",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
             body: JSON.stringify({ action: "changePassword", username: currentUsernameId, oldPass: oldP, newPass: newP })
         })
         .then(res => res.json())
@@ -910,6 +912,7 @@
 
         fetch(WEB_APP_URL, {
             method: "POST",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
             body: JSON.stringify({ action: "register", memberId: mId, memberName: mName, memberPass: mPass, memberPhone: mPhone })
         })
         .then(res => res.json())
@@ -928,6 +931,7 @@
 
         fetch(WEB_APP_URL, {
             method: "POST",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
             body: JSON.stringify({ action: "addProduct", id: id, name: name, stock: stock, unit: unit })
         })
         .then(res => res.json())
@@ -950,6 +954,7 @@
 
         fetch(WEB_APP_URL, {
             method: "POST",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
             body: JSON.stringify({ action: "addTool", id: id, name: name, stock: stock })
         })
         .then(res => res.json())
@@ -966,7 +971,11 @@
 
     function deleteProduct(id) {
         if(confirm("ต้องการลบอุปกรณ์นี้ออกจากระบบใช่หรือไม่?")) {
-            fetch(WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "deleteProduct", id: id }) })
+            fetch(WEB_APP_URL, { 
+                method: "POST", 
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify({ action: "deleteProduct", id: id }) 
+            })
             .then(() => loadData());
         }
     }
@@ -980,6 +989,7 @@
 
         fetch(WEB_APP_URL, {
             method: "POST",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
             body: JSON.stringify({ action: action, id: id, qty: qty, userName: currentUserName })
         })
         .then(res => res.json())
@@ -1007,6 +1017,7 @@
 
         fetch(WEB_APP_URL, {
             method: "POST",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
             body: JSON.stringify({ action: "toolAction", userName: currentUserName, toolId: toolId, toolName: toolName, actionType: actionType, qty: qty, note: note })
         })
         .then(res => res.json())
@@ -1032,6 +1043,7 @@
 
         fetch(WEB_APP_URL, {
             method: "POST",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
             body: JSON.stringify({ action: "toolAction", userName: currentUserName, toolId: toolId, toolName: toolName, actionType: "แจ้งซ่อม/ชำรุด", qty: 1, note: desc })
         })
         .then(res => res.json())
