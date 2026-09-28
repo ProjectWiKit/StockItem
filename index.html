@@ -627,8 +627,9 @@
                 <button class="btn-member" onclick="saveJobChecklist()" style="margin-top: 20px; padding: 14px;">💾 บันทึกและสร้างใบเช็คลิสต์หน้างาน</button>
             </div>
 
+            <!-- ส่วนเลือกดูไฟล์ย้อนหลัง (เปิดดู/เช็ครายการ) -->
             <div class="section-box">
-                <h3 style="margin-top: 0;">📁 รายการใบเตรียมอุปกรณ์หน้างานที่บันทึกไว้</h3>
+                <h3 style="margin-top: 0;">📁 รายการใบเตรียมอุปกรณ์หน้างานที่บันทึกไว้ (ประวัติย้อนหลัง)</h3>
                 <div id="savedJobsContainer">
                     <p style="color: #64748b; text-align: center;">ยังไม่มีใบงานที่บันทึกไว้</p>
                 </div>
@@ -637,6 +638,22 @@
 
     </div>
 
+</div>
+
+<!-- Modal สำหรับเปิดดูและเช็คลิสต์รายละเอียดใบงาน -->
+<div id="jobDetailModal" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px;">
+    <div style="background: white; width: 100%; max-width: 600px; border-radius: 16px; padding: 25px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); max-height: 90vh; overflow-y: auto;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f1f5f9; padding-bottom: 12px; margin-bottom: 15px;">
+            <h3 id="modalJobTitle" style="margin: 0; font-size: 18px; color: #0f172a; border: none; padding: 0;">รายละเอียดใบงาน</h3>
+            <button onclick="closeJobModal()" style="background: #94a3b8; width: auto; padding: 6px 12px; font-size: 12px; margin:0;">ปิดหน้าต่าง</button>
+        </div>
+        <p id="modalJobMeta" style="color: #64748b; font-size: 13px; margin-top: 0; margin-bottom: 15px;"></p>
+        <p style="font-size: 14px; font-weight: 600; color: #334155; margin-bottom: 8px;">📌 ติ๊กเช็คลิสต์อุปกรณ์ที่จัดเตรียมแล้ว:</p>
+        <div id="modalJobItemsList" style="border: 1px solid var(--border-color); border-radius: 10px; padding: 10px 15px; background: #f8fafc;">
+            <!-- รายการสินค้าข้างใน -->
+        </div>
+        <button class="btn-add" onclick="closeJobModal()" style="margin-top: 20px;">เสร็จสิ้น / บันทึกการตรวจสอบ</button>
+    </div>
 </div>
 
 <script>
@@ -651,7 +668,8 @@
     let globalToolsHistory = [];
     let activeTab = 'add';
     let activeHistTab = 'add';
-    let currentJobItems = []; // ตัวแปรเก็บรายการชั่วคราวสำหรับจัดเตรียมหน้างาน
+    let currentJobItems = []; 
+    let activeViewingJobIndex = null; // เก็บ Index ของใบงานที่กำลังเปิดดูใน Modal
 
     window.onload = function() {
         checkSession();
@@ -1123,39 +1141,71 @@
 
         container.innerHTML = savedJobs.slice().reverse().map((job, jobIdx) => {
             let originalIdx = savedJobs.length - 1 - jobIdx;
-            let itemsHtml = job.items.map((item, itemIdx) => `
-                <div style="display: flex; align-items: center; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed #f1f5f9;">
-                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; margin:0;">
-                        <input type="checkbox" ${item.checked ? 'checked' : ''} onchange="toggleJobItemCheck(${originalIdx}, ${itemIdx})" style="width: 18px; height: 18px; margin:0;">
-                        <span style="${item.checked ? 'text-decoration: line-through; color: #94a3b8;' : ''}">${item.id} - ${item.name} ${item.isTool ? '<small style="color:var(--primary);">(เครื่องมือ)</small>' : ''}</span>
-                    </label>
-                    <span style="font-weight: 600; font-size: 13px; color: ${item.checked ? '#94a3b8' : 'var(--primary)'};">${item.qty} ${item.unit}</span>
-                </div>
-            `).join('');
+            
+            // คำนวณจำนวนที่เช็คลิสต์แล้วเสร็จ
+            let totalCount = job.items.length;
+            let checkedCount = job.items.filter(i => i.checked).length;
+            let isCompleted = totalCount > 0 && checkedCount === totalCount;
 
             return `
-                <div style="background: #f8fafc; border: 1px solid var(--border-color); padding: 15px; border-radius: 12px; margin-bottom: 15px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                        <div>
-                            <h4 style="margin: 0; font-size: 15px; color: #0f172a;">📌 ${job.title}</h4>
-                            <small style="color: #64748b;">สร้างโดย: ${job.creator || 'ระบบ'} | บันทึกเมื่อ: ${job.date}</small>
+                <div style="background: #f8fafc; border: 1px solid var(--border-color); padding: 16px; border-radius: 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                    <div>
+                        <h4 style="margin: 0 0 4px 0; font-size: 15px; color: #0f172a;">📌 ${job.title}</h4>
+                        <small style="color: #64748b;">สร้างโดย: ${job.creator || 'ระบบ'} | บันทึกเมื่อ: ${job.date}</small>
+                        <div style="margin-top: 6px;">
+                            <span class="badge-stock ${isCompleted ? 'badge-normal' : 'badge-low'}">
+                                เช็คลิสต์: ${checkedCount}/${totalCount} รายการ ${isCompleted ? '✅ (ครบแล้ว)' : ''}
+                            </span>
                         </div>
-                        <button onclick="deleteSavedJob(${originalIdx})" style="background: var(--danger); padding: 6px 12px; width: auto; font-size: 12px; margin:0;">ลบใบงาน</button>
                     </div>
-                    <div style="background: #ffffff; padding: 10px 15px; border-radius: 8px; border: 1px solid var(--border-color);">
-                        ${itemsHtml}
+                    <div style="display: flex; gap: 8px;">
+                        <button onclick="openJobModal(${originalIdx})" style="background: var(--primary); padding: 8px 14px; width: auto; font-size: 13px; margin:0;">📂 เปิดดูรายการ</button>
+                        <button onclick="deleteSavedJob(${originalIdx})" style="background: var(--danger); padding: 8px 14px; width: auto; font-size: 13px; margin:0;">ลบใบงาน</button>
                     </div>
                 </div>
             `;
         }).join('');
     }
 
-    function toggleJobItemCheck(jobIndex, itemIndex) {
+    function openJobModal(jobIndex) {
+        activeViewingJobIndex = jobIndex;
         let savedJobs = JSON.parse(localStorage.getItem("jkp_jobs_project") || "[]");
-        if (savedJobs[jobIndex] && savedJobs[jobIndex].items[itemIndex]) {
-            savedJobs[jobIndex].items[itemIndex].checked = !savedJobs[jobIndex].items[itemIndex].checked;
+        let job = savedJobs[jobIndex];
+        if (!job) return;
+
+        document.getElementById("modalJobTitle").innerText = `📌 ${job.title}`;
+        document.getElementById("modalJobMeta").innerText = `สร้างโดย: ${job.creator || 'ระบบ'} | วันที่: ${job.date}`;
+
+        let itemsHtml = job.items.map((item, itemIdx) => `
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #e2e8f0;">
+                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 14px; margin:0; flex:1;">
+                    <input type="checkbox" ${item.checked ? 'checked' : ''} onchange="toggleModalItemCheck(${itemIdx})" style="width: 20px; height: 20px; margin:0; cursor: pointer;">
+                    <span style="${item.checked ? 'text-decoration: line-through; color: #94a3b8;' : 'color: #1e293b; font-weight: 500;'}">${item.id} - ${item.name} ${item.isTool ? '<small style="color:var(--primary); font-weight:600;">(เครื่องมือช่าง)</small>' : ''}</span>
+                </label>
+                <span style="font-weight: 600; font-size: 14px; color: ${item.checked ? '#94a3b8' : 'var(--primary)'};">${item.qty} ${item.unit}</span>
+            </div>
+        `).join('');
+
+        document.getElementById("modalJobItemsList").innerHTML = itemsHtml;
+        document.getElementById("jobDetailModal").classList.remove("hidden");
+    }
+
+    function closeJobModal() {
+        document.getElementById("jobDetailModal").classList.add("hidden");
+        activeViewingJobIndex = null;
+        renderSavedJobs(); // อัปเดตสถานะหน้าหลัก
+    }
+
+    function toggleModalItemCheck(itemIndex) {
+        if (activeViewingJobIndex === null) return;
+        let savedJobs = JSON.parse(localStorage.getItem("jkp_jobs_project") || "[]");
+        let job = savedJobs[activeViewingJobIndex];
+        if (job && job.items[itemIndex]) {
+            job.items[itemIndex].checked = !job.items[itemIndex].checked;
             localStorage.setItem("jkp_jobs_project", JSON.stringify(savedJobs));
-            renderSavedJobs();
+            
+            // รีเฟรชเนื้อหาใน Modal ทันที
+            openJobModal(activeViewingJobIndex);
         }
     }
 
