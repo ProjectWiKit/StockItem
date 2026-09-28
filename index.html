@@ -330,11 +330,10 @@
             </div>
         </div>
 
-        <!-- เมนูหลักสลับระหว่าง "เบิกอุปกรณ์", "เบิกเครื่องมือช่าง" และ "จัดเตรียมอุปกรณ์หน้างาน" -->
+        <!-- เมนูหลักสลับระหว่าง "เบิกอุปกรณ์" และ "เบิกเครื่องมือช่าง" -->
         <div class="main-nav-tabs">
             <button class="main-nav-btn active" id="navEquipTab" onclick="switchMainTab('equipment')">📦 ระบบเบิกอุปกรณ์สายอากาศ</button>
             <button class="main-nav-btn" id="navToolTab" onclick="switchMainTab('tools')">🛠️ ระบบเบิก/ยืมเครื่องมือช่าง</button>
-            <button class="main-nav-btn" id="navJobTab" onclick="switchMainTab('jobChecklist')">📋 จัดเตรียมอุปกรณ์หน้างาน</button>
         </div>
 
         <!-- ================= หมวดที่ 1: เบิกอุปกรณ์ (Equipment Stock) ================= -->
@@ -564,118 +563,12 @@
             </div>
         </div>
 
-        <!-- ================= หมวดที่ 3: จัดเตรียมอุปกรณ์หน้างาน (Job Pre-check) ================= -->
-        <div id="jobChecklistSectionContent" class="hidden">
-            <div class="section-box" style="border-left: 5px solid var(--primary);">
-                <h3 style="color: var(--primary);">🎯 สร้างใบรายการตรวจสอบอุปกรณ์หน้างาน (Job Pre-check)</h3>
-                <div class="input-group">
-                    <label>หัวข้องาน / ชื่อโครงการ / หน้างาน:</label>
-                    <input type="text" id="jobTitleInput" placeholder="เช่น ติดตั้งเสาอากาศ Site A, งานซ่อมบำรุงอาคาร B">
-                </div>
-                
-                <!-- ดึงอุปกรณ์จากคลัง -->
-                <div style="background: #f8fafc; padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 15px;">
-                    <h4 style="margin-top: 0; font-size: 14px; color: #334155;">📦 ดึงอุปกรณ์จากคลังมาใส่ใบงาน</h4>
-                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                        <div class="input-group" style="flex: 2; margin-bottom: 0;">
-                            <label>เลือกอุปกรณ์จากคลัง:</label>
-                            <select id="jobSelectProd"><option value="">กำลังโหลดรายการอุปกรณ์...</option></select>
-                        </div>
-                        <div class="input-group" style="flex: 1; margin-bottom: 0;">
-                            <label>จำนวนที่ต้องใช้:</label>
-                            <input type="number" id="jobItemQty" value="1" min="1">
-                        </div>
-                        <div style="display: flex; align-items: flex-end;">
-                            <button class="btn-add" onclick="addJobItemToList()" style="height: 46px; padding: 0 20px; margin:0;">+ เพิ่ม</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ดึงเครื่องมือช่าง -->
-                <div style="background: #f8fafc; padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 15px;">
-                    <h4 style="margin-top: 0; font-size: 14px; color: #334155;">🛠️ ดึงเครื่องมือช่างมาใส่ใบงาน</h4>
-                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                        <div class="input-group" style="flex: 2; margin-bottom: 0;">
-                            <label>เลือกเครื่องมือช่าง:</label>
-                            <select id="jobSelectTool"><option value="">กำลังโหลดรายการเครื่องมือช่าง...</option></select>
-                        </div>
-                        <div class="input-group" style="flex: 1; margin-bottom: 0;">
-                            <label>จำนวนที่ต้องใช้:</label>
-                            <input type="number" id="jobToolQty" value="1" min="1">
-                        </div>
-                        <div style="display: flex; align-items: flex-end;">
-                            <button class="btn-add" onclick="addJobToolToList()" style="height: 46px; padding: 0 20px; margin:0;">+ เพิ่มเครื่องมือ</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ดึงอุปกรณ์ทั่วไป (ไขควง ประแจ ฯลฯ) - จำกัดสิทธิ์ Admin สำหรับการเพิ่ม -->
-                <div style="background: #f8fafc; padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 15px;">
-                    <h4 style="margin-top: 0; font-size: 14px; color: #334155;">🔧 ดึงอุปกรณ์ทั่วไป (ไขควง ประแจ ฯลฯ)</h4>
-                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                        <div class="input-group" style="flex: 2; margin-bottom: 0;">
-                            <label>เลือกอุปกรณ์ทั่วไป:</label>
-                            <select id="jobSelectGeneral"><option value="">กำลังโหลดรายการอุปกรณ์ทั่วไป...</option></select>
-                        </div>
-                        <div class="input-group" style="flex: 1; margin-bottom: 0;">
-                            <label>จำนวนที่ต้องใช้:</label>
-                            <input type="number" id="jobGeneralQty" value="1" min="1">
-                        </div>
-                        <div style="display: flex; align-items: flex-end;">
-                            <button class="btn-add" onclick="addJobGeneralToList()" style="height: 46px; padding: 0 20px; margin:0;">+ เพิ่มอุปกรณ์ทั่วไป</button>
-                        </div>
-                    </div>
-                </div>
-
-                <h4 style="font-size: 14px; color: #334155; margin-bottom: 5px;">รายการอุปกรณ์และเครื่องมือที่ต้องเตรียมสำหรับงานนี้:</h4>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>รหัส</th>
-                            <th>ชื่ออุปกรณ์ / เครื่องมือ</th>
-                            <th>จำนวนที่ต้องใช้</th>
-                            <th>จัดการ</th>
-                        </tr>
-                    </thead>
-                    <tbody id="jobItemsTable">
-                        <tr><td colspan="4">ยังไม่มีอุปกรณ์ในรายการ (เลือกเพิ่มด้านบน)</td></tr>
-                    </tbody>
-                </table>
-
-                <button class="btn-member" onclick="saveJobChecklist()" style="margin-top: 20px; padding: 14px;">💾 บันทึกและสร้างใบเช็คลิสต์หน้างาน</button>
-            </div>
-
-            <!-- ส่วนเลือกดูไฟล์ย้อนหลัง (เปิดดู/เช็ครายการ) -->
-            <div class="section-box">
-                <h3 style="margin-top: 0;">📁 รายการใบเตรียมอุปกรณ์หน้างานที่บันทึกไว้ (ประวัติย้อนหลัง)</h3>
-                <div id="savedJobsContainer">
-                    <p style="color: #64748b; text-align: center;">ยังไม่มีใบงานที่บันทึกไว้</p>
-                </div>
-            </div>
-        </div>
-
     </div>
 
-</div>
-
-<!-- Modal สำหรับเปิดดูและเช็คลิสต์รายละเอียดใบงาน -->
-<div id="jobDetailModal" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px;">
-    <div style="background: white; width: 100%; max-width: 600px; border-radius: 16px; padding: 25px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); max-height: 90vh; overflow-y: auto;">
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f1f5f9; padding-bottom: 12px; margin-bottom: 15px;">
-            <h3 id="modalJobTitle" style="margin: 0; font-size: 18px; color: #0f172a; border: none; padding: 0;">รายละเอียดใบงาน</h3>
-            <button onclick="closeJobModal()" style="background: #94a3b8; width: auto; padding: 6px 12px; font-size: 12px; margin:0;">ปิดหน้าต่าง</button>
-        </div>
-        <p id="modalJobMeta" style="color: #64748b; font-size: 13px; margin-top: 0; margin-bottom: 15px;"></p>
-        <p style="font-size: 14px; font-weight: 600; color: #334155; margin-bottom: 8px;">📌 ติ๊กเช็คลิสต์อุปกรณ์ที่จัดเตรียมแล้ว:</p>
-        <div id="modalJobItemsList" style="border: 1px solid var(--border-color); border-radius: 10px; padding: 10px 15px; background: #f8fafc;">
-            <!-- รายการสินค้าข้างใน -->
-        </div>
-        <button class="btn-add" onclick="handleCompleteJob()" style="margin-top: 20px;">เสร็จสิ้น / บันทึกการตรวจสอบ</button>
-    </div>
 </div>
 
 <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzDcQQT6TQlK3uRtAsgIfpYkBkM4oCLUTbPPqjGwvNEgEQM7v8BS_Dp4bI0Ejh0M8-EsA/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyEzCiSmhDd6Xq-ziWUCkqziXkhRewDzuWJVisRPRGPdjeThsGF7uObIQ-_hGxw7HjJ3g/exec";
     let currentUserRole = "";
     let currentUserName = "";
     let currentUsernameId = "";
@@ -685,23 +578,8 @@
     let globalToolsData = [];
     let globalToolsHistory = [];
     
-    // รายการอุปกรณ์ทั่วไปเริ่มต้น (ไขควง, ประแจ, ประแจเลื่อน ฯลฯ)
-    let globalGeneralItems = [
-        { id: "G001", name: "ไขควงแฉก (Phillips Screwdriver)", unit: "อัน" },
-        { id: "G002", name: "ไขควงแบน (Flathead Screwdriver)", unit: "อัน" },
-        { id: "G003", name: "ประแจปากตาย (Combination Wrench Set)", unit: "ชุด" },
-        { id: "G004", name: "ประแจเลื่อน (Adjustable Wrench 8นิ้ว/10นิ้ว)", unit: "ตัว" },
-        { id: "G005", name: "คีมตัดปากเฉียง (Diagonal Pliers)", unit: "ตัว" },
-        { id: "G006", name: "คีมล็อค (Locking Pliers)", unit: "ตัว" },
-        { id: "G007", name: "ค้อนช่างทอง (Ball-peen Hammer)", unit: "เต้า" },
-        { id: "G008", name: "เทปพันสายไฟ (Electrical Tape)", unit: "ม้วน" },
-        { id: "G009", name: "เคเบิ้ลไทร์ (Cable Ties)", unit: "ถุง" }
-    ];
-
     let activeTab = 'add';
     let activeHistTab = 'add';
-    let currentJobItems = []; 
-    let activeViewingJobIndex = null; 
 
     window.onload = function() {
         checkSession();
@@ -732,11 +610,9 @@
     function switchMainTab(type) {
         document.getElementById("equipmentSectionContent").classList.add("hidden");
         document.getElementById("toolsSectionContent").classList.add("hidden");
-        document.getElementById("jobChecklistSectionContent").classList.add("hidden");
         
         document.getElementById("navEquipTab").classList.remove("active");
         document.getElementById("navToolTab").classList.remove("active");
-        document.getElementById("navJobTab").classList.remove("active");
 
         if (type === 'equipment') {
             document.getElementById("equipmentSectionContent").classList.remove("hidden");
@@ -744,13 +620,6 @@
         } else if (type === 'tools') {
             document.getElementById("toolsSectionContent").classList.remove("hidden");
             document.getElementById("navToolTab").classList.add("active");
-        } else if (type === 'jobChecklist') {
-            document.getElementById("jobChecklistSectionContent").classList.remove("hidden");
-            document.getElementById("navJobTab").classList.add("active");
-            renderJobProductSelect();
-            renderJobToolSelect();
-            renderJobGeneralSelect();
-            renderSavedJobs();
         }
     }
 
@@ -878,9 +747,6 @@
             renderHistories();
             updateAnalyticsDashboard();
             renderToolsData();
-            renderJobProductSelect();
-            renderJobToolSelect();
-            renderJobGeneralSelect();
         });
     }
 
@@ -1035,319 +901,6 @@
         ).join('') : `<tr><td colspan="5">ไม่พบประวัติที่ค้นหา</td></tr>`;
     }
 
-    // ================= ฟังก์ชันสำหรับระบบจัดเตรียมอุปกรณ์หน้างาน (Job Checklist) =================
-    function renderJobProductSelect() {
-        let selectEl = document.getElementById("jobSelectProd");
-        if (!selectEl) return;
-        if (globalStockData.length > 0) {
-            selectEl.innerHTML = globalStockData.map(item => 
-                `<option value="${item.id}">${item.id} - ${item.name} (คงเหลือ: ${item.stock} ${item.unit || 'ชิ้น'})</option>`
-            ).join('');
-        } else {
-            selectEl.innerHTML = `<option value="">ไม่พบข้อมูลอุปกรณ์ในคลัง</option>`;
-        }
-    }
-
-    function renderJobToolSelect() {
-        let selectEl = document.getElementById("jobSelectTool");
-        if (!selectEl) return;
-        if (globalToolsData.length > 0) {
-            selectEl.innerHTML = globalToolsData.map(tool => {
-                let rem = (tool.remaining !== undefined) ? tool.remaining : tool.stock;
-                return `<option value="${tool.id}">${tool.id} - ${tool.name} (คงเหลือ: ${rem} เครื่อง)</option>`;
-            }).join('');
-        } else {
-            selectEl.innerHTML = `<option value="">ไม่พบข้อมูลเครื่องมือช่าง</option>`;
-        }
-    }
-
-    function renderJobGeneralSelect() {
-        let selectEl = document.getElementById("jobSelectGeneral");
-        if (!selectEl) return;
-        selectEl.innerHTML = globalGeneralItems.map(item => 
-            `<option value="${item.id}">${item.id} - ${item.name} (${item.unit})</option>`
-        ).join('');
-    }
-
-    function addJobItemToList() {
-        let prodId = document.getElementById("jobSelectProd").value;
-        let qty = parseInt(document.getElementById("jobItemQty").value) || 1;
-        
-        let found = globalStockData.find(i => i.id === prodId);
-        if (!found) { alert("กรุณาเลือกอุปกรณ์"); return; }
-
-        let stockRemaining = parseInt(found.stock) || 0;
-        if (qty > stockRemaining) {
-            alert(`⚠️ คำเตือน: จำนวนที่ต้องการใช้ (${qty}) มากกว่าสต็อกคงเหลือในคลัง (${stockRemaining})`);
-        }
-
-        let existing = currentJobItems.find(i => i.id === prodId && i.type === 'product');
-        if (existing) {
-            existing.qty += qty;
-        } else {
-            currentJobItems.push({
-                id: found.id,
-                name: found.name,
-                qty: qty,
-                unit: found.unit || 'ชิ้น',
-                type: 'product',
-                checked: false
-            });
-        }
-        renderJobItemsTable();
-    }
-
-    function addJobToolToList() {
-        let toolId = document.getElementById("jobSelectTool").value;
-        let qty = parseInt(document.getElementById("jobToolQty").value) || 1;
-        
-        let found = globalToolsData.find(t => t.id === toolId);
-        if (!found) { alert("กรุณาเลือกเครื่องมือช่าง"); return; }
-
-        let rem = (found.remaining !== undefined) ? found.remaining : found.stock;
-        if (qty > rem) {
-            alert(`⚠️ คำเตือน: จำนวนที่ต้องการใช้ (${qty}) มากกว่าเครื่องมือคงเหลือ (${rem})`);
-        }
-
-        let existing = currentJobItems.find(i => i.id === toolId && i.type === 'tool');
-        if (existing) {
-            existing.qty += qty;
-        } else {
-            currentJobItems.push({
-                id: found.id,
-                name: found.name,
-                qty: qty,
-                unit: 'เครื่อง',
-                type: 'tool',
-                checked: false
-            });
-        }
-        renderJobItemsTable();
-    }
-
-    function addJobGeneralToList() {
-        if (currentUserRole !== 'admin') {
-            alert("❌ ขออภัย! อภิสิทธิ์การเพิ่มหรือลดอุปกรณ์ทั่วไปเป็นของแอดมินเท่านั้น");
-            return;
-        }
-
-        let genId = document.getElementById("jobSelectGeneral").value;
-        let qty = parseInt(document.getElementById("jobGeneralQty").value) || 1;
-        
-        let found = globalGeneralItems.find(i => i.id === genId);
-        if (!found) { alert("กรุณาเลือกอุปกรณ์ทั่วไป"); return; }
-
-        let existing = currentJobItems.find(i => i.id === genId && i.type === 'general');
-        if (existing) {
-            existing.qty += qty;
-        } else {
-            currentJobItems.push({
-                id: found.id,
-                name: found.name,
-                qty: qty,
-                unit: found.unit,
-                type: 'general',
-                checked: false
-            });
-        }
-        renderJobItemsTable();
-    }
-
-    function renderJobItemsTable() {
-        let tableEl = document.getElementById("jobItemsTable");
-        if (!tableEl) return;
-        if (currentJobItems.length === 0) {
-            tableEl.innerHTML = `<tr><td colspan="4">ยังไม่มีอุปกรณ์หรือเครื่องมือในรายการ</td></tr>`;
-            return;
-        }
-        tableEl.innerHTML = currentJobItems.map((item, index) => {
-            let badgeText = '';
-            if (item.type === 'tool') badgeText = '<span style="color:var(--primary); font-size:11px;">(เครื่องมือช่าง)</span>';
-            else if (item.type === 'general') badgeText = '<span style="color:var(--warning); font-size:11px;">(อุปกรณ์ทั่วไป)</span>';
-            else badgeText = '<span style="color:var(--success); font-size:11px;">(อุปกรณ์)</span>';
-
-            return `
-                <tr>
-                    <td><b>${item.id}</b> ${badgeText}</td>
-                    <td>${item.name}</td>
-                    <td>${item.qty} ${item.unit}</td>
-                    <td><button onclick="removeJobItem(${index})" style="background:var(--danger); padding:4px 10px; width:auto; margin:0; font-size:12px;">ลบ</button></td>
-                </tr>
-            `;
-        }).join('');
-    }
-
-    function removeJobItem(index) {
-        let item = currentJobItems[index];
-        if (item && item.type === 'general' && currentUserRole !== 'admin') {
-            alert("❌ ขออภัย! อภิสิทธิ์การเพิ่มหรือลดอุปกรณ์ทั่วไปเป็นของแอดมินเท่านั้น");
-            return;
-        }
-
-        currentJobItems.splice(index, 1);
-        renderJobItemsTable();
-    }
-
-    function saveJobChecklist() {
-        let jobTitle = document.getElementById("jobTitleInput").value.trim();
-        if (!jobTitle) { alert("กรุณาระบุหัวข้องาน / ชื่อโครงการ"); return; }
-        if (currentJobItems.length === 0) { alert("กรุณาเพิ่มอุปกรณ์หรือเครื่องมืออย่างน้อย 1 รายการ"); return; }
-
-        let savedJobs = JSON.parse(localStorage.getItem("jkp_jobs_project") || "[]");
-        let newJob = {
-            id: "JOB-" + Date.now().toString().slice(-6),
-            title: jobTitle,
-            creator: currentUserName,
-            date: new Date().toLocaleString(),
-            items: [...currentJobItems]
-        };
-
-        savedJobs.push(newJob);
-        localStorage.setItem("jkp_jobs_project", JSON.stringify(savedJobs));
-
-        alert("บันทึกใบเตรียมอุปกรณ์หน้างานสำเร็จ!");
-        document.getElementById("jobTitleInput").value = "";
-        currentJobItems = [];
-        renderJobItemsTable();
-        renderSavedJobs();
-    }
-
-    function renderSavedJobs() {
-        let container = document.getElementById("savedJobsContainer");
-        if (!container) return;
-        let savedJobs = JSON.parse(localStorage.getItem("jkp_jobs_project") || "[]");
-
-        if (savedJobs.length === 0) {
-            container.innerHTML = `<p style="color: #64748b; text-align: center;">ยังไม่มีใบงานที่บันทึกไว้</p>`;
-            return;
-        }
-
-        container.innerHTML = savedJobs.slice().reverse().map((job, jobIdx) => {
-            let originalIdx = savedJobs.length - 1 - jobIdx;
-            
-            let totalCount = job.items.length;
-            let checkedCount = job.items.filter(i => i.checked).length;
-            let isCompleted = totalCount > 0 && checkedCount === totalCount;
-
-            return `
-                <div style="background: #f8fafc; border: 1px solid var(--border-color); padding: 16px; border-radius: 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
-                    <div>
-                        <h4 style="margin: 0 0 4px 0; font-size: 15px; color: #0f172a;">📌 ${job.title}</h4>
-                        <small style="color: #64748b;">สร้างโดย: ${job.creator || 'ระบบ'} | บันทึกเมื่อ: ${job.date}</small>
-                        <div style="margin-top: 6px;">
-                            <span class="badge-stock ${isCompleted ? 'badge-normal' : 'badge-low'}">
-                                เช็คลิสต์: ${checkedCount}/${totalCount} รายการ ${isCompleted ? '✅ (ครบแล้ว)' : ''}
-                            </span>
-                        </div>
-                    </div>
-                    <div style="display: flex; gap: 8px;">
-                        <button onclick="openJobModal(${originalIdx})" style="background: var(--primary); padding: 8px 14px; width: auto; font-size: 13px; margin:0;">📂 เปิดดูรายการ</button>
-                        <button onclick="deleteSavedJob(${originalIdx})" style="background: var(--danger); padding: 8px 14px; width: auto; font-size: 13px; margin:0;">ลบใบงาน</button>
-                    </div>
-                </div>
-            `;
-        }).join('');
-    }
-
-    function openJobModal(jobIndex) {
-        activeViewingJobIndex = jobIndex;
-        let savedJobs = JSON.parse(localStorage.getItem("jkp_jobs_project") || "[]");
-        let job = savedJobs[jobIndex];
-        if (!job) return;
-
-        document.getElementById("modalJobTitle").innerText = `📌 ${job.title}`;
-        document.getElementById("modalJobMeta").innerText = `สร้างโดย: ${job.creator || 'ระบบ'} | วันที่: ${job.date}`;
-
-        let itemsHtml = job.items.map((item, itemIdx) => {
-            let labelTypeTag = '';
-            if (item.type === 'tool') labelTypeTag = '<small style="color:var(--primary); font-weight:600;">(เครื่องมือช่าง)</small>';
-            else if (item.type === 'general') labelTypeTag = '<small style="color:var(--warning); font-weight:600;">(อุปกรณ์ทั่วไป)</small>';
-
-            return `
-                <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #e2e8f0;">
-                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 14px; margin:0; flex:1;">
-                        <input type="checkbox" ${item.checked ? 'checked' : ''} onchange="toggleModalItemCheck(${itemIdx})" style="width: 20px; height: 20px; margin:0; cursor: pointer;">
-                        <span style="${item.checked ? 'text-decoration: line-through; color: #94a3b8;' : 'color: #1e293b; font-weight: 500;'}">${item.id} - ${item.name} ${labelTypeTag}</span>
-                    </label>
-                    <span style="font-weight: 600; font-size: 14px; color: ${item.checked ? '#94a3b8' : 'var(--primary)'};">${item.qty} ${item.unit}</span>
-                </div>
-            `;
-        }).join('');
-
-        document.getElementById("modalJobItemsList").innerHTML = itemsHtml;
-        document.getElementById("jobDetailModal").classList.remove("hidden");
-    }
-
-    function closeJobModal() {
-        document.getElementById("jobDetailModal").classList.add("hidden");
-        activeViewingJobIndex = null;
-        renderSavedJobs(); 
-    }
-
-    function toggleModalItemCheck(itemIndex) {
-        if (activeViewingJobIndex === null) return;
-        let savedJobs = JSON.parse(localStorage.getItem("jkp_jobs_project") || "[]");
-        let job = savedJobs[activeViewingJobIndex];
-        if (job && job.items[itemIndex]) {
-            job.items[itemIndex].checked = !job.items[itemIndex].checked;
-            localStorage.setItem("jkp_jobs_project", JSON.stringify(savedJobs));
-            openJobModal(activeViewingJobIndex);
-        }
-    }
-
-    function deleteSavedJob(index) {
-        if (confirm("ต้องการลบใบรายการนี้ใช่หรือไม่?")) {
-            let savedJobs = JSON.parse(localStorage.getItem("jkp_jobs_project") || "[]");
-            savedJobs.splice(index, 1);
-            localStorage.setItem("jkp_jobs_project", JSON.stringify(savedJobs));
-            renderSavedJobs();
-        }
-    }
-
-    // ฟังก์ชันกด "เสร็จสิ้น / บันทึกการตรวจสอบ" เพื่อตัดสต็อกสินค้าและเพิ่มยอดเครื่องมืออัตโนมัติ
-    function handleCompleteJob() {
-        if (activeViewingJobIndex === null) return;
-        let savedJobs = JSON.parse(localStorage.getItem("jkp_jobs_project") || "[]");
-        let job = savedJobs[activeViewingJobIndex];
-        if (!job || !job.items || job.items.length === 0) {
-            alert("ไม่พบรายการอุปกรณ์ในใบงานนี้");
-            return;
-        }
-
-        let payloadItems = job.items.map(i => ({
-            id: i.id,
-            qty: i.qty,
-            type: i.type // product, tool, general
-        }));
-
-        fetch(WEB_APP_URL, {
-            method: "POST",
-            body: JSON.stringify({
-                action: "completeJob",
-                jobId: job.id,
-                userName: currentUserName,
-                items: payloadItems
-            })
-        })
-        .then(res => res.json())
-        .then(result => {
-            if (result.status === "success") {
-                alert("บันทึกการตรวจสอบและตัดสต็อก/เครื่องมือเรียบร้อยแล้ว!");
-                job.items.forEach(i => i.checked = true);
-                localStorage.setItem("jkp_jobs_project", JSON.stringify(savedJobs));
-                closeJobModal();
-                loadData();
-            } else {
-                alert("เกิดข้อผิดพลาด: " + result.message);
-            }
-        })
-        .catch(err => {
-            console.error("Error:", err);
-            alert("เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์");
-        });
-    }
-
-    // ================= ระบบจัดการผู้ใช้และ API เดิม =================
     function registerMember() {
         let mId = document.getElementById("newMemberId").value.trim();
         let mName = document.getElementById("newMemberName").value.trim();
