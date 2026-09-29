@@ -458,6 +458,34 @@
             </table>
         </div>
 
+        <!-- 🔄 ตารางประวัติการเบิกสินค้า (Stock Transaction Logs) -->
+        <div class="section-box">
+            <h3>🔄 ประวัติการเบิกสินค้า / ตัดสต็อก</h3>
+            <div class="filter-bar">
+                <div class="filter-item" style="flex: 2;">
+                    <label>🔍 ค้นหาประวัติการเบิก (รหัสอุปกรณ์ / ชื่อ / ไซท์ / ผู้เบิก):</label>
+                    <input type="text" id="stockLogSearchKeyword" placeholder="พิมพ์คำค้นหา..." oninput="filterStockLogs()">
+                </div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>วัน-เวลา</th>
+                        <th>ผู้เบิก</th>
+                        <th>รหัสไซท์งาน</th>
+                        <th>รหัสอุปกรณ์</th>
+                        <th>ชื่ออุปกรณ์</th>
+                        <th>จำนวนที่เบิก</th>
+                        <th>หน่วย</th>
+                        <th>คงเหลือหลังเบิก</th>
+                    </tr>
+                </thead>
+                <tbody id="stockLogTableBody">
+                    <tr><td colspan="8">กำลังโหลดข้อมูลประวัติการเบิก...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
     </div>
 
 </div>
@@ -478,7 +506,7 @@
 
 <script>
     // ⚠️ เปลี่ยน URL ด้านล่างนี้เป็น Web App URL ล่าสุดของคุณหลังจากการ Deploy บน Apps Script
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzDVEHaY3sJ7gCS_dYsJ6q2osWg-lGCxPtWueJadXYUZuYicu9ilxkmtvFRvsBUqdrJSQ/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzFx_cpKPhsb-Vsh11Df3fX883GOt84xtgjN-jZheuyCxrZxQqeij-pgN5_M881qgn38w/exec";
     
     let currentUserName = "";
     let currentUsernameId = "";
@@ -486,6 +514,7 @@
     let globalStockMap = {};
     let globalJobTemplates = {};
     let globalRawLogs = [];
+    let globalStockLogs = []; // เก็บข้อมูลประวัติการเบิกสินค้า
     let selectedExtraItems = [];
 
     window.onload = function() {
@@ -786,6 +815,7 @@
             globalJobTemplates = data.templates || {};
             let jobTypes = data.jobTypes || [];
             globalRawLogs = data.logs || [];
+            globalStockLogs = data.stockLogs || []; // โหลดประวัติการเบิกสินค้า
 
             let selectHtml = `<option value="">-- กรุณาเลือกประเภทงาน --</option>`;
             jobTypes.forEach(jt => {
@@ -831,6 +861,7 @@
             document.getElementById("extraStockSelect").innerHTML = extraSelectHtml;
 
             filterHistoryLogs();
+            filterStockLogs(); // เรนเดอร์ตารางประวัติการเบิกสินค้า
         });
     }
 
@@ -903,6 +934,34 @@
         });
 
         document.getElementById("historyTableBody").innerHTML = html || `<tr><td colspan="7">ไม่พบประวัติการตรวจเช็คตามเงื่อนไขที่ค้นหา</td></tr>`;
+    }
+
+    function filterStockLogs() {
+        let keyword = document.getElementById("stockLogSearchKeyword").value.trim().toLowerCase();
+
+        let filtered = globalStockLogs.slice().reverse().filter(sLog => {
+            return !keyword || 
+                (sLog.siteId && sLog.siteId.toLowerCase().includes(keyword)) ||
+                (sLog.user && sLog.user.toLowerCase().includes(keyword)) ||
+                (sLog.stockId && sLog.stockId.toLowerCase().includes(keyword)) ||
+                (sLog.itemName && sLog.itemName.toLowerCase().includes(keyword));
+        });
+
+        let html = "";
+        filtered.forEach(sLog => {
+            html += `<tr>
+                <td>${new Date(sLog.time).toLocaleString('th-TH')}</td>
+                <td>${sLog.user}</td>
+                <td><b>${sLog.siteId}</b></td>
+                <td>${sLog.stockId}</td>
+                <td style="text-align:left;">${sLog.itemName}</td>
+                <td><span style="color:var(--danger); font-weight:600;">-${sLog.qty}</span></td>
+                <td>${sLog.unit}</td>
+                <td><b>${sLog.balance}</b></td>
+            </tr>`;
+        });
+
+        document.getElementById("stockLogTableBody").innerHTML = html || `<tr><td colspan="8">ไม่พบประวัติการเบิกสินค้าตามเงื่อนไขที่ค้นหา</td></tr>`;
     }
 
     function showItemsModal(siteId, encodedItems) {
