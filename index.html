@@ -213,6 +213,44 @@
         .badge { padding: 4px 10px; border-radius: 20px; font-weight: 600; font-size: 12px; }
         .badge-success { background: #d1fae5; color: #065f46; }
         .badge-danger { background: #fee2e2; color: #991b1b; }
+
+        .btn-view-items {
+            background: #0284c7;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            margin: 0;
+            width: auto;
+        }
+        .btn-view-items:hover { background: #0369a1; }
+
+        /* Pop-up Modal Styling */
+        .modal-backdrop {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 9999;
+        }
+        .modal-card {
+            background: #ffffff; width: 90%; max-width: 550px;
+            border-radius: 16px; padding: 24px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+            max-height: 80vh; display: flex; flex-direction: column;
+        }
+        .modal-header {
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 15px;
+        }
+        .modal-header h4 { margin: 0; font-size: 16px; color: #0f172a; }
+        .modal-body { overflow-y: auto; flex: 1; text-align: left; }
+        .item-list-group { display: flex; flex-direction: column; gap: 6px; }
+        .item-list-row {
+            padding: 8px 12px; background: #f8fafc; border-radius: 8px;
+            border: 1px solid var(--border-color); font-size: 13px; color: #334155;
+            display: flex; align-items: center; gap: 8px;
+        }
     </style>
 </head>
 <body>
@@ -335,7 +373,7 @@
             </table>
         </div>
 
-        <!-- 📜 ตารางประวัติการตรวจเช็ค (พร้อมระบบกรองดูย้อนหลัง) -->
+        <!-- 📜 ตารางประวัติการตรวจเช็ค -->
         <div class="section-box">
             <h3>📜 ประวัติการตรวจเช็คก่อนออกหน้างาน</h3>
             
@@ -371,11 +409,12 @@
                         <th>รหัสงาน/ไซท์</th>
                         <th>ประเภทงาน</th>
                         <th>ผลการเช็ค</th>
+                        <th>รายการอุปกรณ์ที่นำไป</th>
                         <th>รายการที่ขาด/หมายเหตุ</th>
                     </tr>
                 </thead>
                 <tbody id="historyTableBody">
-                    <tr><td colspan="6">กำลังโหลดข้อมูล...</td></tr>
+                    <tr><td colspan="7">กำลังโหลดข้อมูล...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -384,15 +423,29 @@
 
 </div>
 
+<!-- Pop-up แสดงรายการอุปกรณ์ที่นำไป -->
+<div id="itemsModal" class="modal-backdrop hidden">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h4 id="modalTitle">📦 รายการอุปกรณ์ที่จัดเตรียมออกหน้างาน</h4>
+            <span style="cursor:pointer; font-size: 20px; font-weight: bold; color: #64748b;" onclick="closeModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div id="modalItemsContent" class="item-list-group"></div>
+        </div>
+        <button onclick="closeModal()" style="margin-top: 15px; background: #64748b; padding: 10px;">ปิดหน้าต่าง</button>
+    </div>
+</div>
+
 <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxqBHDf79gXHJATWvfrdOOgWAYyShHOOC7QtQVDAkUPYyUgASkWbSrkb6o40AVF79y0/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzt9s2it9eSNf51f_ntNR-DSJFScwpXcUKVkV3qTce5cecfbv-f38p3-1fqNs-HGHcq/exec";
     
     let currentUserName = "";
     let currentUsernameId = "";
     let currentUserRole = "";
     let globalStockMap = {};
     let globalJobTemplates = {};
-    let globalRawLogs = []; // เก็บประวัติทั้งหมดสำหรับใช้ค้นหาย้อนหลัง
+    let globalRawLogs = [];
 
     window.onload = function() {
         checkSession();
@@ -566,12 +619,14 @@
         if (!siteId) { alert("กรุณากรอกรหัสงาน / ไซท์งาน"); return; }
         if (!jobKey) { alert("กรุณาเลือกประเภทงาน"); return; }
 
+        let checkedItemsList = [];
         let missingItems = [];
         let usedItems = [];
         let checkboxes = document.querySelectorAll('.item-chk');
         
         checkboxes.forEach((cb) => {
             if (cb.checked) {
+                checkedItemsList.push(cb.value);
                 let stockId = cb.getAttribute('data-stock-id');
                 let deductQty = parseInt(cb.getAttribute('data-deduct-qty')) || 0;
                 if (stockId && deductQty > 0) {
@@ -600,7 +655,8 @@
                 status: isComplete ? "อุปกรณ์ครบถ้วน" : "อุปกรณ์ไม่ครบ",
                 missingItems: missingItems.length > 0 ? missingItems.join(", ") : "-",
                 note: note,
-                usedItems: usedItems
+                usedItems: usedItems,
+                checkedItems: checkedItemsList.join(" | ") // บันทึกรายการที่ติ๊กเช็คทั้งหมด
             })
         })
         .then(res => res.json())
@@ -627,14 +683,12 @@
             let jobTypes = data.jobTypes || [];
             globalRawLogs = data.logs || [];
 
-            // 1. Dropdown ประเภทงาน
             let selectHtml = `<option value="">-- กรุณาเลือกประเภทงาน --</option>`;
             jobTypes.forEach(jt => {
                 selectHtml += `<option value="${jt.key}">${jt.name}</option>`;
             });
             document.getElementById("jobTypeSelect").innerHTML = selectHtml;
 
-            // 2. ตารางสต็อกสินค้า
             let stockHtml = "";
             for (let id in globalStockMap) {
                 let st = globalStockMap[id];
@@ -648,12 +702,10 @@
             }
             document.getElementById("stockTableBody").innerHTML = stockHtml || `<tr><td colspan="4">ไม่มีข้อมูลสต็อก</td></tr>`;
 
-            // 3. Render ตารางประวัติ (ผ่านระบบกรอง)
             filterHistoryLogs();
         });
     }
 
-    // 🔍 ฟังก์ชันกรองประวัติการตรวจเช็คย้อนหลัง
     function filterHistoryLogs() {
         let keyword = document.getElementById("searchKeyword").value.trim().toLowerCase();
         let statusFilter = document.getElementById("filterStatus").value;
@@ -664,7 +716,6 @@
         let completeCount = 0;
         let incompleteCount = 0;
 
-        // นับสถิติทั้งหมด
         globalRawLogs.forEach(log => {
             if (log.status === "อุปกรณ์ครบถ้วน") completeCount++;
             else incompleteCount++;
@@ -674,9 +725,7 @@
         document.getElementById("statCompleteChecks").innerText = completeCount;
         document.getElementById("statIncompleteChecks").innerText = incompleteCount;
 
-        // กรองข้อมูลตามคำค้นหา สถานะ และช่วงวันที่
         let filteredLogs = globalRawLogs.slice().reverse().filter(log => {
-            // กรองด้วยคำค้นหา
             let matchesKeyword = !keyword || 
                 (log.siteId && log.siteId.toLowerCase().includes(keyword)) ||
                 (log.user && log.user.toLowerCase().includes(keyword)) ||
@@ -684,10 +733,8 @@
                 (log.missing && log.missing.toLowerCase().includes(keyword)) ||
                 (log.note && log.note.toLowerCase().includes(keyword));
 
-            // กรองด้วยสถานะ
             let matchesStatus = statusFilter === "ALL" || log.status === statusFilter;
 
-            // กรองด้วยวันที่
             let logDate = new Date(log.time);
             let matchesStartDate = true;
             let matchesEndDate = true;
@@ -707,10 +754,10 @@
             return matchesKeyword && matchesStatus && matchesStartDate && matchesEndDate;
         });
 
-        // แสดงผลลัพธ์การกรองลงตาราง
         let html = "";
-        filteredLogs.forEach(log => {
+        filteredLogs.forEach((log, index) => {
             let badgeClass = log.status === "อุปกรณ์ครบถ้วน" ? "badge-success" : "badge-danger";
+            let itemsStr = log.checkedItems || "-";
 
             html += `<tr>
                 <td>${new Date(log.time).toLocaleString('th-TH')}</td>
@@ -718,11 +765,40 @@
                 <td><b>${log.siteId}</b></td>
                 <td>${log.jobType}</td>
                 <td><span class="badge ${badgeClass}">${log.status}</span></td>
+                <td>
+                    <button class="btn-view-items" onclick="showItemsModal('${log.siteId}', '${encodeURIComponent(itemsStr)}')">
+                        📦 ดูรายการที่นำไป
+                    </button>
+                </td>
                 <td>${log.missing || log.note || '-'}</td>
             </tr>`;
         });
 
-        document.getElementById("historyTableBody").innerHTML = html || `<tr><td colspan="6">ไม่พบประวัติการตรวจเช็คตามเงื่อนไขที่ค้นหา</td></tr>`;
+        document.getElementById("historyTableBody").innerHTML = html || `<tr><td colspan="7">ไม่พบประวัติการตรวจเช็คตามเงื่อนไขที่ค้นหา</td></tr>`;
+    }
+
+    // 📦 ฟังก์ชันแสดง Pop-up ดูรายการอุปกรณ์ที่นำไป
+    function showItemsModal(siteId, encodedItems) {
+        let rawItems = decodeURIComponent(encodedItems);
+        document.getElementById("modalTitle").innerText = `📦 รายการอุปกรณ์ที่นำไป (ไซท์: ${siteId})`;
+        
+        let container = document.getElementById("modalItemsContent");
+        if (!rawItems || rawItems === "-") {
+            container.innerHTML = `<div class="item-list-row">ไม่มีข้อมูลรายการอุปกรณ์</div>`;
+        } else {
+            let itemsList = rawItems.split(" | ");
+            let listHtml = "";
+            itemsList.forEach((item, idx) => {
+                listHtml += `<div class="item-list-row">✅ ${idx + 1}. ${item}</div>`;
+            });
+            container.innerHTML = listHtml;
+        }
+
+        document.getElementById("itemsModal").classList.remove("hidden");
+    }
+
+    function closeModal() {
+        document.getElementById("itemsModal").classList.add("hidden");
     }
 
     function registerMember() {
