@@ -269,7 +269,7 @@
             background: #ffffff;
         }
 
-        table { width: 100%; margin-top: 10px; border-collapse: separate; border-spacing: 0; font-size: 13px; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; }
+        table { width: 100%; margin-top: 8px; border-collapse: separate; border-spacing: 0; font-size: 13px; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; }
         th, td { padding: 10px 12px; text-align: center; border-bottom: 1px solid var(--border-color); border-right: 1px solid var(--border-color); }
         th { background: #f8fafc; color: #475569; font-weight: 600; }
         .badge { padding: 3px 8px; border-radius: 16px; font-weight: 600; font-size: 11px; }
@@ -439,24 +439,13 @@
             </div>
         </div>
 
-        <!-- 📑 Tab 2: สต็อกคงเหลือ -->
+        <!-- 📑 Tab 2: สต็อกคงเหลือ (แยกตารางตามหมวดหมู่) -->
         <div id="tab-stock" class="tab-content">
             <div class="section-box">
-                <h3>📦 สต็อกคงเหลือปัจจุบันในคลัง</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>รหัส</th>
-                            <th>หมวดหมู่</th>
-                            <th>ชื่ออุปกรณ์/วัสดุ</th>
-                            <th>จำนวนคงเหลือในคลัง</th>
-                            <th>หน่วยนับ</th>
-                        </tr>
-                    </thead>
-                    <tbody id="stockTableBody">
-                        <tr><td colspan="5">กำลังโหลดข้อมูลสต็อก...</td></tr>
-                    </tbody>
-                </table>
+                <h3>📦 สต็อกคงเหลือปัจจุบันในคลัง (แยกตามหมวดหมู่)</h3>
+                <div id="stockCategoryContainer">
+                    <p>กำลังโหลดข้อมูลสต็อก...</p>
+                </div>
             </div>
         </div>
 
@@ -571,7 +560,6 @@
         checkSession();
     };
 
-    // ฟังก์ชันจัดการสลับหน้า Tabs
     function switchTab(tabId, btnElement) {
         document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
         document.querySelectorAll('.nav-tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -843,7 +831,7 @@
         let isComplete = missingItems.length === 0;
 
         if (!isComplete) {
-            let confirmProceed = confirm(`⚠️️ คำเตือน: คุณยังไม่ได้จัดเตรียมอุปกรณ์แม่แบบหลัก ${missingItems.length} รายการ:\n- ${missingItems.join('\n- ')}\n\nคุณยังคงต้องการบันทึกและออกเดินทางใช่หรือไม่?`);
+            let confirmProceed = confirm(`⚠ คำเตือน: คุณยังไม่ได้จัดเตรียมอุปกรณ์แม่แบบหลัก ${missingItems.length} รายการ:\n- ${missingItems.join('\n- ')}\n\nคุณยังคงต้องการบันทึกและออกเดินทางใช่หรือไม่?`);
             if (!confirmProceed) return;
         }
 
@@ -895,7 +883,7 @@
             document.getElementById("jobTypeSelect").innerHTML = selectHtml;
 
             let extraSelectHtml = `<option value="">-- เลือกอุปกรณ์เสริมจากคลัง --</option>`;
-            let stockHtml = "";
+            let stockCategoryContainerHtml = "";
             let stockGrouped = {};
 
             for (let id in globalStockMap) {
@@ -911,12 +899,29 @@
             for (let catName in stockGrouped) {
                 extraSelectHtml += `<optgroup label="📂 ${catName}">`;
                 
+                // สร้างกล่องหัวข้อหมวดหมู่แยกตารางแต่ละหมวดให้อัตโนมัติ
+                stockCategoryContainerHtml += `
+                    <div style="margin-bottom: 20px;">
+                        <h4 style="margin: 0 0 6px 0; color: var(--primary); font-size: 14px; display: flex; align-items: center; gap: 6px;">
+                            📂 หมวดหมู่: ${catName}
+                        </h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 15%;">รหัส</th>
+                                    <th style="width: 45%;">ชื่ออุปกรณ์/วัสดุ</th>
+                                    <th style="width: 25%;">จำนวนคงเหลือในคลัง</th>
+                                    <th style="width: 15%;">หน่วยนับ</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+
                 stockGrouped[catName].forEach(st => {
                     let badgeClass = st.qty <= 2 ? "badge-danger" : "badge-success";
                     
-                    stockHtml += `<tr>
+                    stockCategoryContainerHtml += `<tr>
                         <td><b>${st.id}</b></td>
-                        <td><span style="font-weight:600; color:#0284c7;">${catName}</span></td>
                         <td style="text-align:left;">${st.name}</td>
                         <td><span class="badge ${badgeClass}">${st.qty}</span></td>
                         <td>${st.unit}</td>
@@ -925,10 +930,11 @@
                     extraSelectHtml += `<option value="${st.id}">[${st.id}] ${st.name} (คงเหลือ: ${st.qty} ${st.unit})</option>`;
                 });
 
+                stockCategoryContainerHtml += `</tbody></table></div>`;
                 extraSelectHtml += `</optgroup>`;
             }
 
-            document.getElementById("stockTableBody").innerHTML = stockHtml || `<tr><td colspan="5">ไม่มีข้อมูลสต็อก</td></tr>`;
+            document.getElementById("stockCategoryContainer").innerHTML = stockCategoryContainerHtml || `<p>ไม่มีข้อมูลสต็อก</p>`;
             document.getElementById("extraStockSelect").innerHTML = extraSelectHtml;
 
             filterHistoryLogs();
