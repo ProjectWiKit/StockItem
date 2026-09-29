@@ -177,6 +177,36 @@
         .stock-ok { background: #d1fae5; color: #065f46; }
         .stock-low { background: #fee2e2; color: #991b1b; }
 
+        /* Filter Controls Bar */
+        .filter-bar {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 15px;
+        }
+        .filter-bar .filter-item {
+            flex: 1;
+            min-width: 180px;
+            margin: 0;
+        }
+        .filter-bar label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #64748b;
+            margin-bottom: 4px;
+            display: block;
+        }
+        .filter-bar input, .filter-bar select {
+            margin: 0;
+            padding: 8px 12px;
+            font-size: 13px;
+            background: #ffffff;
+        }
+
         table { width: 100%; margin-top: 12px; border-collapse: separate; border-spacing: 0; font-size: 14px; border: 1px solid var(--border-color); border-radius: 10px; overflow: hidden; }
         th, td { padding: 12px 14px; text-align: center; border-bottom: 1px solid var(--border-color); border-right: 1px solid var(--border-color); }
         th { background: #f8fafc; color: #475569; font-weight: 600; }
@@ -305,9 +335,34 @@
             </table>
         </div>
 
-        <!-- 📜 ตารางประวัติการตรวจเช็ค -->
+        <!-- 📜 ตารางประวัติการตรวจเช็ค (พร้อมระบบกรองดูย้อนหลัง) -->
         <div class="section-box">
             <h3>📜 ประวัติการตรวจเช็คก่อนออกหน้างาน</h3>
+            
+            <!-- แถบเครื่องมือกรองค้นหาประวัติย้อนหลัง -->
+            <div class="filter-bar">
+                <div class="filter-item">
+                    <label>🔍 ค้นหา (รหัสไซท์ / ผู้ตรวจ / งาน):</label>
+                    <input type="text" id="searchKeyword" placeholder="พิมพ์คำค้นหา..." oninput="filterHistoryLogs()">
+                </div>
+                <div class="filter-item">
+                    <label>📌 สถานะ:</label>
+                    <select id="filterStatus" onchange="filterHistoryLogs()">
+                        <option value="ALL">ทั้งหมด</option>
+                        <option value="อุปกรณ์ครบถ้วน">อุปกรณ์ครบถ้วน</option>
+                        <option value="อุปกรณ์ไม่ครบ">อุปกรณ์ไม่ครบ</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <label>📅 ตั้งแต่วันที่:</label>
+                    <input type="date" id="filterStartDate" onchange="filterHistoryLogs()">
+                </div>
+                <div class="filter-item">
+                    <label>📅 ถึงวันที่:</label>
+                    <input type="date" id="filterEndDate" onchange="filterHistoryLogs()">
+                </div>
+            </div>
+
             <table>
                 <thead>
                     <tr>
@@ -330,13 +385,14 @@
 </div>
 
 <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz7JyWjfZ2Q5a-_9uUr-AdKCikS80j5UQlCf8Ero6sLoUXPlXIm_MPwss_niTjB6TEC/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxqBHDf79gXHJATWvfrdOOgWAYyShHOOC7QtQVDAkUPYyUgASkWbSrkb6o40AVF79y0/exec";
     
     let currentUserName = "";
     let currentUsernameId = "";
     let currentUserRole = "";
     let globalStockMap = {};
-    let globalJobTemplates = {}; // แม่แบบที่ดึงมาจาก Google Sheet
+    let globalJobTemplates = {};
+    let globalRawLogs = []; // เก็บประวัติทั้งหมดสำหรับใช้ค้นหาย้อนหลัง
 
     window.onload = function() {
         checkSession();
@@ -410,7 +466,6 @@
         toggleAuth('login');
     }
 
-    // 🔄 โหลดรายการ Checklist จากข้อมูลที่ดึงมาจาก Google Sheet
     function loadJobChecklist() {
         let jobKey = document.getElementById("jobTypeSelect").value;
         let categoriesContainer = document.getElementById("checklistCategories");
@@ -563,7 +618,6 @@
         });
     }
 
-    // 📥 ดึงข้อมูลประวัติ สต็อก และแม่แบบ JobTemplates จาก Google Sheet
     function loadHistoryData() {
         fetch(WEB_APP_URL)
         .then(res => res.json())
@@ -571,16 +625,16 @@
             globalStockMap = data.stock || {};
             globalJobTemplates = data.templates || {};
             let jobTypes = data.jobTypes || [];
-            let logs = data.logs || [];
+            globalRawLogs = data.logs || [];
 
-            // 1. สร้าง Dropdown ตัวเลือกประเภทงาน Dynamic ตาม Sheet
+            // 1. Dropdown ประเภทงาน
             let selectHtml = `<option value="">-- กรุณาเลือกประเภทงาน --</option>`;
             jobTypes.forEach(jt => {
                 selectHtml += `<option value="${jt.key}">${jt.name}</option>`;
             });
             document.getElementById("jobTypeSelect").innerHTML = selectHtml;
 
-            // 2. Render ตารางสต็อกสินค้าในคลัง
+            // 2. ตารางสต็อกสินค้า
             let stockHtml = "";
             for (let id in globalStockMap) {
                 let st = globalStockMap[id];
@@ -594,33 +648,81 @@
             }
             document.getElementById("stockTableBody").innerHTML = stockHtml || `<tr><td colspan="4">ไม่มีข้อมูลสต็อก</td></tr>`;
 
-            // 3. Render ตารางประวัติ
-            let total = logs.length;
-            let completeCount = 0;
-            let incompleteCount = 0;
-            let html = "";
-            
-            logs.slice().reverse().forEach(log => {
-                if (log.status === "อุปกรณ์ครบถ้วน") completeCount++;
-                else incompleteCount++;
-
-                let badgeClass = log.status === "อุปกรณ์ครบถ้วน" ? "badge-success" : "badge-danger";
-
-                html += `<tr>
-                    <td>${new Date(log.time).toLocaleString()}</td>
-                    <td>${log.user}</td>
-                    <td><b>${log.siteId}</b></td>
-                    <td>${log.jobType}</td>
-                    <td><span class="badge ${badgeClass}">${log.status}</span></td>
-                    <td>${log.missing || log.note || '-'}</td>
-                </tr>`;
-            });
-
-            document.getElementById("statTotalChecks").innerText = total;
-            document.getElementById("statCompleteChecks").innerText = completeCount;
-            document.getElementById("statIncompleteChecks").innerText = incompleteCount;
-            document.getElementById("historyTableBody").innerHTML = html || `<tr><td colspan="6">ยังไม่มีประวัติการตรวจเช็ค</td></tr>`;
+            // 3. Render ตารางประวัติ (ผ่านระบบกรอง)
+            filterHistoryLogs();
         });
+    }
+
+    // 🔍 ฟังก์ชันกรองประวัติการตรวจเช็คย้อนหลัง
+    function filterHistoryLogs() {
+        let keyword = document.getElementById("searchKeyword").value.trim().toLowerCase();
+        let statusFilter = document.getElementById("filterStatus").value;
+        let startDateVal = document.getElementById("filterStartDate").value;
+        let endDateVal = document.getElementById("filterEndDate").value;
+
+        let total = globalRawLogs.length;
+        let completeCount = 0;
+        let incompleteCount = 0;
+
+        // นับสถิติทั้งหมด
+        globalRawLogs.forEach(log => {
+            if (log.status === "อุปกรณ์ครบถ้วน") completeCount++;
+            else incompleteCount++;
+        });
+
+        document.getElementById("statTotalChecks").innerText = total;
+        document.getElementById("statCompleteChecks").innerText = completeCount;
+        document.getElementById("statIncompleteChecks").innerText = incompleteCount;
+
+        // กรองข้อมูลตามคำค้นหา สถานะ และช่วงวันที่
+        let filteredLogs = globalRawLogs.slice().reverse().filter(log => {
+            // กรองด้วยคำค้นหา
+            let matchesKeyword = !keyword || 
+                (log.siteId && log.siteId.toLowerCase().includes(keyword)) ||
+                (log.user && log.user.toLowerCase().includes(keyword)) ||
+                (log.jobType && log.jobType.toLowerCase().includes(keyword)) ||
+                (log.missing && log.missing.toLowerCase().includes(keyword)) ||
+                (log.note && log.note.toLowerCase().includes(keyword));
+
+            // กรองด้วยสถานะ
+            let matchesStatus = statusFilter === "ALL" || log.status === statusFilter;
+
+            // กรองด้วยวันที่
+            let logDate = new Date(log.time);
+            let matchesStartDate = true;
+            let matchesEndDate = true;
+
+            if (startDateVal) {
+                let startDate = new Date(startDateVal);
+                startDate.setHours(0, 0, 0, 0);
+                matchesStartDate = logDate >= startDate;
+            }
+
+            if (endDateVal) {
+                let endDate = new Date(endDateVal);
+                endDate.setHours(23, 59, 59, 999);
+                matchesEndDate = logDate <= endDate;
+            }
+
+            return matchesKeyword && matchesStatus && matchesStartDate && matchesEndDate;
+        });
+
+        // แสดงผลลัพธ์การกรองลงตาราง
+        let html = "";
+        filteredLogs.forEach(log => {
+            let badgeClass = log.status === "อุปกรณ์ครบถ้วน" ? "badge-success" : "badge-danger";
+
+            html += `<tr>
+                <td>${new Date(log.time).toLocaleString('th-TH')}</td>
+                <td>${log.user}</td>
+                <td><b>${log.siteId}</b></td>
+                <td>${log.jobType}</td>
+                <td><span class="badge ${badgeClass}">${log.status}</span></td>
+                <td>${log.missing || log.note || '-'}</td>
+            </tr>`;
+        });
+
+        document.getElementById("historyTableBody").innerHTML = html || `<tr><td colspan="6">ไม่พบประวัติการตรวจเช็คตามเงื่อนไขที่ค้นหา</td></tr>`;
     }
 
     function registerMember() {
