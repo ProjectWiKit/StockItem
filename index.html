@@ -177,6 +177,35 @@
         .stock-ok { background: #d1fae5; color: #065f46; }
         .stock-low { background: #fee2e2; color: #991b1b; }
 
+        /* Extra Custom Items Box */
+        .extra-items-box {
+            background: #fffbebfb;
+            border: 1px dashed var(--warning);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        .extra-item-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            margin-right: 8px;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .extra-item-tag .btn-remove-tag {
+            color: var(--danger);
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
         /* Filter Controls Bar */
         .filter-bar {
             display: flex;
@@ -341,10 +370,27 @@
 
             <!-- กล่องแสดง Checklist อุปกรณ์แยกตามหมวดหมู่ -->
             <div id="checklistSection" class="hidden">
-                <h4 style="margin-bottom: 8px; color: #334155;">รายการอุปกรณ์แยกตามหมวดหมู่:</h4>
-                <p style="font-size: 12px; color: #64748b; margin-top: 0;">* รายการแม่แบบอุปกรณ์นี้ดึงมาจาก Google Sheet โดยตรง</p>
+                <h4 style="margin-bottom: 8px; color: #334155;">รายการอุปกรณ์หลักตามแม่แบบงาน:</h4>
+                <p style="font-size: 12px; color: #64748b; margin-top: 0;">* รายการแม่แบบอุปกรณ์ดึงมาจาก Google Sheet ตามประเภทงานที่เลือก</p>
                 
                 <div id="checklistCategories"></div>
+
+                <!-- 🛠️ กล่องสำหรับเลือกอุปกรณ์เสริมเพิ่มเติมเข้างาน -->
+                <div class="extra-items-box">
+                    <h5 style="margin: 0 0 8px 0; color: #b45309; font-size: 14px;">➕ เบิกอุปกรณ์ / วัสดุเสริมเพิ่มเติม (อยู่นอกแม่แบบงาน):</h5>
+                    <p style="font-size: 12px; color: #78350f; margin-top: 0;">สามารถเลือกอุปกรณ์ยิบย่อยจากคลังสต็อกเพื่อนำไปเพิ่มเติมในงานนี้ได้</p>
+                    
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                        <select id="extraStockSelect" style="flex: 2; min-width: 200px; margin: 0;">
+                            <option value="">-- เลือกอุปกรณ์เสริมจากคลัง --</option>
+                        </select>
+                        <input type="number" id="extraStockQty" placeholder="จำนวน" value="1" min="1" style="width: 90px; margin: 0;">
+                        <button type="button" onclick="addExtraItem()" style="width: auto; background: #d97706; padding: 10px 18px; margin: 0;">➕ เพิ่มรายการ</button>
+                    </div>
+
+                    <!-- รายการอุปกรณ์เสริมที่ถูกเลือกเพิ่มเข้ามา -->
+                    <div id="extraItemsListContainer" style="margin-top: 12px;"></div>
+                </div>
 
                 <div class="input-group" style="margin-top: 15px;">
                     <label>หมายเหตุเพิ่มเติม (ถ้ามี):</label>
@@ -377,7 +423,6 @@
         <div class="section-box">
             <h3>📜 ประวัติการตรวจเช็คก่อนออกหน้างาน</h3>
             
-            <!-- แถบเครื่องมือกรองค้นหาประวัติย้อนหลัง -->
             <div class="filter-bar">
                 <div class="filter-item">
                     <label>🔍 ค้นหา (รหัสไซท์ / ผู้ตรวจ / งาน):</label>
@@ -446,6 +491,7 @@
     let globalStockMap = {};
     let globalJobTemplates = {};
     let globalRawLogs = [];
+    let selectedExtraItems = []; // เก็บอุปกรณ์เสริมที่เลือกเพิ่มเข้ามา
 
     window.onload = function() {
         checkSession();
@@ -523,6 +569,9 @@
         let jobKey = document.getElementById("jobTypeSelect").value;
         let categoriesContainer = document.getElementById("checklistCategories");
         let section = document.getElementById("checklistSection");
+
+        selectedExtraItems = []; // รีเซ็ตรายการเสริมเมื่อเปลี่ยนงาน
+        renderExtraItems();
 
         if (!jobKey || !globalJobTemplates[jobKey]) {
             section.classList.add("hidden");
@@ -609,6 +658,59 @@
         });
     }
 
+    // ➕ ฟังก์ชันสำหรับเพิ่มอุปกรณ์เสริมจาก Dropdown สต็อก
+    function addExtraItem() {
+        let stockId = document.getElementById("extraStockSelect").value;
+        let qty = parseInt(document.getElementById("extraStockQty").value) || 1;
+
+        if (!stockId) { alert("กรุณาเลือกอุปกรณ์จากคลังสต็อก"); return; }
+        if (qty <= 0) { alert("กรุณาระบุจำนวนที่ถูกต้อง"); return; }
+
+        let itemData = globalStockMap[stockId];
+        if (!itemData) return;
+
+        // ตรวจสอบว่าเลือกซ้ำไปหรือยัง
+        let existing = selectedExtraItems.find(x => x.stockId === stockId);
+        if (existing) {
+            existing.qty += qty;
+        } else {
+            selectedExtraItems.push({
+                stockId: stockId,
+                name: itemData.name,
+                qty: qty,
+                unit: itemData.unit
+            });
+        }
+
+        document.getElementById("extraStockSelect").value = "";
+        document.getElementById("extraStockQty").value = "1";
+        renderExtraItems();
+    }
+
+    function removeExtraItem(index) {
+        selectedExtraItems.splice(index, 1);
+        renderExtraItems();
+    }
+
+    function renderExtraItems() {
+        let container = document.getElementById("extraItemsListContainer");
+        if (selectedExtraItems.length === 0) {
+            container.innerHTML = `<span style="font-size:12px; color:#94a3b8;">ยังไม่มีอุปกรณ์เสริมที่เลือกเพิ่ม</span>`;
+            return;
+        }
+
+        let html = "";
+        selectedExtraItems.forEach((item, index) => {
+            html += `
+                <div class="extra-item-tag">
+                    <span>📦 <b>${item.name}</b> (${item.qty} ${item.unit})</span>
+                    <span class="btn-remove-tag" onclick="removeExtraItem(${index})">&times;</span>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+    }
+
     function submitDispatchCheck() {
         let siteId = document.getElementById("siteIdInput").value.trim();
         let jobKey = document.getElementById("jobTypeSelect").value;
@@ -624,6 +726,7 @@
         let usedItems = [];
         let checkboxes = document.querySelectorAll('.item-chk');
         
+        // 1. เก็บอุปกรณ์จาก Checklist หลัก
         checkboxes.forEach((cb) => {
             if (cb.checked) {
                 checkedItemsList.push(cb.value);
@@ -637,10 +740,16 @@
             }
         });
 
+        // 2. รวมอุปกรณ์เสริม (Extra Items) เข้าไปด้วย
+        selectedExtraItems.forEach(extra => {
+            checkedItemsList.push(`${extra.name} (เสริม ${extra.qty} ${extra.unit})`);
+            usedItems.push({ id: extra.stockId, deductQty: extra.qty });
+        });
+
         let isComplete = missingItems.length === 0;
 
         if (!isComplete) {
-            let confirmProceed = confirm(`⚠️ คำเตือน: คุณยังไม่ได้จัดเตรียมอุปกรณ์ ${missingItems.length} รายการ:\n- ${missingItems.join('\n- ')}\n\nคุณยังคงต้องการบันทึกและออกเดินทางใช่หรือไม่?`);
+            let confirmProceed = confirm(`⚠️ คำเตือน: คุณยังไม่ได้จัดเตรียมอุปกรณ์แม่แบบหลัก ${missingItems.length} รายการ:\n- ${missingItems.join('\n- ')}\n\nคุณยังคงต้องการบันทึกและออกเดินทางใช่หรือไม่?`);
             if (!confirmProceed) return;
         }
 
@@ -656,7 +765,7 @@
                 missingItems: missingItems.length > 0 ? missingItems.join(", ") : "-",
                 note: note,
                 usedItems: usedItems,
-                checkedItems: checkedItemsList.join(" | ") // บันทึกรายการที่ติ๊กเช็คทั้งหมด
+                checkedItems: checkedItemsList.join(" | ") // บันทึกทั้งอุปกรณ์หลัก + อุปกรณ์เสริม
             })
         })
         .then(res => res.json())
@@ -667,6 +776,7 @@
                 document.getElementById("jobTypeSelect").value = "";
                 document.getElementById("dispatchNote").value = "";
                 document.getElementById("checklistSection").classList.add("hidden");
+                selectedExtraItems = [];
                 loadHistoryData();
             } else {
                 alert(result.message);
@@ -683,24 +793,31 @@
             let jobTypes = data.jobTypes || [];
             globalRawLogs = data.logs || [];
 
+            // โหลด Job Types Select
             let selectHtml = `<option value="">-- กรุณาเลือกประเภทงาน --</option>`;
             jobTypes.forEach(jt => {
                 selectHtml += `<option value="${jt.key}">${jt.name}</option>`;
             });
             document.getElementById("jobTypeSelect").innerHTML = selectHtml;
 
+            // โหลด Dropdown อุปกรณ์เสริมจาก Stock
+            let extraSelectHtml = `<option value="">-- เลือกอุปกรณ์เสริมจากคลัง --</option>`;
             let stockHtml = "";
             for (let id in globalStockMap) {
                 let st = globalStockMap[id];
                 let badgeClass = st.qty <= 2 ? "badge-danger" : "badge-success";
+                
                 stockHtml += `<tr>
                     <td><b>${st.id}</b></td>
                     <td>${st.name}</td>
                     <td><span class="badge ${badgeClass}">${st.qty}</span></td>
                     <td>${st.unit}</td>
                 </tr>`;
+
+                extraSelectHtml += `<option value="${st.id}">[${st.id}] ${st.name} (คงเหลือ: ${st.qty} ${st.unit})</option>`;
             }
             document.getElementById("stockTableBody").innerHTML = stockHtml || `<tr><td colspan="4">ไม่มีข้อมูลสต็อก</td></tr>`;
+            document.getElementById("extraStockSelect").innerHTML = extraSelectHtml;
 
             filterHistoryLogs();
         });
@@ -777,7 +894,6 @@
         document.getElementById("historyTableBody").innerHTML = html || `<tr><td colspan="7">ไม่พบประวัติการตรวจเช็คตามเงื่อนไขที่ค้นหา</td></tr>`;
     }
 
-    // 📦 ฟังก์ชันแสดง Pop-up ดูรายการอุปกรณ์ที่นำไป
     function showItemsModal(siteId, encodedItems) {
         let rawItems = decodeURIComponent(encodedItems);
         document.getElementById("modalTitle").innerText = `📦 รายการอุปกรณ์ที่นำไป (ไซท์: ${siteId})`;
