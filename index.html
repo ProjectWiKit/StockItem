@@ -29,18 +29,18 @@
         }
 
         .container { 
-            max-width: 1050px; 
+            max-width: 1100px; 
             background: var(--card-bg); 
-            padding: 35px; 
+            padding: 30px; 
             border-radius: 20px; 
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05); 
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05); 
             margin: auto; 
         }
 
         .logo-header {
             text-align: center;
-            margin-bottom: 25px;
-            padding-bottom: 20px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
             border-bottom: 2px dashed var(--border-color);
         }
 
@@ -48,127 +48,156 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 70px;
-            height: 70px;
+            width: 60px;
+            height: 60px;
             background: linear-gradient(135deg, #0ea5e9, #0369a1);
             border-radius: 50%;
-            box-shadow: 0 0 20px rgba(14, 165, 233, 0.4);
-            margin: 0 auto 10px auto;
-            animation: pulse-glow 3s infinite;
+            color: white;
+            font-size: 26px;
+            margin-bottom: 8px;
         }
 
-        @keyframes pulse-glow {
-            0% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.5); }
-            70% { box-shadow: 0 0 0 15px rgba(14, 165, 233, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0); }
-        }
-
-        .antenna-icon { font-size: 30px; color: white; }
-
-        .logo-header h1 { margin: 5px 0 0 0; font-size: 22px; color: #0f172a; font-weight: 600; }
-        .logo-header p { margin: 4px 0 0 0; font-size: 13px; color: #64748b; }
+        .logo-header h1 { margin: 0; font-size: 20px; color: #0f172a; font-weight: 600; }
+        .logo-header p { margin: 4px 0 0 0; font-size: 12px; color: #64748b; }
 
         .user-panel {
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            margin-bottom: 24px; 
+            margin-bottom: 20px; 
             background: #f8fafc; 
-            padding: 14px 20px; 
+            padding: 12px 18px; 
             border-radius: 12px;
             border: 1px solid var(--border-color);
+        }
+
+        /* 🗂️ Navigation Tabs สำหรับแบ่งสัดส่วนหน้าจอ */
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
             flex-wrap: wrap;
-            gap: 12px;
+        }
+
+        .nav-tab-btn {
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid var(--border-color);
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: auto;
+            margin: 0;
+        }
+
+        .nav-tab-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 4px 10px rgba(2, 132, 199, 0.2);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
         }
 
         .analytics-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 15px;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         .stat-card {
             background: #ffffff;
             border: 1px solid var(--border-color);
-            padding: 18px;
-            border-radius: 14px;
+            padding: 16px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             gap: 15px;
         }
 
         .stat-icon {
-            width: 45px; height: 45px; border-radius: 12px;
-            display: flex; align-items: center; justify-content: center; font-size: 20px;
+            width: 42px; height: 42px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center; font-size: 18px;
         }
 
         .stat-info h4 { margin: 0; font-size: 12px; color: #64748b; font-weight: 500; }
-        .stat-info p { margin: 4px 0 0 0; font-size: 20px; font-weight: 600; color: #0f172a; }
+        .stat-info p { margin: 4px 0 0 0; font-size: 18px; font-weight: 600; color: #0f172a; }
 
         .section-box { 
             background: #ffffff; 
             border: 1px solid var(--border-color); 
-            padding: 24px; 
+            padding: 22px; 
             border-radius: 16px; 
-            margin-bottom: 24px; 
+            margin-bottom: 20px; 
         }
 
         .section-box h3 { 
-            margin-top: 0; font-size: 17px; 
+            margin-top: 0; font-size: 16px; 
             border-bottom: 2px solid #f1f5f9; padding-bottom: 10px; color: #334155; 
         }
 
-        .input-group { margin-bottom: 15px; text-align: left; }
+        .input-group { margin-bottom: 14px; text-align: left; }
         .input-group label { display: block; font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 6px; }
 
         input, button, select { 
-            padding: 12px 16px; margin: 0 0 10px 0; width: 100%; 
+            padding: 10px 14px; margin: 0 0 8px 0; width: 100%; 
             box-sizing: border-box; border: 1px solid var(--border-color); 
-            border-radius: 10px; font-family: 'Prompt', sans-serif; font-size: 14px;
+            border-radius: 8px; font-family: 'Prompt', sans-serif; font-size: 13px;
         }
 
         button { color: white; border: none; cursor: pointer; font-weight: 600; }
         .btn-add { background: var(--success); }
         .btn-member { background: var(--primary); }
-        .auth-box { max-width: 450px; margin: auto; }
+        .auth-box { max-width: 420px; margin: auto; }
         .hidden { display: none !important; }
 
         .category-block {
             background: #f8fafc;
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 16px;
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 14px;
         }
         .category-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
-            padding-bottom: 8px;
+            margin-bottom: 10px;
+            padding-bottom: 6px;
             border-bottom: 1px solid #e2e8f0;
         }
         .category-header h5 {
-            margin: 0; font-size: 15px; color: #0f172a; font-weight: 600;
+            margin: 0; font-size: 14px; color: #0f172a; font-weight: 600;
         }
         .btn-select-all {
-            width: auto; padding: 4px 10px; font-size: 12px; background: #64748b; margin: 0;
+            width: auto; padding: 4px 10px; font-size: 11px; background: #64748b; margin: 0;
         }
 
-        .checklist-container { display: flex; flex-direction: column; gap: 8px; }
+        .checklist-container { display: flex; flex-direction: column; gap: 6px; }
         .checklist-item {
             display: flex; align-items: center; justify-content: space-between;
-            padding: 10px 14px; border: 1px solid var(--border-color);
-            border-radius: 8px; background: #ffffff; transition: all 0.2s; gap: 10px; flex-wrap: wrap;
+            padding: 8px 12px; border: 1px solid var(--border-color);
+            border-radius: 8px; background: #ffffff; gap: 10px; flex-wrap: wrap;
         }
         .checklist-item.checked { background: #e0f2fe; border-color: var(--primary); }
-        .checklist-item label { display: flex; align-items: center; gap: 10px; cursor: pointer; font-weight: 500; margin: 0; flex: 2; min-width: 200px; }
-        .checklist-item input[type="checkbox"] { width: 18px; height: 18px; margin: 0; cursor: pointer; }
+        .checklist-item label { display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 500; margin: 0; flex: 2; min-width: 180px; }
+        .checklist-item input[type="checkbox"] { width: 16px; height: 16px; margin: 0; cursor: pointer; }
 
         .item-qty-input {
-            width: 80px !important;
-            padding: 6px 8px !important;
+            width: 70px !important;
+            padding: 6px !important;
             margin: 0 !important;
             text-align: center;
             font-weight: 600;
@@ -176,8 +205,8 @@
 
         .stock-badge {
             font-size: 11px;
-            padding: 3px 8px;
-            border-radius: 12px;
+            padding: 2px 6px;
+            border-radius: 10px;
             font-weight: 600;
             white-space: nowrap;
         }
@@ -185,66 +214,65 @@
         .stock-low { background: #fee2e2; color: #991b1b; }
 
         .extra-items-box {
-            background: #fffbebfb;
+            background: #fffbeb;
             border: 1px dashed var(--warning);
-            border-radius: 12px;
-            padding: 16px;
-            margin-top: 20px;
-            margin-bottom: 20px;
+            border-radius: 10px;
+            padding: 14px;
+            margin-top: 15px;
+            margin-bottom: 15px;
         }
         .extra-item-tag {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             background: #ffffff;
             border: 1px solid var(--border-color);
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 13px;
-            margin-right: 8px;
-            margin-bottom: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            padding: 4px 10px;
+            border-radius: 16px;
+            font-size: 12px;
+            margin-right: 6px;
+            margin-bottom: 6px;
         }
         .extra-item-tag .btn-remove-tag {
             color: var(--danger);
             cursor: pointer;
             font-weight: bold;
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .filter-bar {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             flex-wrap: wrap;
             background: #f8fafc;
-            padding: 15px;
-            border-radius: 12px;
+            padding: 12px;
+            border-radius: 10px;
             border: 1px solid var(--border-color);
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
         .filter-bar .filter-item {
             flex: 1;
-            min-width: 180px;
+            min-width: 160px;
             margin: 0;
         }
         .filter-bar label {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
             color: #64748b;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
             display: block;
         }
         .filter-bar input, .filter-bar select {
             margin: 0;
-            padding: 8px 12px;
-            font-size: 13px;
+            padding: 6px 10px;
+            font-size: 12px;
             background: #ffffff;
         }
 
-        table { width: 100%; margin-top: 12px; border-collapse: separate; border-spacing: 0; font-size: 14px; border: 1px solid var(--border-color); border-radius: 10px; overflow: hidden; }
-        th, td { padding: 12px 14px; text-align: center; border-bottom: 1px solid var(--border-color); border-right: 1px solid var(--border-color); }
+        table { width: 100%; margin-top: 10px; border-collapse: separate; border-spacing: 0; font-size: 13px; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; }
+        th, td { padding: 10px 12px; text-align: center; border-bottom: 1px solid var(--border-color); border-right: 1px solid var(--border-color); }
         th { background: #f8fafc; color: #475569; font-weight: 600; }
-        .badge { padding: 4px 10px; border-radius: 20px; font-weight: 600; font-size: 12px; }
+        .badge { padding: 3px 8px; border-radius: 16px; font-weight: 600; font-size: 11px; }
         .badge-success { background: #d1fae5; color: #065f46; }
         .badge-danger { background: #fee2e2; color: #991b1b; }
 
@@ -252,14 +280,13 @@
             background: #0284c7;
             color: white;
             border: none;
-            padding: 5px 10px;
+            padding: 4px 8px;
             border-radius: 6px;
-            font-size: 12px;
+            font-size: 11px;
             cursor: pointer;
             margin: 0;
             width: auto;
         }
-        .btn-view-items:hover { background: #0369a1; }
 
         .modal-backdrop {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -268,21 +295,21 @@
             z-index: 9999;
         }
         .modal-card {
-            background: #ffffff; width: 90%; max-width: 550px;
-            border-radius: 16px; padding: 24px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+            background: #ffffff; width: 90%; max-width: 500px;
+            border-radius: 14px; padding: 20px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
             max-height: 80vh; display: flex; flex-direction: column;
         }
         .modal-header {
             display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 15px;
+            border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 12px;
         }
-        .modal-header h4 { margin: 0; font-size: 16px; color: #0f172a; }
+        .modal-header h4 { margin: 0; font-size: 15px; color: #0f172a; }
         .modal-body { overflow-y: auto; flex: 1; text-align: left; }
-        .item-list-group { display: flex; flex-direction: column; gap: 6px; }
+        .item-list-group { display: flex; flex-direction: column; gap: 5px; }
         .item-list-row {
-            padding: 8px 12px; background: #f8fafc; border-radius: 8px;
-            border: 1px solid var(--border-color); font-size: 13px; color: #334155;
-            display: flex; align-items: center; gap: 8px;
+            padding: 6px 10px; background: #f8fafc; border-radius: 6px;
+            border: 1px solid var(--border-color); font-size: 12px; color: #334155;
+            display: flex; align-items: center; gap: 6px;
         }
     </style>
 </head>
@@ -291,7 +318,7 @@
 <div class="container">
     
     <div class="logo-header">
-        <div class="antenna-logo"><span class="antenna-icon">📡</span></div>
+        <div class="antenna-logo">📡</div>
         <h1>JKP Engineering</h1>
         <p>ระบบตรวจเช็คอุปกรณ์และเครื่องมือช่างก่อนออกหน้างาน (Pre-Site Departure Checklist & Stock Control)</p>
     </div>
@@ -303,7 +330,7 @@
             <div class="input-group"><label>รหัสผู้ใช้ / รหัสสมาชิก:</label><input type="text" id="username" placeholder="Username"></div>
             <div class="input-group"><label>รหัสผ่าน:</label><input type="password" id="password" placeholder="Password"></div>
             <button class="btn-add" onclick="handleLogin()">เข้าสู่ระบบ</button>
-            <div style="text-align: center; margin-top: 12px; color: var(--primary); cursor: pointer;" onclick="toggleAuth('register')">ยังไม่มีบัญชี? สมัครสมาชิกใหม่</div>
+            <div style="text-align: center; margin-top: 10px; color: var(--primary); cursor: pointer; font-size: 13px;" onclick="toggleAuth('register')">ยังไม่มีบัญชี? สมัครสมาชิกใหม่</div>
         </div>
 
         <div id="registerSection" class="section-box auth-box hidden">
@@ -313,24 +340,24 @@
             <div class="input-group"><label>รหัสผ่าน:</label><input type="password" id="newMemberPass" placeholder="ตั้งรหัสผ่าน"></div>
             <div class="input-group"><label>เบอร์โทรศัพท์:</label><input type="text" id="newMemberPhone" placeholder="เบอร์โทร"></div>
             <button class="btn-member" onclick="registerMember()">ส่งคำขอสมัครสมาชิก</button>
-            <div style="text-align: center; margin-top: 12px; color: var(--primary); cursor: pointer;" onclick="toggleAuth('login')">มีบัญชีแล้ว? กลับไปหน้าเข้าสู่ระบบ</div>
+            <div style="text-align: center; margin-top: 10px; color: var(--primary); cursor: pointer; font-size: 13px;" onclick="toggleAuth('login')">มีบัญชีแล้ว? กลับไปหน้าเข้าสู่ระบบ</div>
         </div>
     </div>
 
-    <!-- หน้า Dashboard และฟอร์มหลัก -->
+    <!-- หน้า Dashboard และฟอร์มหลัก (แบ่งเป็นสัดส่วนด้วย Tabs) -->
     <div id="appSection" class="hidden">
         
         <div class="user-panel">
             <div>
-                <h3 id="userWelcome" style="margin: 0; font-size: 16px; color: #0f172a;"></h3>
-                <small id="userRoleBadge" style="color: #64748b; font-weight: 500;"></small>
+                <h3 id="userWelcome" style="margin: 0; font-size: 15px; color: #0f172a;"></h3>
+                <small id="userRoleBadge" style="color: #64748b; font-weight: 500; font-size: 12px;"></small>
             </div>
             <div>
-                <button onclick="handleLogout()" style="width: auto; padding: 8px 14px; background: #64748b; font-size: 13px;">ออกจากระบบ</button>
+                <button onclick="handleLogout()" style="width: auto; padding: 6px 12px; background: #64748b; font-size: 12px;">ออกจากระบบ</button>
             </div>
         </div>
 
-        <!-- 📊 Dashboard การ์ดสรุป -->
+        <!-- 📊 Dashboard การ์ดสรุปภาพรวม -->
         <div class="analytics-grid">
             <div class="stat-card">
                 <div class="stat-icon" style="background: #e0f2fe; color: #0284c7;">📋</div>
@@ -355,143 +382,159 @@
             </div>
         </div>
 
-        <!-- 📝 ฟอร์มตรวจเช็คของก่อนออกปฏิบัติงาน -->
-        <div class="section-box" style="border-left: 5px solid var(--primary);">
-            <h3 style="color: var(--primary);">🚚 แบบฟอร์มตรวจเช็คอุปกรณ์ก่อนออกหน้างาน</h3>
-            
-            <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                <div class="input-group" style="flex: 1; min-width: 250px;">
-                    <label>รหัสงาน / ไซท์งาน (Site ID / Job No.):</label>
-                    <input type="text" id="siteIdInput" placeholder="เช่น SITE-BKK-01">
-                </div>
-                <div class="input-group" style="flex: 1; min-width: 250px;">
-                    <label>เลือกประเภทงาน (Job Template):</label>
-                    <select id="jobTypeSelect" onchange="loadJobChecklist()">
-                        <option value="">-- กำลังโหลดประเภทงาน... --</option>
-                    </select>
-                </div>
-            </div>
+        <!-- 🗂️ แถบเมนูเลือกสัดส่วนหน้าจอ (Tabs) -->
+        <div class="nav-tabs">
+            <button class="nav-tab-btn active" onclick="switchTab('tab-checklist', this)">🚚 ฟอร์มตรวจเช็คหน้างาน</button>
+            <button class="nav-tab-btn" onclick="switchTab('tab-stock', this)">📦 สต็อกคงเหลือในคลัง</button>
+            <button class="nav-tab-btn" onclick="switchTab('tab-history', this)">📜 ประวัติการตรวจเช็ค</button>
+            <button class="nav-tab-btn" onclick="switchTab('tab-stocklogs', this)">🔄 ประวัติการเบิกสินค้า</button>
+        </div>
 
-            <div id="checklistSection" class="hidden">
-                <h4 style="margin-bottom: 8px; color: #334155;">รายการอุปกรณ์หลักตามแม่แบบงาน:</h4>
-                <p style="font-size: 12px; color: #64748b; margin-top: 0;">* รายการแม่แบบอุปกรณ์ดึงมาจาก Google Sheet ตามประเภทงานที่เลือก สามารถปรับเปลี่ยนจำนวนที่จะหยิบจริงได้</p>
+        <!-- 📑 Tab 1: แบบฟอร์มตรวจเช็ค -->
+        <div id="tab-checklist" class="tab-content active">
+            <div class="section-box" style="border-left: 5px solid var(--primary);">
+                <h3 style="color: var(--primary);">🚚 แบบฟอร์มตรวจเช็คอุปกรณ์ก่อนออกหน้างาน</h3>
                 
-                <div id="checklistCategories"></div>
-
-                <div class="extra-items-box">
-                    <h5 style="margin: 0 0 8px 0; color: #b45309; font-size: 14px;">➕ เบิกอุปกรณ์ / วัสดุเสริมเพิ่มเติม (อยู่นอกแม่แบบงาน):</h5>
-                    <p style="font-size: 12px; color: #78350f; margin-top: 0;">สามารถเลือกอุปกรณ์ยิบย่อยจากคลังสต็อกเพื่อนำไปเพิ่มเติมในงานนี้ได้</p>
-                    
-                    <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
-                        <select id="extraStockSelect" style="flex: 2; min-width: 200px; margin: 0;">
-                            <option value="">-- เลือกอุปกรณ์เสริมจากคลัง --</option>
+                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                    <div class="input-group" style="flex: 1; min-width: 220px;">
+                        <label>รหัสงาน / ไซท์งาน (Site ID / Job No.):</label>
+                        <input type="text" id="siteIdInput" placeholder="เช่น SITE-BKK-01">
+                    </div>
+                    <div class="input-group" style="flex: 1; min-width: 220px;">
+                        <label>เลือกประเภทงาน (Job Template):</label>
+                        <select id="jobTypeSelect" onchange="loadJobChecklist()">
+                            <option value="">-- กำลังโหลดประเภทงาน... --</option>
                         </select>
-                        <input type="number" id="extraStockQty" placeholder="จำนวน" value="1" min="1" style="width: 90px; margin: 0;">
-                        <button type="button" onclick="addExtraItem()" style="width: auto; background: #d97706; padding: 10px 18px; margin: 0;">➕ เพิ่มรายการ</button>
+                    </div>
+                </div>
+
+                <div id="checklistSection" class="hidden">
+                    <h4 style="margin-bottom: 6px; color: #334155; font-size: 14px;">รายการอุปกรณ์หลักตามแม่แบบงาน:</h4>
+                    <p style="font-size: 11px; color: #64748b; margin-top: 0;">* รายการแม่แบบอุปกรณ์ดึงมาจาก Google Sheet ตามประเภทงานที่เลือก สามารถปรับเปลี่ยนจำนวนที่จะหยิบจริงได้</p>
+                    
+                    <div id="checklistCategories"></div>
+
+                    <div class="extra-items-box">
+                        <h5 style="margin: 0 0 6px 0; color: #b45309; font-size: 13px;">➕ เบิกอุปกรณ์ / วัสดุเสริมเพิ่มเติม (อยู่นอกแม่แบบงาน):</h5>
+                        <p style="font-size: 11px; color: #78350f; margin-top: 0;">สามารถเลือกอุปกรณ์ยิบย่อยจากคลังสต็อกเพื่อนำไปเพิ่มเติมในงานนี้ได้</p>
+                        
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+                            <select id="extraStockSelect" style="flex: 2; min-width: 180px; margin: 0;">
+                                <option value="">-- เลือกอุปกรณ์เสริมจากคลัง --</option>
+                            </select>
+                            <input type="number" id="extraStockQty" placeholder="จำนวน" value="1" min="1" style="width: 80px; margin: 0;">
+                            <button type="button" onclick="addExtraItem()" style="width: auto; background: #d97706; padding: 8px 14px; margin: 0;">➕ เพิ่มรายการ</button>
+                        </div>
+
+                        <div id="extraItemsListContainer" style="margin-top: 10px;"></div>
                     </div>
 
-                    <div id="extraItemsListContainer" style="margin-top: 12px;"></div>
-                </div>
+                    <div class="input-group" style="margin-top: 12px;">
+                        <label>หมายเหตุเพิ่มเติม (ถ้ามี):</label>
+                        <input type="text" id="dispatchNote" placeholder="ระบุเหตุผลหากนำอุปกรณ์ไปทดแทน หรืออุปกรณ์ไม่สมบูรณ์">
+                    </div>
 
-                <div class="input-group" style="margin-top: 15px;">
-                    <label>หมายเหตุเพิ่มเติม (ถ้ามี):</label>
-                    <input type="text" id="dispatchNote" placeholder="ระบุเหตุผลหากนำอุปกรณ์ไปทดแทน หรืออุปกรณ์ไม่สมบูรณ์">
+                    <button class="btn-add" style="margin-top: 8px; padding: 12px;" onclick="submitDispatchCheck()">ยืนยันการตรวจเช็คและพร้อมออกเดินทาง</button>
                 </div>
-
-                <button class="btn-add" style="margin-top: 10px; padding: 14px;" onclick="submitDispatchCheck()">ยืนยันการตรวจเช็คและพร้อมออกเดินทาง</button>
             </div>
         </div>
 
-        <!-- 📦 ตารางสต็อกคงเหลือ -->
-        <div class="section-box">
-            <h3>📦 สต็อกคงเหลือปัจจุบันในคลัง</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>รหัส</th>
-                        <th>หมวดหมู่</th>
-                        <th>ชื่ออุปกรณ์/วัสดุ</th>
-                        <th>จำนวนคงเหลือในคลัง</th>
-                        <th>หน่วยนับ</th>
-                    </tr>
-                </thead>
-                <tbody id="stockTableBody">
-                    <tr><td colspan="5">กำลังโหลดข้อมูลสต็อก...</td></tr>
-                </tbody>
-            </table>
+        <!-- 📑 Tab 2: สต็อกคงเหลือ -->
+        <div id="tab-stock" class="tab-content">
+            <div class="section-box">
+                <h3>📦 สต็อกคงเหลือปัจจุบันในคลัง</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>รหัส</th>
+                            <th>หมวดหมู่</th>
+                            <th>ชื่ออุปกรณ์/วัสดุ</th>
+                            <th>จำนวนคงเหลือในคลัง</th>
+                            <th>หน่วยนับ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="stockTableBody">
+                        <tr><td colspan="5">กำลังโหลดข้อมูลสต็อก...</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
-        <!-- 📜 ตารางประวัติการตรวจเช็ค -->
-        <div class="section-box">
-            <h3>📜 ประวัติการตรวจเช็คก่อนออกหน้างาน</h3>
-            
-            <div class="filter-bar">
-                <div class="filter-item">
-                    <label>🔍 ค้นหา (รหัสไซท์ / ผู้ตรวจ / งาน):</label>
-                    <input type="text" id="searchKeyword" placeholder="พิมพ์คำค้นหา..." oninput="filterHistoryLogs()">
+        <!-- 📑 Tab 3: ประวัติการตรวจเช็ค -->
+        <div id="tab-history" class="tab-content">
+            <div class="section-box">
+                <h3>📜 ประวัติการตรวจเช็คก่อนออกหน้างาน</h3>
+                
+                <div class="filter-bar">
+                    <div class="filter-item">
+                        <label>🔍 ค้นหา (รหัสไซท์ / ผู้ตรวจ / งาน):</label>
+                        <input type="text" id="searchKeyword" placeholder="พิมพ์คำค้นหา..." oninput="filterHistoryLogs()">
+                    </div>
+                    <div class="filter-item">
+                        <label>📌 สถานะ:</label>
+                        <select id="filterStatus" onchange="filterHistoryLogs()">
+                            <option value="ALL">ทั้งหมด</option>
+                            <option value="อุปกรณ์ครบถ้วน">อุปกรณ์ครบถ้วน</option>
+                            <option value="อุปกรณ์ไม่ครบ">อุปกรณ์ไม่ครบ</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label>📅 ตั้งแต่วันที่:</label>
+                        <input type="date" id="filterStartDate" onchange="filterHistoryLogs()">
+                    </div>
+                    <div class="filter-item">
+                        <label>📅 ถึงวันที่:</label>
+                        <input type="date" id="filterEndDate" onchange="filterHistoryLogs()">
+                    </div>
                 </div>
-                <div class="filter-item">
-                    <label>📌 สถานะ:</label>
-                    <select id="filterStatus" onchange="filterHistoryLogs()">
-                        <option value="ALL">ทั้งหมด</option>
-                        <option value="อุปกรณ์ครบถ้วน">อุปกรณ์ครบถ้วน</option>
-                        <option value="อุปกรณ์ไม่ครบ">อุปกรณ์ไม่ครบ</option>
-                    </select>
-                </div>
-                <div class="filter-item">
-                    <label>📅 ตั้งแต่วันที่:</label>
-                    <input type="date" id="filterStartDate" onchange="filterHistoryLogs()">
-                </div>
-                <div class="filter-item">
-                    <label>📅 ถึงวันที่:</label>
-                    <input type="date" id="filterEndDate" onchange="filterHistoryLogs()">
-                </div>
-            </div>
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>วัน-เวลา</th>
-                        <th>ผู้ตรวจเช็ค</th>
-                        <th>รหัสงาน/ไซท์</th>
-                        <th>ประเภทงาน</th>
-                        <th>ผลการเช็ค</th>
-                        <th>รายการอุปกรณ์ที่นำไป</th>
-                        <th>รายการที่ขาด/หมายเหตุ</th>
-                    </tr>
-                </thead>
-                <tbody id="historyTableBody">
-                    <tr><td colspan="7">กำลังโหลดข้อมูล...</td></tr>
-                </tbody>
-            </table>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>วัน-เวลา</th>
+                            <th>ผู้ตรวจเช็ค</th>
+                            <th>รหัสงาน/ไซท์</th>
+                            <th>ประเภทงาน</th>
+                            <th>ผลการเช็ค</th>
+                            <th>รายการอุปกรณ์ที่นำไป</th>
+                            <th>รายการที่ขาด/หมายเหตุ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTableBody">
+                        <tr><td colspan="7">กำลังโหลดข้อมูล...</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
-        <!-- 🔄 ตารางประวัติการเบิกสินค้า (Stock Transaction Logs) -->
-        <div class="section-box">
-            <h3>🔄 ประวัติการเบิกสินค้า / ตัดสต็อก</h3>
-            <div class="filter-bar">
-                <div class="filter-item" style="flex: 2;">
-                    <label>🔍 ค้นหาประวัติการเบิก (รหัสอุปกรณ์ / ชื่อ / ไซท์ / ผู้เบิก):</label>
-                    <input type="text" id="stockLogSearchKeyword" placeholder="พิมพ์คำค้นหา..." oninput="filterStockLogs()">
+        <!-- 📑 Tab 4: ประวัติการเบิกสินค้า -->
+        <div id="tab-stocklogs" class="tab-content">
+            <div class="section-box">
+                <h3>🔄 ประวัติการเบิกสินค้า / ตัดสต็อก</h3>
+                <div class="filter-bar">
+                    <div class="filter-item" style="flex: 2;">
+                        <label>🔍 ค้นหาประวัติการเบิก (รหัสอุปกรณ์ / ชื่อ / ไซท์ / ผู้เบิก):</label>
+                        <input type="text" id="stockLogSearchKeyword" placeholder="พิมพ์คำค้นหา..." oninput="filterStockLogs()">
+                    </div>
                 </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>วัน-เวลา</th>
+                            <th>ผู้เบิก</th>
+                            <th>รหัสไซท์งาน</th>
+                            <th>รหัสอุปกรณ์</th>
+                            <th>ชื่ออุปกรณ์</th>
+                            <th>จำนวนที่เบิก</th>
+                            <th>หน่วย</th>
+                            <th>คงเหลือหลังเบิก</th>
+                        </tr>
+                    </thead>
+                    <tbody id="stockLogTableBody">
+                        <tr><td colspan="8">กำลังโหลดข้อมูลประวัติการเบิก...</td></tr>
+                    </tbody>
+                </table>
             </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>วัน-เวลา</th>
-                        <th>ผู้เบิก</th>
-                        <th>รหัสไซท์งาน</th>
-                        <th>รหัสอุปกรณ์</th>
-                        <th>ชื่ออุปกรณ์</th>
-                        <th>จำนวนที่เบิก</th>
-                        <th>หน่วย</th>
-                        <th>คงเหลือหลังเบิก</th>
-                    </tr>
-                </thead>
-                <tbody id="stockLogTableBody">
-                    <tr><td colspan="8">กำลังโหลดข้อมูลประวัติการเบิก...</td></tr>
-                </tbody>
-            </table>
         </div>
 
     </div>
@@ -503,17 +546,17 @@
     <div class="modal-card">
         <div class="modal-header">
             <h4 id="modalTitle">📦 รายการอุปกรณ์ที่จัดเตรียมออกหน้างาน</h4>
-            <span style="cursor:pointer; font-size: 20px; font-weight: bold; color: #64748b;" onclick="closeModal()">&times;</span>
+            <span style="cursor:pointer; font-size: 18px; font-weight: bold; color: #64748b;" onclick="closeModal()">&times;</span>
         </div>
         <div class="modal-body">
             <div id="modalItemsContent" class="item-list-group"></div>
         </div>
-        <button onclick="closeModal()" style="margin-top: 15px; background: #64748b; padding: 10px;">ปิดหน้าต่าง</button>
+        <button onclick="closeModal()" style="margin-top: 12px; background: #64748b; padding: 8px;">ปิดหน้าต่าง</button>
     </div>
 </div>
 
 <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwLh_Rky1QOCXhbFdjmbIuIZQp2TPLU6_81EIiKvOCSDfF91lFNEqtgec3qcW70psYQlg/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzsrEEpIZleOREZEj6POsjddrTbZU4s2RWXGYYVSQgzlqxkXDYyGxqPWvOjhxtTPRwT-Q/exec";
     
     let currentUserName = "";
     let currentUsernameId = "";
@@ -527,6 +570,15 @@
     window.onload = function() {
         checkSession();
     };
+
+    // ฟังก์ชันจัดการสลับหน้า Tabs
+    function switchTab(tabId, btnElement) {
+        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+        document.querySelectorAll('.nav-tab-btn').forEach(btn => btn.classList.remove('active'));
+        
+        document.getElementById(tabId).classList.add('active');
+        btnElement.classList.add('active');
+    }
 
     function checkSession() {
         let savedUser = sessionStorage.getItem("user");
@@ -652,9 +704,9 @@
                         </label>
                         <div style="display: flex; align-items: center; gap: 6px;">
                             <input type="number" id="item_qty_${globalIndex}" class="item-qty-input" value="${defaultQty}" min="1" placeholder="จำนวน">
-                            <span style="font-size: 13px; color: #64748b;">ชิ้น</span>
+                            <span style="font-size: 12px; color: #64748b;">ชิ้น</span>
                         </div>
-                        <span id="badge_status_${globalIndex}" style="font-size:12px; color:var(--danger); font-weight:600; white-space:nowrap;">⚠️ ยังไม่เช็ค</span>
+                        <span id="badge_status_${globalIndex}" style="font-size:11px; color:var(--danger); font-weight:600; white-space:nowrap;">⚠️ ยังไม่เช็ค</span>
                     </div>
                 `;
                 globalIndex++;
@@ -732,7 +784,7 @@
     function renderExtraItems() {
         let container = document.getElementById("extraItemsListContainer");
         if (selectedExtraItems.length === 0) {
-            container.innerHTML = `<span style="font-size:12px; color:#94a3b8;">ยังไม่มีอุปกรณ์เสริมที่เลือกเพิ่ม</span>`;
+            container.innerHTML = `<span style="font-size:11px; color:#94a3b8;">ยังไม่มีอุปกรณ์เสริมที่เลือกเพิ่ม</span>`;
             return;
         }
 
@@ -791,7 +843,7 @@
         let isComplete = missingItems.length === 0;
 
         if (!isComplete) {
-            let confirmProceed = confirm(`⚠️ คำเตือน: คุณยังไม่ได้จัดเตรียมอุปกรณ์แม่แบบหลัก ${missingItems.length} รายการ:\n- ${missingItems.join('\n- ')}\n\nคุณยังคงต้องการบันทึกและออกเดินทางใช่หรือไม่?`);
+            let confirmProceed = confirm(`⚠️️ คำเตือน: คุณยังไม่ได้จัดเตรียมอุปกรณ์แม่แบบหลัก ${missingItems.length} รายการ:\n- ${missingItems.join('\n- ')}\n\nคุณยังคงต้องการบันทึกและออกเดินทางใช่หรือไม่?`);
             if (!confirmProceed) return;
         }
 
