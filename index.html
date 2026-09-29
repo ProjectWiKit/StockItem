@@ -408,13 +408,14 @@
                 <thead>
                     <tr>
                         <th>รหัส</th>
+                        <th>หมวดหมู่</th>
                         <th>ชื่ออุปกรณ์/วัสดุ</th>
                         <th>จำนวนคงเหลือในคลัง</th>
                         <th>หน่วยนับ</th>
                     </tr>
                 </thead>
                 <tbody id="stockTableBody">
-                    <tr><td colspan="4">กำลังโหลดข้อมูลสต็อก...</td></tr>
+                    <tr><td colspan="5">กำลังโหลดข้อมูลสต็อก...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -483,7 +484,7 @@
 </div>
 
 <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzt9s2it9eSNf51f_ntNR-DSJFScwpXcUKVkV3qTce5cecfbv-f38p3-1fqNs-HGHcq/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwcGgQ13FenBWgetykerjvHEOmAWnHVD1iHdsrv2HhMGT8TOaWzbnWcBCiu77_CzmgW/exec";
     
     let currentUserName = "";
     let currentUsernameId = "";
@@ -491,7 +492,7 @@
     let globalStockMap = {};
     let globalJobTemplates = {};
     let globalRawLogs = [];
-    let selectedExtraItems = []; // เก็บอุปกรณ์เสริมที่เลือกเพิ่มเข้ามา
+    let selectedExtraItems = [];
 
     window.onload = function() {
         checkSession();
@@ -570,7 +571,7 @@
         let categoriesContainer = document.getElementById("checklistCategories");
         let section = document.getElementById("checklistSection");
 
-        selectedExtraItems = []; // รีเซ็ตรายการเสริมเมื่อเปลี่ยนงาน
+        selectedExtraItems = [];
         renderExtraItems();
 
         if (!jobKey || !globalJobTemplates[jobKey]) {
@@ -658,7 +659,6 @@
         });
     }
 
-    // ➕ ฟังก์ชันสำหรับเพิ่มอุปกรณ์เสริมจาก Dropdown สต็อก
     function addExtraItem() {
         let stockId = document.getElementById("extraStockSelect").value;
         let qty = parseInt(document.getElementById("extraStockQty").value) || 1;
@@ -669,7 +669,6 @@
         let itemData = globalStockMap[stockId];
         if (!itemData) return;
 
-        // ตรวจสอบว่าเลือกซ้ำไปหรือยัง
         let existing = selectedExtraItems.find(x => x.stockId === stockId);
         if (existing) {
             existing.qty += qty;
@@ -726,7 +725,6 @@
         let usedItems = [];
         let checkboxes = document.querySelectorAll('.item-chk');
         
-        // 1. เก็บอุปกรณ์จาก Checklist หลัก
         checkboxes.forEach((cb) => {
             if (cb.checked) {
                 checkedItemsList.push(cb.value);
@@ -740,7 +738,6 @@
             }
         });
 
-        // 2. รวมอุปกรณ์เสริม (Extra Items) เข้าไปด้วย
         selectedExtraItems.forEach(extra => {
             checkedItemsList.push(`${extra.name} (เสริม ${extra.qty} ${extra.unit})`);
             usedItems.push({ id: extra.stockId, deductQty: extra.qty });
@@ -765,7 +762,7 @@
                 missingItems: missingItems.length > 0 ? missingItems.join(", ") : "-",
                 note: note,
                 usedItems: usedItems,
-                checkedItems: checkedItemsList.join(" | ") // บันทึกทั้งอุปกรณ์หลัก + อุปกรณ์เสริม
+                checkedItems: checkedItemsList.join(" | ")
             })
         })
         .then(res => res.json())
@@ -800,23 +797,42 @@
             });
             document.getElementById("jobTypeSelect").innerHTML = selectHtml;
 
-            // โหลด Dropdown อุปกรณ์เสริมจาก Stock
+            // โหลดข้อมูลสต็อกแบบจัดกลุ่มตามหมวดหมู่
             let extraSelectHtml = `<option value="">-- เลือกอุปกรณ์เสริมจากคลัง --</option>`;
             let stockHtml = "";
+            let stockGrouped = {};
+
             for (let id in globalStockMap) {
                 let st = globalStockMap[id];
-                let badgeClass = st.qty <= 2 ? "badge-danger" : "badge-success";
+                let categoryName = st.category || "วัสดุ/อุปกรณ์ทั่วไป";
                 
-                stockHtml += `<tr>
-                    <td><b>${st.id}</b></td>
-                    <td>${st.name}</td>
-                    <td><span class="badge ${badgeClass}">${st.qty}</span></td>
-                    <td>${st.unit}</td>
-                </tr>`;
-
-                extraSelectHtml += `<option value="${st.id}">[${st.id}] ${st.name} (คงเหลือ: ${st.qty} ${st.unit})</option>`;
+                if (!stockGrouped[categoryName]) {
+                    stockGrouped[categoryName] = [];
+                }
+                stockGrouped[categoryName].push(st);
             }
-            document.getElementById("stockTableBody").innerHTML = stockHtml || `<tr><td colspan="4">ไม่มีข้อมูลสต็อก</td></tr>`;
+
+            for (let catName in stockGrouped) {
+                extraSelectHtml += `<optgroup label="📂 ${catName}">`;
+                
+                stockGrouped[catName].forEach(st => {
+                    let badgeClass = st.qty <= 2 ? "badge-danger" : "badge-success";
+                    
+                    stockHtml += `<tr>
+                        <td><b>${st.id}</b></td>
+                        <td><span style="font-weight:600; color:#0284c7;">${catName}</span></td>
+                        <td style="text-align:left;">${st.name}</td>
+                        <td><span class="badge ${badgeClass}">${st.qty}</span></td>
+                        <td>${st.unit}</td>
+                    </tr>`;
+
+                    extraSelectHtml += `<option value="${st.id}">[${st.id}] ${st.name} (คงเหลือ: ${st.qty} ${st.unit})</option>`;
+                });
+
+                extraSelectHtml += `</optgroup>`;
+            }
+
+            document.getElementById("stockTableBody").innerHTML = stockHtml || `<tr><td colspan="5">ไม่มีข้อมูลสต็อก</td></tr>`;
             document.getElementById("extraStockSelect").innerHTML = extraSelectHtml;
 
             filterHistoryLogs();
@@ -872,7 +888,7 @@
         });
 
         let html = "";
-        filteredLogs.forEach((log, index) => {
+        filteredLogs.forEach((log) => {
             let badgeClass = log.status === "อุปกรณ์ครบถ้วน" ? "badge-success" : "badge-danger";
             let itemsStr = log.checkedItems || "-";
 
