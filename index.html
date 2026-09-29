@@ -160,11 +160,19 @@
         .checklist-item {
             display: flex; align-items: center; justify-content: space-between;
             padding: 10px 14px; border: 1px solid var(--border-color);
-            border-radius: 8px; background: #ffffff; transition: all 0.2s;
+            border-radius: 8px; background: #ffffff; transition: all 0.2s; gap: 10px; flex-wrap: wrap;
         }
         .checklist-item.checked { background: #e0f2fe; border-color: var(--primary); }
-        .checklist-item label { display: flex; align-items: center; gap: 10px; cursor: pointer; font-weight: 500; margin: 0; width: 100%; }
+        .checklist-item label { display: flex; align-items: center; gap: 10px; cursor: pointer; font-weight: 500; margin: 0; flex: 2; min-width: 200px; }
         .checklist-item input[type="checkbox"] { width: 18px; height: 18px; margin: 0; cursor: pointer; }
+
+        .item-qty-input {
+            width: 80px !important;
+            padding: 6px 8px !important;
+            margin: 0 !important;
+            text-align: center;
+            font-weight: 600;
+        }
 
         .stock-badge {
             font-size: 11px;
@@ -366,7 +374,7 @@
 
             <div id="checklistSection" class="hidden">
                 <h4 style="margin-bottom: 8px; color: #334155;">รายการอุปกรณ์หลักตามแม่แบบงาน:</h4>
-                <p style="font-size: 12px; color: #64748b; margin-top: 0;">* รายการแม่แบบอุปกรณ์ดึงมาจาก Google Sheet ตามประเภทงานที่เลือก</p>
+                <p style="font-size: 12px; color: #64748b; margin-top: 0;">* รายการแม่แบบอุปกรณ์ดึงมาจาก Google Sheet ตามประเภทงานที่เลือก สามารถปรับเปลี่ยนจำนวนที่จะหยิบจริงได้</p>
                 
                 <div id="checklistCategories"></div>
 
@@ -505,8 +513,7 @@
 </div>
 
 <script>
-    // ⚠️ เปลี่ยน URL ด้านล่างนี้เป็น Web App URL ล่าสุดของคุณหลังจากการ Deploy บน Apps Script
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzFx_cpKPhsb-Vsh11Df3fX883GOt84xtgjN-jZheuyCxrZxQqeij-pgN5_M881qgn38w/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwLh_Rky1QOCXhbFdjmbIuIZQp2TPLU6_81EIiKvOCSDfF91lFNEqtgec3qcW70psYQlg/exec";
     
     let currentUserName = "";
     let currentUsernameId = "";
@@ -514,7 +521,7 @@
     let globalStockMap = {};
     let globalJobTemplates = {};
     let globalRawLogs = [];
-    let globalStockLogs = []; // เก็บข้อมูลประวัติการเบิกสินค้า
+    let globalStockLogs = [];
     let selectedExtraItems = [];
 
     window.onload = function() {
@@ -625,10 +632,11 @@
             items.forEach((item) => {
                 let stockText = "";
                 let stockBadgeClass = "stock-ok";
+                let defaultQty = item.deductQty || 1;
                 
                 if (item.stockId && globalStockMap[item.stockId]) {
                     let st = globalStockMap[item.stockId];
-                    if (st.qty <= 0 || st.qty < (item.deductQty || 1)) {
+                    if (st.qty <= 0 || st.qty < defaultQty) {
                         stockBadgeClass = "stock-low";
                         stockText = `<span class="stock-badge ${stockBadgeClass}">⚠️ คลังเหลือ: ${st.qty} ${st.unit} (ไม่พอใช้ออกงาน)</span>`;
                     } else {
@@ -639,9 +647,13 @@
                 html += `
                     <div class="checklist-item" id="item_box_${globalIndex}">
                         <label>
-                            <input type="checkbox" value="${item.name}" data-stock-id="${item.stockId || ''}" data-deduct-qty="${item.deductQty || 0}" class="item-chk" onchange="toggleItemCheck(${globalIndex})">
+                            <input type="checkbox" value="${item.name}" data-stock-id="${item.stockId || ''}" class="item-chk" onchange="toggleItemCheck(${globalIndex})">
                             <span>${item.name} ${stockText}</span>
                         </label>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <input type="number" id="item_qty_${globalIndex}" class="item-qty-input" value="${defaultQty}" min="1" placeholder="จำนวน">
+                            <span style="font-size: 13px; color: #64748b;">ชิ้น</span>
+                        </div>
                         <span id="badge_status_${globalIndex}" style="font-size:12px; color:var(--danger); font-weight:600; white-space:nowrap;">⚠️ ยังไม่เช็ค</span>
                     </div>
                 `;
@@ -749,19 +761,26 @@
         let checkedItemsList = [];
         let missingItems = [];
         let usedItems = [];
-        let checkboxes = document.querySelectorAll('.item-chk');
+        let categoryBlocks = document.querySelectorAll('.category-block');
         
-        checkboxes.forEach((cb) => {
-            if (cb.checked) {
-                checkedItemsList.push(cb.value);
-                let stockId = cb.getAttribute('data-stock-id');
-                let deductQty = parseInt(cb.getAttribute('data-deduct-qty')) || 0;
-                if (stockId && deductQty > 0) {
-                    usedItems.push({ id: stockId, deductQty: deductQty });
+        let globalIndex = 0;
+        categoryBlocks.forEach(block => {
+            let checkboxes = block.querySelectorAll('.item-chk');
+            checkboxes.forEach(cb => {
+                let qtyInput = document.getElementById(`item_qty_${globalIndex}`);
+                let userQty = parseInt(qtyInput ? qtyInput.value : 1) || 1;
+
+                if (cb.checked) {
+                    checkedItemsList.push(`${cb.value} (${userQty} ชิ้น)`);
+                    let stockId = cb.getAttribute('data-stock-id');
+                    if (stockId && userQty > 0) {
+                        usedItems.push({ id: stockId, deductQty: userQty });
+                    }
+                } else {
+                    missingItems.push(cb.value);
                 }
-            } else {
-                missingItems.push(cb.value);
-            }
+                globalIndex++;
+            });
         });
 
         selectedExtraItems.forEach(extra => {
@@ -815,7 +834,7 @@
             globalJobTemplates = data.templates || {};
             let jobTypes = data.jobTypes || [];
             globalRawLogs = data.logs || [];
-            globalStockLogs = data.stockLogs || []; // โหลดประวัติการเบิกสินค้า
+            globalStockLogs = data.stockLogs || [];
 
             let selectHtml = `<option value="">-- กรุณาเลือกประเภทงาน --</option>`;
             jobTypes.forEach(jt => {
@@ -861,7 +880,7 @@
             document.getElementById("extraStockSelect").innerHTML = extraSelectHtml;
 
             filterHistoryLogs();
-            filterStockLogs(); // เรนเดอร์ตารางประวัติการเบิกสินค้า
+            filterStockLogs();
         });
     }
 
