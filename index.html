@@ -335,7 +335,7 @@
                             </select>
                         </div>
                         
-                        <!-- ช่องเลือกรุ่น/Serial ย่อย (จะแสดงอัตโนมัติถ้ามีข้อมูล) -->
+                        <!-- ช่องเลือกรุ่น/Serial ย่อย -->
                         <div id="subSerialContainer" style="flex: 2; min-width: 220px; margin: 0; display: none;">
                             <label style="font-size: 11px; font-weight: 600; color: #0284c7; display: block; margin-bottom: 3px;">🔖 เลือกรุ่น / หมายเลขเครื่อง (Serial No.):</label>
                             <select id="subSerialDropdown" style="margin: 0; border-color: var(--primary); background: #f0f9ff;" onchange="onSubSerialChange()">
@@ -546,7 +546,7 @@
 </div>
 
 <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwZ47N9idM6Ej8nTO6Zugr2K5WhsPqOji4PZJnuIC6wBCjg45ZnZBy0864jTge-vNYjjg/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzpRPKAI4WTiq7loolkTdmJaByLywopLMRKq5pQepcw3Twh2Ip-b2bhm7kQaDRPJ0A9kw/exec";
     
     let currentUserName = "";
     let currentUsernameId = "";
@@ -663,7 +663,7 @@
         }
     }
 
-    // ฟังก์ชันตรวจจับเมื่อเลือก Serial ในวงแดง เพื่อให้จำนวนในวงดำอ้างอิงตาม Qty ทันที
+    // ฟังก์ชันตรวจจับเมื่อเลือก Serial ในวงแดง เพื่อดึง Qty มาใส่วงดำอัตโนมัติ
     function onSubSerialChange() {
         let subDropdown = document.getElementById("subSerialDropdown");
         let qtyInput = document.getElementById("itemQtyInput");
@@ -671,7 +671,7 @@
 
         if (selectedOption && selectedOption.value) {
             let maxQty = parseInt(selectedOption.getAttribute("data-qty")) || 1;
-            qtyInput.value = maxQty; // ดึงจำนวน Qty มาใส่ในวงดำอัตโนมัติ
+            qtyInput.value = maxQty;
         }
     }
 
