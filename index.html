@@ -300,7 +300,7 @@
             </div>
         </div>
 
-        <!-- 🗂️️ แถบเมนู Tabs -->
+        <!-- 🗂 แถบเมนู Tabs -->
         <div class="nav-tabs">
             <button class="nav-tab-btn active" onclick="switchTab('tab-checklist', this)">🚚 ฟอร์มตรวจเช็คหน้างาน</button>
             <button class="nav-tab-btn" onclick="switchTab('tab-stock', this)">📦 สต็อกคงเหลือในคลัง</button>
@@ -477,7 +477,7 @@
 </div>
 
 <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwBy3EDrnxIpL3dpm09W7WUp6dwV8BuqJwxHwWkZFOynVn7MuqI-qy52XEffp5rRaSO3g/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzyP5DGBpDcyZhQ33k-tLNClEHGIoZmk2M_9wxV77s64VIfkqgjwTS48VFP7KvkXNMXiQ/exec";
     
     let currentUserName = "";
     let currentUsernameId = "";
@@ -584,16 +584,22 @@
         let itemData = globalStockMap[stockId];
         if (!itemData) return;
 
-        // ตรวจสอบสต็อกหากเป็นอุปกรณ์สายอากาศ หรือเช็คจำนวนทั่วไป
-        if (itemData.category === "อุปกรณ์สายอากาศ" && itemData.qty < qty) {
-            alert(`❌ อุปกรณ์สายอากาศ (${itemData.name}) ในคลังเหลือเพียง ${itemData.qty} ${itemData.unit} เท่านั้น`);
+        // 🔴 ปรับปรุง: เช็คสต็อกทุกหมวดหมู่ (ห้ามเลือกเกินจำนวนคงเหลือจริง)
+        if (itemData.qty < qty) {
+            alert(`❌ อุปกรณ์ (${itemData.name}) ในคลังเหลือเพียง ${itemData.qty} ${itemData.unit} เท่านั้น ไม่สามารถเลือกเกินจำนวนที่มีได้`);
             return;
         }
 
-        // ตรวจสอบว่ามีในรายการที่เลือกอยู่แล้วหรือไม่ ถ้ามีให้บวกเพิ่ม
         let existing = selectedDispatchItems.find(i => i.id === stockId);
+        let totalQty = existing ? existing.qty + qty : qty;
+
+        if (itemData.qty < totalQty) {
+            alert(`❌ ยอดรวมที่เลือก (${totalQty} ${itemData.unit}) เกินกว่าจำนวนคงเหลือในคลัง (${itemData.qty} ${itemData.unit})`);
+            return;
+        }
+
         if (existing) {
-            existing.qty += qty;
+            existing.qty = totalQty;
         } else {
             let returnRule = "ต้องนำกลับมาคืน";
             if (itemData.category === "อุปกรณ์สายอากาศ") {
@@ -683,7 +689,7 @@
                 alert("✅ บันทึกข้อมูลและทำรายการเบิกอุปกรณ์เรียบร้อยแล้ว!");
                 document.getElementById("siteIdInput").value = "";
                 document.getElementById("jobTypeInput").value = "";
-                document.getElementById("dispatchNote.value") || (document.getElementById("dispatchNote").value = "");
+                document.getElementById("dispatchNote").value = "";
                 selectedDispatchItems = [];
                 renderDispatchSelectedTable();
                 loadHistoryData();
@@ -701,7 +707,6 @@
             globalRawLogs = data.logs || [];
             globalStockLogs = data.stockLogs || [];
 
-            // Populate Dropdown for checklist
             let dropdown = document.getElementById("itemSelectDropdown");
             let dropdownHtml = `<option value="">-- กรุณาเลือกอุปกรณ์จากคลัง --</option>`;
             
@@ -722,7 +727,6 @@
             }
             dropdown.innerHTML = dropdownHtml;
 
-            // Populate Stock Tab
             let stockCategoryContainerHtml = "";
             for (let catName in stockGrouped) {
                 stockCategoryContainerHtml += `
