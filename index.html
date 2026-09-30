@@ -1,946 +1,247 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <link rel="apple-touch-icon" href="icon.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JKP Engineering - Pre-Site Checklist & Stock Control</title>
+    <title>JKP Engineering - Field Checklist & Stock Control</title>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #0284c7;
-            --primary-dark: #0369a1;
-            --success: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --bg-color: #f8fafc;
-            --card-bg: #ffffff;
-            --text-color: #1e293b;
-            --border-color: #e2e8f0;
-        }
-
-        body { 
-            font-family: 'Prompt', sans-serif; 
-            margin: 0; 
-            padding: 20px; 
-            background: linear-gradient(135deg, #e0f2fe 0%, #f1f5f9 100%); 
-            color: var(--text-color);
-            min-height: 100vh;
-        }
-
-        .container { 
-            max-width: 1100px; 
-            background: var(--card-bg); 
-            padding: 30px; 
-            border-radius: 20px; 
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05); 
-            margin: auto; 
-        }
-
-        .logo-header {
-            text-align: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px dashed var(--border-color);
-        }
-
-        .antenna-logo {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #0ea5e9, #0369a1);
-            border-radius: 50%;
-            color: white;
-            font-size: 26px;
-            margin-bottom: 8px;
-        }
-
-        .logo-header h1 { margin: 0; font-size: 20px; color: #0f172a; font-weight: 600; }
-        .logo-header p { margin: 4px 0 0 0; font-size: 12px; color: #64748b; }
-
-        .user-panel {
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 20px; 
-            background: #f8fafc; 
-            padding: 12px 18px; 
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-        }
-
-        .nav-dropdown-container {
-            margin-bottom: 20px;
-            background: #f1f5f9;
-            padding: 12px;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .nav-dropdown-container label {
-            font-weight: 600;
-            font-size: 14px;
-            color: #334155;
-            white-space: nowrap;
-        }
-        .nav-dropdown-container select {
-            margin: 0;
-            background: #ffffff;
-            font-weight: 600;
-            color: var(--primary);
-            border-color: var(--primary);
-        }
-
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-
-        .section-box { 
-            background: #ffffff; 
-            border: 1px solid var(--border-color); 
-            padding: 22px; 
-            border-radius: 16px; 
-            margin-bottom: 20px; 
-        }
-
-        .section-box h3 { 
-            margin-top: 0; font-size: 16px; 
-            border-bottom: 2px solid #f1f5f9; padding-bottom: 10px; color: #334155; 
-        }
-
-        .input-group { margin-bottom: 14px; text-align: left; }
-        .input-group label { display: block; font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 6px; }
-
-        input, button, select { 
-            padding: 10px 14px; margin: 0 0 8px 0; width: 100%; 
-            box-sizing: border-box; border: 1px solid var(--border-color); 
-            border-radius: 8px; font-family: 'Prompt', sans-serif; font-size: 13px;
-        }
-
-        button { color: white; border: none; cursor: pointer; font-weight: 600; }
-        .btn-add { background: var(--success); }
-        .btn-member { background: var(--primary); }
-        .auth-box { max-width: 420px; margin: auto; }
+        :root { --primary: #0284c7; --success: #10b981; --danger: #ef4444; --warning: #f59e0b; --bg: #f8fafc; }
+        body { font-family: 'Prompt', sans-serif; background: var(--bg); margin: 0; padding: 15px; color: #1e293b; }
+        .container { max-width: 1000px; background: #fff; padding: 25px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin: auto; }
+        .header { text-align: center; border-bottom: 2px dashed #e2e8f0; padding-bottom: 15px; margin-bottom: 20px; }
+        .header h1 { margin: 0; font-size: 20px; color: #0f172a; }
+        .section { background: #fff; border: 1px solid #e2e8f0; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
+        .input-group { margin-bottom: 12px; }
+        .input-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: #475569; }
+        input, select, button { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-family: 'Prompt', sans-serif; box-sizing: border-box; font-size: 13px; }
+        button { background: var(--primary); color: #fff; font-weight: 600; border: none; cursor: pointer; }
+        button.btn-success { background: var(--success); }
         .hidden { display: none !important; }
-
-        .picker-box {
-            background: #f8fafc;
-            border: 2px dashed #cbd5e1;
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 16px;
-        }
-
-        .selected-items-table {
-            width: 100%;
-            margin-top: 10px;
-            border-collapse: collapse;
-            font-size: 13px;
-        }
-        .selected-items-table th, .selected-items-table td {
-            border: 1px solid var(--border-color);
-            padding: 8px 10px;
-            text-align: center;
-        }
-        .selected-items-table th { background: #f1f5f9; color: #334155; }
-
-        .badge { padding: 3px 8px; border-radius: 16px; font-weight: 600; font-size: 11px; }
-        .badge-success { background: #d1fae5; color: #065f46; }
-        .badge-danger { background: #fee2e2; color: #991b1b; }
-        .badge-info { background: #e0f2fe; color: #0369a1; }
-        .badge-warning { background: #fef3c7; color: #92400e; }
-
-        .filter-bar {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            background: #f8fafc;
-            padding: 12px;
-            border-radius: 10px;
-            border: 1px solid var(--border-color);
-            margin-bottom: 12px;
-        }
-        .filter-bar .filter-item { flex: 1; min-width: 160px; margin: 0; }
-        .filter-bar label { font-size: 11px; font-weight: 600; color: #64748b; margin-bottom: 3px; display: block; }
-        .filter-bar input, .filter-bar select { margin: 0; padding: 6px 10px; font-size: 12px; background: #ffffff; }
-
-        table { width: 100%; margin-top: 8px; border-collapse: separate; border-spacing: 0; font-size: 13px; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; }
-        th, td { padding: 10px 12px; text-align: center; border-bottom: 1px solid var(--border-color); border-right: 1px solid var(--border-color); }
-        th { background: #f8fafc; color: #475569; font-weight: 600; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+        th, td { border: 1px solid #e2e8f0; padding: 8px 10px; text-align: center; }
+        th { background: #f1f5f9; color: #334155; }
+        .nav-bar { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .nav-bar button { flex: 1; background: #e2e8f0; color: #334155; }
+        .nav-bar button.active { background: var(--primary); color: #fff; }
+        .badge { padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+        .badge-green { background: #d1fae5; color: #065f46; }
+        .badge-red { background: #fee2e2; color: #991b1b; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    
-    <div class="logo-header">
-        <div class="antenna-logo">📡</div>
-        <h1>JKP Engineering</h1>
-        <p>ระบบตรวจเช็คอุปกรณ์และเครื่องมือช่างก่อนออกหน้างาน (Pre-Site Departure Checklist & Stock Control)</p>
+    <div class="header">
+        <h1>📡 JKP Engineering - ระบบจัดการอุปกรณ์และเช็คลิสต์หน้างาน</h1>
     </div>
 
-    <!-- ส่วน Login & Register -->
-    <div id="authContainer">
-        <div id="loginSection" class="section-box auth-box">
-            <h3 style="text-align: center;">🔒 เข้าสู่ระบบใช้งาน</h3>
-            <div class="input-group"><label>รหัสผู้ใช้ / รหัสสมาชิก:</label><input type="text" id="username" placeholder="Username"></div>
-            <div class="input-group"><label>รหัสผ่าน:</label><input type="password" id="password" placeholder="Password"></div>
-            <button class="btn-add" onclick="handleLogin()">เข้าสู่ระบบ</button>
-            <div style="text-align: center; margin-top: 10px; color: var(--primary); cursor: pointer; font-size: 13px;" onclick="toggleAuth('register')">ยังไม่มีบัญชี? สมัครสมาชิกใหม่</div>
-        </div>
-
-        <div id="registerSection" class="section-box auth-box hidden">
-            <h3 style="text-align: center;">👤 สมัครสมาชิกใหม่</h3>
-            <div class="input-group"><label>รหัสสมาชิก (Username):</label><input type="text" id="newMemberId" placeholder="เช่น M001"></div>
-            <div class="input-group"><label>ชื่อ-นามสกุล:</label><input type="text" id="newMemberName" placeholder="กรอกชื่อ-นามสกุล"></div>
-            <div class="input-group"><label>รหัสผ่าน:</label><input type="password" id="newMemberPass" placeholder="ตั้งรหัสผ่าน"></div>
-            <div class="input-group"><label>เบอร์โทรศัพท์:</label><input type="text" id="newMemberPhone" placeholder="เบอร์โทร"></div>
-            <button class="btn-member" onclick="registerMember()">ส่งคำขอสมัครสมาชิก</button>
-            <div style="text-align: center; margin-top: 10px; color: var(--primary); cursor: pointer; font-size: 13px;" onclick="toggleAuth('login')">มีบัญชีแล้ว? กลับไปหน้าเข้าสู่ระบบ</div>
-        </div>
+    <!-- Login Box -->
+    <div id="authBox" class="section" style="max-width: 400px; margin: auto;">
+        <h3>🔒 เข้าสู่ระบบ</h3>
+        <div class="input-group"><label>Username:</label><input type="text" id="username"></div>
+        <div class="input-group"><label>Password:</label><input type="password" id="password"></div>
+        <button onclick="handleLogin()">เข้าสู่ระบบ</button>
     </div>
 
-    <!-- หน้า Dashboard และฟอร์มหลัก -->
-    <div id="appSection" class="hidden">
-        
-        <div class="user-panel">
-            <div>
-                <h3 id="userWelcome" style="margin: 0; font-size: 15px; color: #0f172a;"></h3>
-                <small id="userRoleBadge" style="color: #64748b; font-weight: 500; font-size: 12px;"></small>
-            </div>
-            <div>
-                <button onclick="handleLogout()" style="width: auto; padding: 6px 12px; background: #64748b; font-size: 12px;">ออกจากระบบ</button>
-            </div>
+    <!-- Main App -->
+    <div id="appBox" class="hidden">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; background: #f1f5f9; padding: 10px 15px; border-radius: 8px;">
+            <div id="userInfo" style="font-weight: 600; font-size: 14px;"></div>
+            <button onclick="handleLogout()" style="width: auto; padding: 5px 12px; background: #64748b; font-size: 12px;">ออกจากระบบ</button>
         </div>
 
-        <!-- เมนูดรอปดาวน์เลือกหน้า -->
-        <div class="nav-dropdown-container">
-            <label for="navSelect">📌 เลือกเมนูการใช้งาน:</label>
-            <select id="navSelect" onchange="onNavDropdownChange(this)">
-                <option value="tab-checklist">🚚 ฟอร์มตรวจเช็คหน้างาน</option>
-                <option value="tab-stock">📦 สต็อกคงเหลือในคลัง</option>
-                <option value="tab-return">📥 คืนอุปกรณ์เข้าคลัง</option>
-                <option value="tab-returnhistory">📥📜 ประวัติการคืน/ยืมสินค้า</option>
-            </select>
+        <div class="nav-bar">
+            <button id="btn-t1" class="active" onclick="switchTab('t1')">🚚 เบิกของ/ตรวจเช็คหน้างาน</button>
+            <button id="btn-t2" onclick="switchTab('t2')">📦 สต็อกคงเหลือในคลัง</button>
+            <button id="btn-t3" onclick="switchTab('t3')">📥 คืนอุปกรณ์เข้าคลัง</button>
         </div>
 
-        <!-- Tab 1: แบบฟอร์มตรวจเช็ค -->
-        <div id="tab-checklist" class="tab-content active">
-            <div class="section-box" style="border-left: 5px solid var(--primary);">
-                <h3 style="color: var(--primary);">🚚 แบบฟอร์มตรวจเช็คอุปกรณ์ก่อนออกหน้างาน</h3>
-                
-                <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 15px;">
-                    <div class="input-group" style="flex: 1; min-width: 220px; margin: 0;">
-                        <label>รหัสงาน / ไซท์งาน (Site ID / Job No.):</label>
-                        <input type="text" id="siteIdInput" placeholder="เช่น SITE-BKK-01" style="margin:0;">
-                    </div>
-                    <div class="input-group" style="flex: 1; min-width: 220px; margin: 0;">
-                        <label>ประเภทงาน (Job Type):</label>
-                        <input type="text" id="jobTypeInput" placeholder="เช่น ติดตั้งเสาสัญญาณ / บำรุงรักษา" style="margin:0;">
-                    </div>
+        <!-- Tab 1: Checklist & Dispatch -->
+        <div id="tab-t1" class="tab-content">
+            <div class="section" style="border-left: 5px solid var(--primary);">
+                <h3>🚚 ฟอร์มตรวจเช็คและเบิกอุปกรณ์ออกหน้างาน</h3>
+                <div style="display: flex; gap: 10px; margin-bottom: 12px;">
+                    <div style="flex: 1;"><label>รหัสไซท์งาน (Site ID):</label><input type="text" id="siteIdInput" placeholder="เช่น SITE-01"></div>
+                    <div style="flex: 1;"><label>ประเภทงาน:</label><input type="text" id="jobTypeInput" placeholder="ติดตั้ง/ซ่อมบำรุง"></div>
                 </div>
 
-                <div class="picker-box">
-                    <h4 style="margin: 0 0 8px 0; font-size: 14px; color: #334155;">➕ เลือกอุปกรณ์จากคลัง (รองรับรุ่น / Serial No.):</h4>
-                    <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end;">
-                        <div style="flex: 2; min-width: 240px; margin: 0;">
-                            <label style="font-size: 11px; font-weight: 600; color: #64748b; display: block; margin-bottom: 3px;">เลือกรายการอุปกรณ์:</label>
-                            <select id="itemSelectDropdown" style="margin: 0;" onchange="onItemDropdownChange()">
-                                <option value="">-- กรุณาเลือกอุปกรณ์จากคลัง --</option>
-                            </select>
-                        </div>
-                        
-                        <div id="subSerialContainer" style="flex: 2; min-width: 220px; margin: 0; display: none;">
-                            <label style="font-size: 11px; font-weight: 600; color: #0284c7; display: block; margin-bottom: 3px;">🔖 เลือกรุ่น / หมายเลขเครื่อง (Serial No.):</label>
-                            <select id="subSerialDropdown" style="margin: 0; border-color: var(--primary); background: #f0f9ff;" onchange="onSubSerialChange()">
-                                <option value="">-- เลือกรุ่น/เครื่อง --</option>
-                            </select>
-                        </div>
-
-                        <div style="flex: 1; min-width: 90px; margin: 0;">
-                            <label style="font-size: 11px; font-weight: 600; color: #64748b; display: block; margin-bottom: 3px;">จำนวน:</label>
-                            <input type="number" id="itemQtyInput" value="1" min="1" style="margin: 0; text-align: center;">
-                        </div>
-                        <div style="margin: 0;">
-                            <button type="button" class="btn-add" style="padding: 10px 16px; margin: 0;" onclick="addSelectedItemToDispatch()">+ เพิ่มรายการ</button>
-                        </div>
+                <div style="background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px dashed #cbd5e1; margin-bottom: 12px;">
+                    <h4 style="margin: 0 0 8px 0; font-size: 13px;">เลือกอุปกรณ์จากคลัง:</h4>
+                    <div style="display: flex; gap: 8px;">
+                        <select id="itemDropdown" style="flex: 2;" onchange="onItemChange()"><option value="">-- เลือกอุปกรณ์ --</option></select>
+                        <select id="serialDropdown" style="flex: 1; display: none;"><option value="">-- เลือกรุ่น/SN --</option></select>
+                        <input type="number" id="qtyInput" value="1" min="1" style="width: 80px; text-align: center;">
+                        <button class="btn-success" style="width: auto;" onclick="addItemToCart()">+ เพิ่ม</button>
                     </div>
                 </div>
 
-                <div style="margin-bottom: 15px;">
-                    <h4 style="margin: 0 0 6px 0; font-size: 14px; color: #334155;">📋 รายการอุปกรณ์ที่จัดเตรียมออกหน้างานรอบนี้:</h4>
-                    <table class="selected-items-table">
-                        <thead>
-                            <tr>
-                                <th style="width: 8%;">ลำดับ</th>
-                                <th style="width: 18%;">หมวดหมู่</th>
-                                <th style="width: 32%;">ชื่ออุปกรณ์ / รุ่น (S/N)</th>
-                                <th style="width: 12%;">จำนวน</th>
-                                <th style="width: 25%;">เงื่อนไขการคืน</th>
-                                <th style="width: 5%;">จัดการ</th>
-                            </tr>
-                        </thead>
-                        <tbody id="dispatchSelectedTableBody">
-                            <tr><td colspan="6" style="color: #64748b;">ยังไม่มีรายการอุปกรณ์ที่เลือก</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="input-group" style="margin-top: 15px;">
-                    <label>หมายเหตุเพิ่มเติม (ถ้ามี):</label>
-                    <input type="text" id="dispatchNote" placeholder="ระบุเหตุผลหรือรายละเอียดเพิ่มเติม">
-                </div>
-
-                <button class="btn-add" style="margin-top: 8px; padding: 12px; font-size: 15px;" onclick="submitDispatchCheck()">ยืนยันการตรวจเช็คและบันทึกออกหน้างาน</button>
-            </div>
-        </div>
-
-        <!-- Tab 2: สต็อกคงเหลือ -->
-        <div id="tab-stock" class="tab-content">
-            <div class="section-box">
-                <h3>📦 สต็อกคงเหลือปัจจุบันในคลัง (แยกตามหมวดหมู่ พร้อมรายการ Serial ย่อย)</h3>
-                <div id="stockCategoryContainer">
-                    <p>กำลังโหลดข้อมูลสต็อก...</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tab 3: คืนอุปกรณ์เข้าคลัง -->
-        <div id="tab-return" class="tab-content">
-            <div class="section-box" style="border-left: 5px solid var(--success);">
-                <h3 style="color: var(--success);">📥📜 ประวัติการคืน/ยืมสินค้า</h3>
-                <p style="font-size: 13px; color: #64748b; margin-top: -5px;">กรอกรหัสงาน (Site ID) เพื่อดึงรายการอุปกรณ์ที่เคยเบิกแบบ <strong>"ยืม-คืน"</strong> มาให้เลือกคืน (อุปกรณ์สายอากาศระบบจะตัดสต็อกถาวร ไม่ต้องคืน)</p>
-                
-                <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 15px;">
-                    <div class="input-group" style="flex: 1; min-width: 220px; margin: 0;">
-                        <label>รหัสงาน / ไซท์งานอ้างอิง (Site ID):</label>
-                        <input type="text" id="returnSiteIdInput" placeholder="เช่น SITE-BKK-01" style="margin:0;" oninput="updateReturnDropdownBySite()">
-                    </div>
-                </div>
-
-                <div class="picker-box">
-                    <h4 style="margin: 0 0 8px 0; font-size: 14px; color: #334155;">➕ เลือกอุปกรณ์จากประวัติเบิกของไซท์นี้:</h4>
-                    <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end;">
-                        <div style="flex: 2; min-width: 240px; margin: 0;">
-                            <label style="font-size: 11px; font-weight: 600; color: #64748b; display: block; margin-bottom: 3px;">เลือกอุปกรณ์ที่ต้องคืน:</label>
-                            <select id="returnItemSelectDropdown" style="margin: 0;">
-                                <option value="">-- กรุณากรอกรหัสไซท์งานก่อน --</option>
-                            </select>
-                        </div>
-                        <div style="flex: 1; min-width: 90px; margin: 0;">
-                            <label style="font-size: 11px; font-weight: 600; color: #64748b; display: block; margin-bottom: 3px;">จำนวนที่คืน:</label>
-                            <input type="number" id="returnItemQtyInput" value="1" min="1" style="margin: 0; text-align: center;">
-                        </div>
-                        <div style="margin: 0;">
-                            <button type="button" class="btn-member" style="padding: 10px 16px; margin: 0;" onclick="addSelectedItemToReturn()">+ เพิ่มรายการคืน</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div style="margin-bottom: 15px;">
-                    <h4 style="margin: 0 0 6px 0; font-size: 14px; color: #334155;">📋 รายการอุปกรณ์ที่กำลังจะคืนเข้าคลัง:</h4>
-                    <table class="selected-items-table">
-                        <thead>
-                            <tr>
-                                <th style="width: 10%;">ลำดับ</th>
-                                <th style="width: 25%;">รหัสอุปกรณ์</th>
-                                <th style="width: 40%;">ชื่ออุปกรณ์</th>
-                                <th style="width: 20%;">จำนวนคืน</th>
-                                <th style="width: 5%;">จัดการ</th>
-                            </tr>
-                        </thead>
-                        <tbody id="returnSelectedTableBody">
-                            <tr><td colspan="5" style="color: #64748b;">ยังไม่มีรายการอุปกรณ์ที่เลือกคืน</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="input-group" style="margin-top: 15px;">
-                    <label>หมายเหตุการคืน (สภาพอุปกรณ์ / รายละเอียด):</label>
-                    <input type="text" id="returnNote" placeholder="เช่น อุปกรณ์ใช้งานปกติครบถ้วน">
-                </div>
-
-                <button class="btn-member" style="background: var(--success); margin-top: 8px; padding: 12px; font-size: 15px;" onclick="submitReturnEquipment()">ยืนยันการคืนอุปกรณ์เข้าคลัง</button>
-            </div>
-        </div>
-
-        <!-- Tab 4: ประวัติการคืนสินค้า -->
-        <div id="tab-returnhistory" class="tab-content">
-            <div class="section-box">
-                <h3>📥📜 ประวัติการคืน/ยืมอุปกรณ์</h3>
-                <div class="filter-bar">
-                    <div class="filter-item" style="flex: 2;">
-                        <label>🔍 ค้นหาประวัติการคืน (รหัสอุปกรณ์ / ชื่อ / ไซท์ / ผู้คืน):</label>
-                        <input type="text" id="returnLogSearchKeyword" placeholder="พิมพ์คำค้นหา..." oninput="filterReturnLogs()">
-                    </div>
-                </div>
                 <table>
-                    <thead>
-                        <tr>
-                            <th>วัน-เวลา</th>
-                            <th>ผู้คืนอุปกรณ์</th>
-                            <th>รหัสไซท์งาน</th>
-                            <th>รหัสอุปกรณ์</th>
-                            <th>ชื่ออุปกรณ์</th>
-                            <th>จำนวนที่คืน</th>
-                            <th>หน่วย</th>
-                            <th>หมายเหตุการคืน</th>
-                        </tr>
-                    </thead>
-                    <tbody id="returnLogTableBody">
-                        <tr><td colspan="8">กำลังโหลดข้อมูลประวัติการคืน...</td></tr>
-                    </tbody>
+                    <thead><tr><th>รหัส</th><th>ชื่ออุปกรณ์</th><th>จำนวน</th><th>เงื่อนไข</th><th>จัดการ</th></tr></thead>
+                    <tbody id="cartTableBody"><tr><td colspan="5" style="color: #64748b;">ยังไม่มีรายการอุปกรณ์</td></tr></tbody>
                 </table>
+
+                <button class="btn-success" style="margin-top: 15px;" onclick="submitDispatch()">ยืนยันการเบิกอุปกรณ์และตัดสต็อก</button>
             </div>
         </div>
 
-    </div>
+        <!-- Tab 2: Stock -->
+        <div id="tab-t2" class="tab-content hidden">
+            <div class="section">
+                <h3>📦 สต็อกคงเหลือปัจจุบัน</h3>
+                <div id="stockContainer">กำลังโหลด...</div>
+            </div>
+        </div>
 
+        <!-- Tab 3: Return -->
+        <div id="tab-t3" class="tab-content hidden">
+            <div class="section" style="border-left: 5px solid var(--success);">
+                <h3>📥 คืนอุปกรณ์เข้าคลัง</h3>
+                <div class="input-group"><label>รหัสไซท์งานอ้างอิง (Site ID):</label><input type="text" id="returnSiteInput" placeholder="กรอก Site ID ที่เคยเบิก" oninput="loadReturnItems()"></div>
+                <table>
+                    <thead><tr><th>รหัส</th><th>ชื่ออุปกรณ์</th><th>จำนวนที่คืน</th><th>จัดการ</th></tr></thead>
+                    <tbody id="returnTableBody"><tr><td colspan="4">กรุณากรอกรหัสไซท์งานเพื่อดึงรายการ</td></tr></tbody>
+                </table>
+                <button class="btn-success" style="margin-top: 15px;" onclick="submitReturn()">ยืนยันการคืนเข้าคลัง</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
-    // ⚠️ ใส่ Web App URL ของคุณที่นี่
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbys4cqalf0f2y2C_p9gfLscEQivqoZlWpH1aiJjazbQ1uK823aLjOIhSYOQulhOb8xyiQ/exec";
-    
-    let currentUserName = "";
-    let currentUsernameId = "";
-    let currentUserRole = "";
-    let globalStockMap = {};
-    let globalSerialDetailMap = {}; 
-    let globalStockLogs = [];
-    let selectedDispatchItems = []; 
-    let selectedReturnItems = [];   
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyrHymu8hDbz0xMJmDBWXAB_5-Fg-51LoMdMzYqn-MAY-YecdXHjyyY6WP7hnTn2CVU/exec"; // <-- ใส่ URL ที่ Deploy จาก Apps Script
+    let globalStock = {};
+    let globalSerials = {};
+    let globalLogs = [];
+    let cart = [];
+    let returnCart = [];
+    let currentUser = "";
 
-    window.onload = function() {
-        checkSession();
-    };
-
-    function onNavDropdownChange(selectElem) {
-        let selectedTabId = selectElem.value;
-        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-        document.getElementById(selectedTabId).classList.add('active');
-    }
-
-    function checkSession() {
-        let savedUser = sessionStorage.getItem("user");
-        if (savedUser) {
-            let userObj = JSON.parse(savedUser);
-            currentUserRole = userObj.role;
-            currentUserName = userObj.name;
-            currentUsernameId = userObj.username;
-            setupUIForUser();
-        }
-    }
-
-    function toggleAuth(mode) {
-        if (mode === 'register') {
-            document.getElementById("loginSection").classList.add("hidden");
-            document.getElementById("registerSection").classList.remove("hidden");
-        } else {
-            document.getElementById("registerSection").classList.add("hidden");
-            document.getElementById("loginSection").classList.remove("hidden");
-        }
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+        document.querySelectorAll('.nav-bar button').forEach(el => el.classList.remove('active'));
+        document.getElementById('tab-' + tabId).classList.remove('hidden');
+        document.getElementById('btn-' + tabId).classList.add('active');
     }
 
     function handleLogin() {
-        let user = document.getElementById("username").value.trim();
-        let pass = document.getElementById("password").value.trim();
-        if (!user || !pass) { alert("กรุณากรอกข้อมูลให้ครบถ้วน"); return; }
+        let u = document.getElementById("username").value.trim();
+        let p = document.getElementById("password").value.trim();
+        if(!u || !p) { alert("กรุณากรอกข้อมูล"); return; }
 
-        fetch(WEB_APP_URL, {
-            method: "POST",
-            headers: { "Content-Type": "text/plain;charset=utf-8" },
-            body: JSON.stringify({ action: "login", username: user, password: pass })
-        })
-        .then(res => res.json())
-        .then(result => {
-            if (result.status === "success") {
-                currentUserRole = result.role;
-                currentUserName = result.name;
-                currentUsernameId = user;
-                
-                sessionStorage.setItem("user", JSON.stringify({
-                    role: result.role,
-                    name: result.name,
-                    username: user
-                }));
-
-                setupUIForUser();
-            } else {
-                alert(result.message);
-            }
+        fetch(WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "login", username: u, password: p }) })
+        .then(res => res.json()).then(res => {
+            if(res.status === "success") {
+                currentUser = res.name;
+                document.getElementById("userInfo").innerText = `ผู้ใช้งาน: ${res.name} (${res.role})`;
+                document.getElementById("authBox").classList.add("hidden");
+                document.getElementById("appBox").classList.remove("hidden");
+                loadData();
+            } else { alert(res.message); }
         });
     }
 
-    function setupUIForUser() {
-        document.getElementById("userWelcome").innerText = `ผู้ใช้งาน: ${currentUserName}`;
-        document.getElementById("userRoleBadge").innerText = `สถานะ: ${currentUserRole === 'admin' ? 'แอดมิน (Admin)' : 'ช่างติดตั้ง (Technician)'}`;
-        
-        document.getElementById("authContainer").classList.add("hidden");
-        document.getElementById("appSection").classList.remove("hidden");
+    function handleLogout() { location.reload(); }
 
-        loadHistoryData();
+    function loadData() {
+        fetch(WEB_APP_URL).then(res => res.json()).then(data => {
+            globalStock = data.stock || {};
+            globalSerials = data.serials || {};
+            globalLogs = data.stockLogs || [];
+
+            // Render Dropdown
+            let html = '<option value="">-- เลือกอุปกรณ์ --</option>';
+            for(let id in globalStock) {
+                let st = globalStock[id];
+                html += `<option value="${st.id}">[${st.id}] ${st.name} (เหลือ: ${st.qty} ${st.unit})</option>`;
+            }
+            document.getElementById("itemDropdown").innerHTML = html;
+
+            // Render Stock Table
+            let stockHtml = "";
+            for(let id in globalStock) {
+                let st = globalStock[id];
+                let badge = st.qty <= 2 ? "badge-red" : "badge-green";
+                stockHtml += `<div><b>${st.id}</b> - ${st.name} : <span class="badge ${badge}">${st.qty} ${st.unit}</span></div>`;
+            }
+            document.getElementById("stockContainer").innerHTML = stockHtml || "ไม่มีข้อมูลสต็อก";
+        });
     }
 
-    function handleLogout() {
-        sessionStorage.removeItem("user");
-        document.getElementById("authContainer").classList.remove("hidden");
-        document.getElementById("appSection").classList.add("hidden");
-        toggleAuth('login');
-    }
-
-    function onItemDropdownChange() {
-        let stockId = document.getElementById("itemSelectDropdown").value;
-        let subContainer = document.getElementById("subSerialContainer");
-        let subDropdown = document.getElementById("subSerialDropdown");
-        let qtyInput = document.getElementById("itemQtyInput");
-
-        subDropdown.innerHTML = `<option value="">-- เลือกรุ่น/เครื่อง --</option>`;
-
-        if (stockId && globalSerialDetailMap[stockId] && globalSerialDetailMap[stockId].length > 0) {
-            globalSerialDetailMap[stockId].forEach(item => {
-                let opt = document.createElement("option");
-                opt.value = item.serialNo;
-                opt.textContent = `${item.serialNo} (${item.qty} ${item.unit})`;
-                opt.setAttribute("data-qty", item.qty);
-                subDropdown.appendChild(opt);
-            });
-            subContainer.style.display = "block";
-            qtyInput.value = "1";
+    function onItemChange() {
+        let id = document.getElementById("itemDropdown").value;
+        let sDropdown = document.getElementById("serialDropdown");
+        if(globalSerials[id] && globalSerials[id].length > 0) {
+            let html = '<option value="">-- เลือกรุ่น/SN --</option>';
+            globalSerials[id].forEach(s => { html += `<option value="${s.serialNo}">${s.serialNo} (คงเหลือ: ${s.qty})</option>`; });
+            sDropdown.innerHTML = html;
+            sDropdown.style.display = "block";
         } else {
-            subContainer.style.display = "none";
-            qtyInput.value = "1";
+            sDropdown.style.display = "none";
+            sDropdown.innerHTML = "";
         }
     }
 
-    function onSubSerialChange() {
-        let subDropdown = document.getElementById("subSerialDropdown");
-        let qtyInput = document.getElementById("itemQtyInput");
-        let selectedOption = subDropdown.options[subDropdown.selectedIndex];
+    function addItemToCart() {
+        let id = document.getElementById("itemDropdown").value;
+        let qty = parseInt(document.getElementById("qtyInput").value) || 1;
+        let serial = document.getElementById("serialDropdown").value || "-";
+        if(!id) { alert("กรุณาเลือกอุปกรณ์"); return; }
 
-        if (selectedOption && selectedOption.value) {
-            let maxQty = parseInt(selectedOption.getAttribute("data-qty")) || 1;
-            qtyInput.value = maxQty;
-        }
+        let item = globalStock[id];
+        cart.push({ id: item.id, name: item.name, qty: qty, serial: serial, category: item.category });
+        renderCart();
     }
 
-    function addSelectedItemToDispatch() {
-        let dropdown = document.getElementById("itemSelectDropdown");
-        let stockId = dropdown.value;
-        let qtyInput = document.getElementById("itemQtyInput");
-        let qty = parseInt(qtyInput.value) || 1;
-
-        let subContainer = document.getElementById("subSerialContainer");
-        let subDropdown = document.getElementById("subSerialDropdown");
-        let serialNo = "-";
-
-        if (!stockId) { alert("กรุณาเลือกอุปกรณ์จากคลังก่อน"); return; }
-
-        if (subContainer.style.display !== "none") {
-            serialNo = subDropdown.value;
-            if (!serialNo) {
-                alert("กรุณาเลือกรุ่นหรือหมายเลขเครื่อง (Serial No.) ย่อยของอุปกรณ์นี้ก่อนครับ");
-                return;
-            }
-            let selectedOption = subDropdown.options[subDropdown.selectedIndex];
-            let maxQty = parseInt(selectedOption.getAttribute("data-qty")) || 1;
-            if (qty > maxQty) {
-                alert(`❌ จำนวนที่ระบุเกินกว่าจำนวนที่มีในรายการย่อยนี้ (สูงสุด ${maxQty})`);
-                return;
-            }
-        }
-
-        let itemData = globalStockMap[stockId];
-        if (!itemData) return;
-
-        if (itemData.qty < qty) {
-            alert(`❌ อุปกรณ์ (${itemData.name}) ในคลังเหลือเพียง ${itemData.qty} ${itemData.unit} เท่านั้น`);
-            return;
-        }
-
-        let existing = selectedDispatchItems.find(i => i.id === stockId && i.serial === serialNo);
-        let totalQty = existing ? existing.qty + qty : qty;
-
-        if (itemData.qty < totalQty) {
-            alert(`❌ ยอดรวมที่เลือกเกินจำนวนคงเหลือในคลัง`);
-            return;
-        }
-
-        if (existing) {
-            existing.qty = totalQty;
-        } else {
-            let returnRule = "ต้องนำกลับมาคืน";
-            if (itemData.category === "อุปกรณ์สายอากาศ") {
-                returnRule = "ไม่ต้องคืน (ตัดสต็อก)";
-            }
-
-            selectedDispatchItems.push({
-                id: itemData.id,
-                name: itemData.name,
-                category: itemData.category,
-                unit: itemData.unit,
-                qty: qty,
-                serial: serialNo,
-                returnRule: returnRule
-            });
-        }
-
-        dropdown.value = "";
-        subContainer.style.display = "none";
-        subDropdown.innerHTML = `<option value="">-- เลือกรุ่น/เครื่อง --</option>`;
-        qtyInput.value = "1";
-        renderDispatchSelectedTable();
-    }
-
-    function removeDispatchItem(index) {
-        selectedDispatchItems.splice(index, 1);
-        renderDispatchSelectedTable();
-    }
-
-    function renderDispatchSelectedTable() {
-        let tbody = document.getElementById("dispatchSelectedTableBody");
-        if (selectedDispatchItems.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="6" style="color: #64748b;">ยังไม่มีรายการอุปกรณ์ที่เลือก</td></tr>`;
-            return;
-        }
-
+    function renderCart() {
+        let tbody = document.getElementById("cartTableBody");
+        if(cart.length === 0) { tbody.innerHTML = `<tr><td colspan="5">ยังไม่มีรายการ</td></tr>`; return; }
         let html = "";
-        selectedDispatchItems.forEach((item, idx) => {
-            let badgeClass = item.category === "อุปกรณ์สายอากาศ" ? "badge-danger" : (item.category === "เครื่องมือวัด" ? "badge-warning" : "badge-info");
-            let displayName = `[${item.id}] ${item.name}`;
-            if (item.serial && item.serial !== "-") {
-                displayName += `<br><small style="color:var(--primary); font-weight:600;">รุ่น/SN: ${item.serial}</small>`;
-            }
-
-            html += `<tr>
-                <td>${idx + 1}</td>
-                <td><span class="badge ${badgeClass}">${item.category}</span></td>
-                <td style="text-align: left;">${displayName}</td>
-                <td><b>${item.qty}</b> ${item.unit}</td>
-                <td><span style="font-size: 11px; font-weight: 600; color: ${item.category === 'อุปกรณ์สายอากาศ' ? '#dc2626' : '#0284c7'};">${item.returnRule}</span></td>
-                <td><button type="button" onclick="removeDispatchItem(${idx})" style="background: #ef4444; padding: 2px 6px; font-size: 11px; width: auto; margin:0;">ลบ</button></td>
-            </tr>`;
+        cart.forEach((c, idx) => {
+            let rule = c.category === "อุปกรณ์สายอากาศ" ? "ตัดสต็อกถาวร" : "ยืม-คืน";
+            html += `<tr><td>${c.id}</td><td style="text-align:left;">${c.name} ${c.serial !== '-' ? '(SN: '+c.serial+')' : ''}</td><td><b>${c.qty}</b></td><td>${rule}</td><td><button onclick="cart.splice(${idx},1);renderCart();" style="background:var(--danger);padding:2px 6px;width:auto;">ลบ</button></td></tr>`;
         });
         tbody.innerHTML = html;
     }
 
-    function submitDispatchCheck() {
+    function submitDispatch() {
         let siteId = document.getElementById("siteIdInput").value.trim();
-        let jobType = document.getElementById("jobTypeInput").value.trim() || "ติดตั้งทั่วไป";
-        let note = document.getElementById("dispatchNote").value.trim();
+        if(!siteId) { alert("กรุณากรอกรหัสไซท์งาน"); return; }
+        if(cart.length === 0) { alert("กรุณาเลือกอุปกรณ์"); return; }
 
-        if (!siteId) { alert("กรุณากรอกรหัสงาน / ไซท์งาน"); return; }
-        if (selectedDispatchItems.length === 0) { alert("กรุณาเลือกอุปกรณ์อย่างน้อย 1 รายการ"); return; }
-
-        let usedItems = [];
-        selectedDispatchItems.forEach(item => {
-            usedItems.push({
-                id: item.id,
-                deductQty: item.qty,
-                category: item.category,
-                serial: item.serial
-            });
-        });
-
+        let usedItems = cart.map(c => ({ id: c.id, deductQty: c.qty, serial: c.serial }));
         fetch(WEB_APP_URL, {
             method: "POST",
-            headers: { "Content-Type": "text/plain;charset=utf-8" },
-            body: JSON.stringify({
-                action: "saveChecklist",
-                siteId: siteId,
-                jobType: jobType,
-                userName: currentUserName,
-                status: "อุปกรณ์ครบถ้วน",
-                missingItems: "-",
-                note: note,
-                usedItems: usedItems
-            })
-        })
-        .then(res => res.json())
-        .then(result => {
-            if (result.status === "success") {
-                alert("✅ บันทึกข้อมูลและทำรายการเบิกอุปกรณ์เรียบร้อยแล้ว!");
-                document.getElementById("siteIdInput").value = "";
-                document.getElementById("jobTypeInput").value = "";
-                document.getElementById("dispatchNote").value = "";
-                selectedDispatchItems = [];
-                renderDispatchSelectedTable();
-                loadHistoryData();
-            } else {
-                alert(result.message);
-            }
+            body: JSON.stringify({ action: "saveChecklist", siteId: siteId, userName: currentUser, usedItems: usedItems })
+        }).then(res => res.json()).then(res => {
+            alert(res.message);
+            if(res.status === "success") { cart = []; renderCart(); loadData(); }
         });
     }
 
-    function updateReturnDropdownBySite() {
-        let siteInput = document.getElementById("returnSiteIdInput").value.trim().toLowerCase();
-        let returnDropdown = document.getElementById("returnItemSelectDropdown");
-
-        if (!siteInput) {
-            returnDropdown.innerHTML = `<option value="">-- กรุณากรอกรหัสไซท์งานก่อน --</option>`;
-            return;
-        }
-
-        let matchedLogs = globalStockLogs.filter(sLog => {
-            let matchSite = sLog.siteId && sLog.siteId.toLowerCase() === siteInput;
-            let isReturnableType = sLog.returnType && sLog.returnType.includes("ยืม-คืนอุปกรณ์");
-            return matchSite && isReturnableType;
-        });
-
-        if (matchedLogs.length === 0) {
-            returnDropdown.innerHTML = `<option value="">-- ไม่พบประวัติการยืมอุปกรณ์ที่ต้องคืนของไซท์นี้ (อุปกรณ์สายอากาศถูกตัดสต็อกถาวร ไม่ต้องคืน) --</option>`;
-            return;
-        }
-
-        let html = `<option value="">-- เลือกอุปกรณ์ที่จะคืน (ไซท์: ${siteInput}) --</option>`;
-        matchedLogs.forEach(log => {
-            html += `<option value="${log.stockId}" data-qty="${log.qty}">[${log.stockId}] ${log.itemName} (เบิกไป: ${log.qty} ${log.unit})</option>`;
-        });
-        returnDropdown.innerHTML = html;
-    }
-
-    function addSelectedItemToReturn() {
-        let dropdown = document.getElementById("returnItemSelectDropdown");
-        let stockId = dropdown.value;
-        let qtyInput = document.getElementById("returnItemQtyInput");
-        let qty = parseInt(qtyInput.value) || 1;
-
-        if (!stockId) { alert("กรุณาเลือกอุปกรณ์ที่ต้องการคืนก่อน"); return; }
-
-        let selectedOption = dropdown.options[dropdown.selectedIndex];
-        let maxQty = parseInt(selectedOption.getAttribute("data-qty")) || 9999;
-
-        if (qty > maxQty) {
-            alert(`❌ จำนวนคืน (${qty}) มากกว่าจำนวนที่เคยเบิกไป (${maxQty})`);
-            return;
-        }
-
-        let itemData = globalStockMap[stockId];
-        let itemName = itemData ? itemData.name : stockId;
-        let itemUnit = itemData ? itemData.unit : "ชิ้น";
-
-        let existing = selectedReturnItems.find(i => i.id === stockId);
-        let totalQty = existing ? existing.qty + qty : qty;
-
-        if (totalQty > maxQty) {
-            alert(`❌ ยอดรวมที่เลือกคืนเกินจำนวนที่เคยเบิกไป (${maxQty})`);
-            return;
-        }
-
-        if (existing) {
-            existing.qty = totalQty;
-        } else {
-            selectedReturnItems.push({
-                id: stockId,
-                name: itemName,
-                unit: itemUnit,
-                qty: qty
-            });
-        }
-
-        dropdown.value = "";
-        qtyInput.value = "1";
-        renderReturnSelectedTable();
-    }
-
-    function removeReturnItem(index) {
-        selectedReturnItems.splice(index, 1);
-        renderReturnSelectedTable();
-    }
-
-    function renderReturnSelectedTable() {
-        let tbody = document.getElementById("returnSelectedTableBody");
-        if (selectedReturnItems.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="5" style="color: #64748b;">ยังไม่มีรายการอุปกรณ์ที่เลือกคืน</td></tr>`;
-            return;
-        }
-
+    function loadReturnItems() {
+        let site = document.getElementById("returnSiteInput").value.trim().toLowerCase();
+        let tbody = document.getElementById("returnTableBody");
+        let matched = globalLogs.filter(l => l.siteId && l.siteId.toLowerCase() === site && l.returnType.includes("ยืม-คืน"));
+        if(matched.length === 0) { tbody.innerHTML = `<tr><td colspan="4">ไม่พบรายการยืมของไซท์นี้</td></tr>`; return; }
+        
         let html = "";
-        selectedReturnItems.forEach((item, idx) => {
-            html += `<tr>
-                <td>${idx + 1}</td>
-                <td><b>${item.id}</b></td>
-                <td style="text-align: left;">${item.name}</td>
-                <td><b>${item.qty}</b> ${item.unit}</td>
-                <td><button type="button" onclick="removeReturnItem(${idx})" style="background: #ef4444; padding: 2px 6px; font-size: 11px; width: auto; margin:0;">ลบ</button></td>
-            </tr>`;
+        matched.forEach((m, idx) => {
+            html += `<tr><td>${m.stockId}</td><td style="text-align:left;">${m.itemName}</td><td><b>${m.qty}</b></td><td><button onclick="submitSingleReturn('${m.stockId}', ${m.qty})" style="background:var(--success);padding:2px 8px;width:auto;">คืนชิ้นนี้</button></td></tr>`;
         });
         tbody.innerHTML = html;
     }
 
-    function submitReturnEquipment() {
-        let siteId = document.getElementById("returnSiteIdInput").value.trim();
-        let note = document.getElementById("returnNote").value.trim() || "คืนอุปกรณ์เข้าคลังเรียบร้อย";
-
-        if (!siteId) { alert("กรุณากรอกรหัสงาน / ไซท์งานอ้างอิง"); return; }
-        if (selectedReturnItems.length === 0) { alert("กรุณาเลือกอุปกรณ์ที่จะคืนอย่างน้อย 1 รายการ"); return; }
-
-        let returnItemsList = [];
-        selectedReturnItems.forEach(item => {
-            returnItemsList.push({
-                id: item.id,
-                returnQty: item.qty
-            });
-        });
-
+    function submitSingleReturn(stockId, qty) {
+        let siteId = document.getElementById("returnSiteInput").value.trim();
         fetch(WEB_APP_URL, {
             method: "POST",
-            headers: { "Content-Type": "text/plain;charset=utf-8" },
-            body: JSON.stringify({
-                action: "returnEquipment",
-                siteId: siteId,
-                userName: currentUserName,
-                note: note,
-                returnItems: returnItemsList
-            })
-        })
-        .then(res => res.json())
-        .then(result => {
-            if (result.status === "success") {
-                alert("✅ บันทึกการคืนอุปกรณ์เข้าคลังสำเร็จ!");
-                document.getElementById("returnSiteIdInput").value = "";
-                document.getElementById("returnNote").value = "";
-                selectedReturnItems = [];
-                renderReturnSelectedTable();
-                loadHistoryData();
-            } else {
-                alert(result.message);
-            }
-        });
-    }
-
-    function loadHistoryData() {
-        fetch(WEB_APP_URL)
-        .then(res => res.json())
-        .then(data => {
-            globalStockMap = data.stock || {};
-            globalSerialDetailMap = data.serials || {};
-            globalStockLogs = data.stockLogs || [];
-
-            let dropdown = document.getElementById("itemSelectDropdown");
-            let dropdownHtml = `<option value="">-- กรุณาเลือกอุปกรณ์จากคลัง --</option>`;
-            
-            let stockGrouped = {};
-            for (let id in globalStockMap) {
-                let st = globalStockMap[id];
-                let cat = st.category || "อุปกรณ์ทั่วไป";
-                if (!stockGrouped[cat]) stockGrouped[cat] = [];
-                stockGrouped[cat].push(st);
-            }
-
-            for (let catName in stockGrouped) {
-                dropdownHtml += `<optgroup label="📂 หมวด: ${catName}">`;
-                stockGrouped[catName].forEach(st => {
-                    dropdownHtml += `<option value="${st.id}">[${st.id}] ${st.name} (คงเหลือ: ${st.qty} ${st.unit})</option>`;
-                });
-                dropdownHtml += `</optgroup>`;
-            }
-            dropdown.innerHTML = dropdownHtml;
-
-            let stockCategoryContainerHtml = "";
-            for (let catName in stockGrouped) {
-                stockCategoryContainerHtml += `
-                    <div style="margin-bottom: 20px;">
-                        <h4 style="margin: 0 0 6px 0; color: var(--primary); font-size: 14px;">📂 หมวดหมู่: ${catName}</h4>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th style="width: 15%;">รหัส</th>
-                                    <th style="width: 45%;">ชื่ออุปกรณ์/วัสดุ & รายละเอียด Serial</th>
-                                    <th style="width: 25%;">จำนวนคงเหลือรวม</th>
-                                    <th style="width: 15%;">หน่วยนับ</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                `;
-
-                stockGrouped[catName].forEach(st => {
-                    let badgeClass = st.qty <= 2 ? "badge-danger" : "badge-success";
-                    let stIdUpper = st.id.toUpperCase();
-                    let serialsHtml = "";
-
-                    if (globalSerialDetailMap[stIdUpper] && globalSerialDetailMap[stIdUpper].length > 0) {
-                        serialsHtml = `<div style="margin-top: 6px; padding-top: 6px; border-top: 1px dashed #e2e8f0; font-size: 12px; text-align: left;">
-                            <span style="color: var(--primary); font-weight: 600;">🔖 รุ่น / หมายเลขเครื่อง (Serial No.):</span>
-                            <ul style="margin: 4px 0 0 16px; padding: 0; color: #334155;">`;
-                        globalSerialDetailMap[stIdUpper].forEach(sItem => {
-                            serialsHtml += `<li><b>${sItem.serialNo}</b> — เหลือ <b>${sItem.qty}</b> ${sItem.unit}</li>`;
-                        });
-                        serialsHtml += `</ul></div>`;
-                    }
-
-                    stockCategoryContainerHtml += `<tr>
-                        <td><b>${st.id}</b></td>
-                        <td style="text-align:left;">
-                            <div style="font-weight: 600; color: #0f172a;">${st.name}</div>
-                            ${serialsHtml}
-                        </td>
-                        <td><span class="badge ${badgeClass}">${st.qty}</span></td>
-                        <td>${st.unit}</td>
-                    </tr>`;
-                });
-                stockCategoryContainerHtml += `</tbody></table></div>`;
-            }
-            document.getElementById("stockCategoryContainer").innerHTML = stockCategoryContainerHtml || `<p>ไม่มีข้อมูลสต็อก</p>`;
-
-            filterReturnLogs();
-            updateReturnDropdownBySite();
-        });
-    }
-
-    function filterReturnLogs() {
-        let keyword = document.getElementById("returnLogSearchKeyword").value.trim().toLowerCase();
-
-        let filtered = globalStockLogs.slice().reverse().filter(sLog => {
-            let isReturn = sLog.returnType && (sLog.returnType.includes("คืนอุปกรณ์") || sLog.returnType.includes("คืน"));
-            if (!isReturn) return false;
-
-            return !keyword || 
-                (sLog.siteId && sLog.siteId.toLowerCase().includes(keyword)) ||
-                (sLog.user && sLog.user.toLowerCase().includes(keyword)) ||
-                (sLog.stockId && sLog.stockId.toLowerCase().includes(keyword)) ||
-                (sLog.itemName && sLog.itemName.toLowerCase().includes(keyword));
-        });
-
-        let html = "";
-        filtered.forEach(sLog => {
-            html += `<tr>
-                <td>${new Date(sLog.time).toLocaleString('th-TH')}</td>
-                <td>${sLog.user}</td>
-                <td><b>${sLog.siteId}</b></td>
-                <td>${sLog.stockId}</td>
-                <td style="text-align:left;">${sLog.itemName}</td>
-                <td><b style="color:var(--success);">${sLog.qty}</b></td>
-                <td>${sLog.unit}</td>
-                <td><span style="color:var(--success); font-weight:600;">${sLog.returnType}</span></td>
-            </tr>`;
-        });
-
-        document.getElementById("returnLogTableBody").innerHTML = html || `<tr><td colspan="8">ไม่พบประวัติการคืนสินค้าตามเงื่อนไขที่ค้นหา</td></tr>`;
-    }
-
-    function registerMember() {
-        let mId = document.getElementById("newMemberId").value.trim();
-        let mName = document.getElementById("newMemberName").value.trim();
-        let mPass = document.getElementById("newMemberPass").value.trim();
-        let mPhone = document.getElementById("newMemberPhone").value.trim();
-        if (!mId || !mName || !mPass) { alert("กรุณากรอกข้อมูลให้ครบถ้วน"); return; }
-
-        fetch(WEB_APP_URL, {
-            method: "POST",
-            headers: { "Content-Type": "text/plain;charset=utf-8" },
-            body: JSON.stringify({ action: "register", memberId: mId, memberName: mName, memberPass: mPass, memberPhone: mPhone })
-        })
-        .then(res => res.json())
-        .then(result => {
-            alert(result.message);
-            if (result.status === "success") { toggleAuth('login'); }
+            body: JSON.stringify({ action: "returnEquipment", siteId: siteId, userName: currentUser, returnItems: [{ id: stockId, returnQty: qty }] })
+        }).then(res => res.json()).then(res => {
+            alert(res.message);
+            if(res.status === "success") { loadData(); loadReturnItems(); }
         });
     }
 </script>
-
 </body>
 </html>
