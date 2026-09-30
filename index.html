@@ -71,7 +71,6 @@
             border: 1px solid var(--border-color);
         }
 
-        /* 🗂️ Navigation Tabs สำหรับแบ่งสัดส่วนหน้าจอ */
         .nav-tabs {
             display: flex;
             gap: 10px;
@@ -102,13 +101,8 @@
             box-shadow: 0 4px 10px rgba(2, 132, 199, 0.2);
         }
 
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
 
         .analytics-grid {
             display: grid;
@@ -213,33 +207,6 @@
         .stock-ok { background: #d1fae5; color: #065f46; }
         .stock-low { background: #fee2e2; color: #991b1b; }
 
-        .extra-items-box {
-            background: #fffbeb;
-            border: 1px dashed var(--warning);
-            border-radius: 10px;
-            padding: 14px;
-            margin-top: 15px;
-            margin-bottom: 15px;
-        }
-        .extra-item-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: #ffffff;
-            border: 1px solid var(--border-color);
-            padding: 4px 10px;
-            border-radius: 16px;
-            font-size: 12px;
-            margin-right: 6px;
-            margin-bottom: 6px;
-        }
-        .extra-item-tag .btn-remove-tag {
-            color: var(--danger);
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 13px;
-        }
-
         .filter-bar {
             display: flex;
             gap: 10px;
@@ -250,24 +217,9 @@
             border: 1px solid var(--border-color);
             margin-bottom: 12px;
         }
-        .filter-bar .filter-item {
-            flex: 1;
-            min-width: 160px;
-            margin: 0;
-        }
-        .filter-bar label {
-            font-size: 11px;
-            font-weight: 600;
-            color: #64748b;
-            margin-bottom: 3px;
-            display: block;
-        }
-        .filter-bar input, .filter-bar select {
-            margin: 0;
-            padding: 6px 10px;
-            font-size: 12px;
-            background: #ffffff;
-        }
+        .filter-bar .filter-item { flex: 1; min-width: 160px; margin: 0; }
+        .filter-bar label { font-size: 11px; font-weight: 600; color: #64748b; margin-bottom: 3px; display: block; }
+        .filter-bar input, .filter-bar select { margin: 0; padding: 6px 10px; font-size: 12px; background: #ffffff; }
 
         table { width: 100%; margin-top: 8px; border-collapse: separate; border-spacing: 0; font-size: 13px; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; }
         th, td { padding: 10px 12px; text-align: center; border-bottom: 1px solid var(--border-color); border-right: 1px solid var(--border-color); }
@@ -277,22 +229,14 @@
         .badge-danger { background: #fee2e2; color: #991b1b; }
 
         .btn-view-items {
-            background: #0284c7;
-            color: white;
-            border: none;
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 11px;
-            cursor: pointer;
-            margin: 0;
-            width: auto;
+            background: #0284c7; color: white; border: none; padding: 4px 8px;
+            border-radius: 6px; font-size: 11px; cursor: pointer; margin: 0; width: auto;
         }
 
         .modal-backdrop {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px);
-            display: flex; align-items: center; justify-content: center;
-            z-index: 9999;
+            display: flex; align-items: center; justify-content: center; z-index: 9999;
         }
         .modal-card {
             background: #ffffff; width: 90%; max-width: 500px;
@@ -344,7 +288,7 @@
         </div>
     </div>
 
-    <!-- หน้า Dashboard และฟอร์มหลัก (แบ่งเป็นสัดส่วนด้วย Tabs) -->
+    <!-- หน้า Dashboard และฟอร์มหลัก -->
     <div id="appSection" class="hidden">
         
         <div class="user-panel">
@@ -376,13 +320,13 @@
             <div class="stat-card">
                 <div class="stat-icon" style="background: #fee2e2; color: #dc2626;">⚠️</div>
                 <div class="stat-info">
-                    <h4>รายการลืมของ / ไม่ครบ</h4>
+                    <h4>รายการไม่ครบ / มีปัญหา</h4>
                     <p id="statIncompleteChecks">0</p>
                 </div>
             </div>
         </div>
 
-        <!-- 🗂️ แถบเมนูเลือกสัดส่วนหน้าจอ (Tabs) -->
+        <!-- 🗂️ แถบเมนู Tabs -->
         <div class="nav-tabs">
             <button class="nav-tab-btn active" onclick="switchTab('tab-checklist', this)">🚚 ฟอร์มตรวจเช็คหน้างาน</button>
             <button class="nav-tab-btn" onclick="switchTab('tab-stock', this)">📦 สต็อกคงเหลือในคลัง</button>
@@ -390,48 +334,33 @@
             <button class="nav-tab-btn" onclick="switchTab('tab-stocklogs', this)">🔄 ประวัติการเบิกสินค้า</button>
         </div>
 
-        <!-- 📑 Tab 1: แบบฟอร์มตรวจเช็ค -->
+        <!-- 📑 Tab 1: แบบฟอร์มตรวจเช็ค (ดึงรายการจากสต็อกทั้งหมดมาแสดงแยกตามหมวดหมู่) -->
         <div id="tab-checklist" class="tab-content active">
             <div class="section-box" style="border-left: 5px solid var(--primary);">
                 <h3 style="color: var(--primary);">🚚 แบบฟอร์มตรวจเช็คอุปกรณ์ก่อนออกหน้างาน</h3>
                 
-                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-                    <div class="input-group" style="flex: 1; min-width: 220px;">
+                <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 15px;">
+                    <div class="input-group" style="flex: 1; min-width: 220px; margin: 0;">
                         <label>รหัสงาน / ไซท์งาน (Site ID / Job No.):</label>
-                        <input type="text" id="siteIdInput" placeholder="เช่น SITE-BKK-01">
+                        <input type="text" id="siteIdInput" placeholder="เช่น SITE-BKK-01" style="margin:0;">
                     </div>
-                    <div class="input-group" style="flex: 1; min-width: 220px;">
-                        <label>เลือกประเภทงาน (Job Template):</label>
-                        <select id="jobTypeSelect" onchange="loadJobChecklist()">
-                            <option value="">-- กำลังโหลดประเภทงาน... --</option>
-                        </select>
+                    <div class="input-group" style="flex: 1; min-width: 220px; margin: 0;">
+                        <label>ประเภทงาน (Job Type):</label>
+                        <input type="text" id="jobTypeInput" placeholder="เช่น ติดตั้งเสาสัญญาณ / บำรุงรักษา" style="margin:0;">
                     </div>
                 </div>
 
-                <div id="checklistSection" class="hidden">
-                    <h4 style="margin-bottom: 6px; color: #334155; font-size: 14px;">รายการอุปกรณ์หลักตามแม่แบบงาน:</h4>
-                    <p style="font-size: 11px; color: #64748b; margin-top: 0;">* รายการแม่แบบอุปกรณ์ดึงมาจาก Google Sheet ตามประเภทงานที่เลือก สามารถปรับเปลี่ยนจำนวนที่จะหยิบจริงได้</p>
+                <div id="checklistSection">
+                    <h4 style="margin-bottom: 6px; color: #334155; font-size: 14px;">รายการอุปกรณ์ทั้งหมดในคลัง (แยกตามหมวดหมู่):</h4>
+                    <p style="font-size: 11px; color: #64748b; margin-top: 0;">* ติ๊กเลือกอุปกรณ์ที่ต้องการนำออกหน้างาน และระบุจำนวนที่ต้องการหยิบจริง</p>
                     
-                    <div id="checklistCategories"></div>
-
-                    <div class="extra-items-box">
-                        <h5 style="margin: 0 0 6px 0; color: #b45309; font-size: 13px;">➕ เบิกอุปกรณ์ / วัสดุเสริมเพิ่มเติม (อยู่นอกแม่แบบงาน):</h5>
-                        <p style="font-size: 11px; color: #78350f; margin-top: 0;">สามารถเลือกอุปกรณ์ยิบย่อยจากคลังสต็อกเพื่อนำไปเพิ่มเติมในงานนี้ได้</p>
-                        
-                        <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
-                            <select id="extraStockSelect" style="flex: 2; min-width: 180px; margin: 0;">
-                                <option value="">-- เลือกอุปกรณ์เสริมจากคลัง --</option>
-                            </select>
-                            <input type="number" id="extraStockQty" placeholder="จำนวน" value="1" min="1" style="width: 80px; margin: 0;">
-                            <button type="button" onclick="addExtraItem()" style="width: auto; background: #d97706; padding: 8px 14px; margin: 0;">➕ เพิ่มรายการ</button>
-                        </div>
-
-                        <div id="extraItemsListContainer" style="margin-top: 10px;"></div>
+                    <div id="checklistCategoriesContainer">
+                        <p>กำลังโหลดรายการอุปกรณ์...</p>
                     </div>
 
-                    <div class="input-group" style="margin-top: 12px;">
+                    <div class="input-group" style="margin-top: 15px;">
                         <label>หมายเหตุเพิ่มเติม (ถ้ามี):</label>
-                        <input type="text" id="dispatchNote" placeholder="ระบุเหตุผลหากนำอุปกรณ์ไปทดแทน หรืออุปกรณ์ไม่สมบูรณ์">
+                        <input type="text" id="dispatchNote" placeholder="ระบุเหตุผลหรือรายละเอียดเพิ่มเติม">
                     </div>
 
                     <button class="btn-add" style="margin-top: 8px; padding: 12px;" onclick="submitDispatchCheck()">ยืนยันการตรวจเช็คและพร้อมออกเดินทาง</button>
@@ -439,7 +368,7 @@
             </div>
         </div>
 
-        <!-- 📑 Tab 2: สต็อกคงเหลือ (แยกตารางตามหมวดหมู่) -->
+        <!-- 📑 Tab 2: สต็อกคงเหลือ -->
         <div id="tab-stock" class="tab-content">
             <div class="section-box">
                 <h3>📦 สต็อกคงเหลือปัจจุบันในคลัง (แยกตามหมวดหมู่)</h3>
@@ -486,7 +415,7 @@
                             <th>ประเภทงาน</th>
                             <th>ผลการเช็ค</th>
                             <th>รายการอุปกรณ์ที่นำไป</th>
-                            <th>รายการที่ขาด/หมายเหตุ</th>
+                            <th>หมายเหตุ</th>
                         </tr>
                     </thead>
                     <tbody id="historyTableBody">
@@ -545,16 +474,14 @@
 </div>
 
 <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyH5oQOvc-cWDAz-fqpodcEu87MrpecNVAdufIOJvDBuTP4mJYRrfCXIaERrq0wQCO2_A/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby6pocEALVPZdyseMGCYYYUi1A_NdJ9pCFXGx8DH8HiZGSIEWVH4TGeJeMGfiJ_anIKyQ/exec";
     
     let currentUserName = "";
     let currentUsernameId = "";
     let currentUserRole = "";
     let globalStockMap = {};
-    let globalJobTemplates = {};
     let globalRawLogs = [];
     let globalStockLogs = [];
-    let selectedExtraItems = [];
 
     window.onload = function() {
         checkSession();
@@ -639,74 +566,6 @@
         toggleAuth('login');
     }
 
-    function loadJobChecklist() {
-        let jobKey = document.getElementById("jobTypeSelect").value;
-        let categoriesContainer = document.getElementById("checklistCategories");
-        let section = document.getElementById("checklistSection");
-
-        selectedExtraItems = [];
-        renderExtraItems();
-
-        if (!jobKey || !globalJobTemplates[jobKey]) {
-            section.classList.add("hidden");
-            return;
-        }
-
-        let jobObj = globalJobTemplates[jobKey];
-        let categories = jobObj.categories;
-        let html = "";
-        let globalIndex = 0;
-
-        for (let categoryName in categories) {
-            let items = categories[categoryName];
-            
-            html += `
-                <div class="category-block">
-                    <div class="category-header">
-                        <h5>${categoryName}</h5>
-                        <button class="btn-select-all" onclick="selectAllInCategory('${categoryName}')">เลือกทั้งหมด</button>
-                    </div>
-                    <div class="checklist-container" data-category="${categoryName}">
-            `;
-
-            items.forEach((item) => {
-                let stockText = "";
-                let stockBadgeClass = "stock-ok";
-                let defaultQty = item.deductQty || 1;
-                
-                if (item.stockId && globalStockMap[item.stockId]) {
-                    let st = globalStockMap[item.stockId];
-                    if (st.qty <= 0 || st.qty < defaultQty) {
-                        stockBadgeClass = "stock-low";
-                        stockText = `<span class="stock-badge ${stockBadgeClass}">⚠️ คลังเหลือ: ${st.qty} ${st.unit} (ไม่พอใช้ออกงาน)</span>`;
-                    } else {
-                        stockText = `<span class="stock-badge ${stockBadgeClass}">📦 คลังเหลือ: ${st.qty} ${st.unit}</span>`;
-                    }
-                }
-
-                html += `
-                    <div class="checklist-item" id="item_box_${globalIndex}">
-                        <label>
-                            <input type="checkbox" value="${item.name}" data-stock-id="${item.stockId || ''}" class="item-chk" onchange="toggleItemCheck(${globalIndex})">
-                            <span>${item.name} ${stockText}</span>
-                        </label>
-                        <div style="display: flex; align-items: center; gap: 6px;">
-                            <input type="number" id="item_qty_${globalIndex}" class="item-qty-input" value="${defaultQty}" min="1" placeholder="จำนวน">
-                            <span style="font-size: 12px; color: #64748b;">ชิ้น</span>
-                        </div>
-                        <span id="badge_status_${globalIndex}" style="font-size:11px; color:var(--danger); font-weight:600; white-space:nowrap;">⚠️ ยังไม่เช็ค</span>
-                    </div>
-                `;
-                globalIndex++;
-            });
-
-            html += `</div></div>`;
-        }
-
-        categoriesContainer.innerHTML = html;
-        section.classList.remove("hidden");
-    }
-
     function toggleItemCheck(index) {
         let box = document.getElementById(`item_box_${index}`);
         let badge = document.getElementById(`badge_status_${index}`);
@@ -724,7 +583,7 @@
     }
 
     function selectAllInCategory(categoryName) {
-        let container = document.querySelector(`[data-category="${categoryName}"]`);
+        let container = document.querySelector(`[data-category="${CSS.escape(categoryName)}"]`);
         if (!container) return;
 
         let checkboxes = container.querySelectorAll('.item-chk');
@@ -737,69 +596,14 @@
         });
     }
 
-    function addExtraItem() {
-        let stockId = document.getElementById("extraStockSelect").value;
-        let qty = parseInt(document.getElementById("extraStockQty").value) || 1;
-
-        if (!stockId) { alert("กรุณาเลือกอุปกรณ์จากคลังสต็อก"); return; }
-        if (qty <= 0) { alert("กรุณาระบุจำนวนที่ถูกต้อง"); return; }
-
-        let itemData = globalStockMap[stockId];
-        if (!itemData) return;
-
-        let existing = selectedExtraItems.find(x => x.stockId === stockId);
-        if (existing) {
-            existing.qty += qty;
-        } else {
-            selectedExtraItems.push({
-                stockId: stockId,
-                name: itemData.name,
-                qty: qty,
-                unit: itemData.unit
-            });
-        }
-
-        document.getElementById("extraStockSelect").value = "";
-        document.getElementById("extraStockQty").value = "1";
-        renderExtraItems();
-    }
-
-    function removeExtraItem(index) {
-        selectedExtraItems.splice(index, 1);
-        renderExtraItems();
-    }
-
-    function renderExtraItems() {
-        let container = document.getElementById("extraItemsListContainer");
-        if (selectedExtraItems.length === 0) {
-            container.innerHTML = `<span style="font-size:11px; color:#94a3b8;">ยังไม่มีอุปกรณ์เสริมที่เลือกเพิ่ม</span>`;
-            return;
-        }
-
-        let html = "";
-        selectedExtraItems.forEach((item, index) => {
-            html += `
-                <div class="extra-item-tag">
-                    <span>📦 <b>${item.name}</b> (${item.qty} ${item.unit})</span>
-                    <span class="btn-remove-tag" onclick="removeExtraItem(${index})">&times;</span>
-                </div>
-            `;
-        });
-        container.innerHTML = html;
-    }
-
     function submitDispatchCheck() {
         let siteId = document.getElementById("siteIdInput").value.trim();
-        let jobKey = document.getElementById("jobTypeSelect").value;
-        let jobObj = globalJobTemplates[jobKey];
-        let jobName = jobObj ? jobObj.name : jobKey;
+        let jobType = document.getElementById("jobTypeInput").value.trim() || "ติดตั้งทั่วไป";
         let note = document.getElementById("dispatchNote").value.trim();
 
         if (!siteId) { alert("กรุณากรอกรหัสงาน / ไซท์งาน"); return; }
-        if (!jobKey) { alert("กรุณาเลือกประเภทงาน"); return; }
 
         let checkedItemsList = [];
-        let missingItems = [];
         let usedItems = [];
         let categoryBlocks = document.querySelectorAll('.category-block');
         
@@ -811,28 +615,22 @@
                 let userQty = parseInt(qtyInput ? qtyInput.value : 1) || 1;
 
                 if (cb.checked) {
-                    checkedItemsList.push(`${cb.value} (${userQty} ชิ้น)`);
                     let stockId = cb.getAttribute('data-stock-id');
+                    let itemName = cb.value;
+                    let unit = cb.getAttribute('data-unit');
+                    
+                    checkedItemsList.push(`${itemName} (${userQty} ${unit})`);
                     if (stockId && userQty > 0) {
                         usedItems.push({ id: stockId, deductQty: userQty });
                     }
-                } else {
-                    missingItems.push(cb.value);
                 }
                 globalIndex++;
             });
         });
 
-        selectedExtraItems.forEach(extra => {
-            checkedItemsList.push(`${extra.name} (เสริม ${extra.qty} ${extra.unit})`);
-            usedItems.push({ id: extra.stockId, deductQty: extra.qty });
-        });
-
-        let isComplete = missingItems.length === 0;
-
-        if (!isComplete) {
-            let confirmProceed = confirm(`⚠ คำเตือน: คุณยังไม่ได้จัดเตรียมอุปกรณ์แม่แบบหลัก ${missingItems.length} รายการ:\n- ${missingItems.join('\n- ')}\n\nคุณยังคงต้องการบันทึกและออกเดินทางใช่หรือไม่?`);
-            if (!confirmProceed) return;
+        if (checkedItemsList.length === 0) {
+            alert("กรุณาติ๊กเลือกอุปกรณ์ที่ต้องการนำออกหน้างานอย่างน้อย 1 รายการ");
+            return;
         }
 
         fetch(WEB_APP_URL, {
@@ -841,10 +639,10 @@
             body: JSON.stringify({
                 action: "saveChecklist",
                 siteId: siteId,
-                jobType: jobName,
+                jobType: jobType,
                 userName: currentUserName,
-                status: isComplete ? "อุปกรณ์ครบถ้วน" : "อุปกรณ์ไม่ครบ",
-                missingItems: missingItems.length > 0 ? missingItems.join(", ") : "-",
+                status: "อุปกรณ์ครบถ้วน",
+                missingItems: "-",
                 note: note,
                 usedItems: usedItems,
                 checkedItems: checkedItemsList.join(" | ")
@@ -855,10 +653,8 @@
             if (result.status === "success") {
                 alert("✅ บันทึกข้อมูลและตัดสต็อกสินค้าใน Google Sheet เรียบร้อยแล้ว!");
                 document.getElementById("siteIdInput").value = "";
-                document.getElementById("jobTypeSelect").value = "";
+                document.getElementById("jobTypeInput").value = "";
                 document.getElementById("dispatchNote").value = "";
-                document.getElementById("checklistSection").classList.add("hidden");
-                selectedExtraItems = [];
                 loadHistoryData();
             } else {
                 alert(result.message);
@@ -871,39 +667,38 @@
         .then(res => res.json())
         .then(data => {
             globalStockMap = data.stock || {};
-            globalJobTemplates = data.templates || {};
-            let jobTypes = data.jobTypes || [];
             globalRawLogs = data.logs || [];
             globalStockLogs = data.stockLogs || [];
 
-            let selectHtml = `<option value="">-- กรุณาเลือกประเภทงาน --</option>`;
-            jobTypes.forEach(jt => {
-                selectHtml += `<option value="${jt.key}">${jt.name}</option>`;
-            });
-            document.getElementById("jobTypeSelect").innerHTML = selectHtml;
-
-            let extraSelectHtml = `<option value="">-- เลือกอุปกรณ์เสริมจากคลัง --</option>`;
-            let stockCategoryContainerHtml = "";
             let stockGrouped = {};
-
             for (let id in globalStockMap) {
                 let st = globalStockMap[id];
                 let categoryName = st.category || "วัสดุ/อุปกรณ์ทั่วไป";
-                
                 if (!stockGrouped[categoryName]) {
                     stockGrouped[categoryName] = [];
                 }
                 stockGrouped[categoryName].push(st);
             }
 
+            let checklistHtml = "";
+            let stockCategoryContainerHtml = "";
+            let globalIndex = 0;
+
             for (let catName in stockGrouped) {
-                extraSelectHtml += `<optgroup label="📂 ${catName}">`;
-                
+                // สำหรับแท็บเช็คลิสต์
+                checklistHtml += `
+                    <div class="category-block">
+                        <div class="category-header">
+                            <h5>📂 ${catName}</h5>
+                            <button type="button" class="btn-select-all" onclick="selectAllInCategory('${catName}')">เลือกทั้งหมด</button>
+                        </div>
+                        <div class="checklist-container" data-category="${catName}">
+                `;
+
+                // สำหรับแท็บสต็อก
                 stockCategoryContainerHtml += `
                     <div style="margin-bottom: 20px;">
-                        <h4 style="margin: 0 0 6px 0; color: var(--primary); font-size: 14px; display: flex; align-items: center; gap: 6px;">
-                            📂 หมวดหมู่: ${catName}
-                        </h4>
+                        <h4 style="margin: 0 0 6px 0; color: var(--primary); font-size: 14px;">📂 หมวดหมู่: ${catName}</h4>
                         <table>
                             <thead>
                                 <tr>
@@ -917,8 +712,24 @@
                 `;
 
                 stockGrouped[catName].forEach(st => {
+                    let stockBadgeClass = st.qty <= 0 ? "stock-low" : "stock-ok";
+                    let stockText = `<span class="stock-badge ${stockBadgeClass}">📦 คลังเหลือ: ${st.qty} ${st.unit}</span>`;
+
+                    checklistHtml += `
+                        <div class="checklist-item" id="item_box_${globalIndex}">
+                            <label>
+                                <input type="checkbox" value="${st.name}" data-stock-id="${st.id}" data-unit="${st.unit}" class="item-chk" onchange="toggleItemCheck(${globalIndex})">
+                                <span>[${st.id}] ${st.name} ${stockText}</span>
+                            </label>
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <input type="number" id="item_qty_${globalIndex}" class="item-qty-input" value="1" min="1" placeholder="จำนวน">
+                                <span style="font-size: 12px; color: #64748b;">${st.unit}</span>
+                            </div>
+                            <span id="badge_status_${globalIndex}" style="font-size:11px; color:var(--danger); font-weight:600; white-space:nowrap;">⚠️ ยังไม่เช็ค</span>
+                        </div>
+                    `;
+
                     let badgeClass = st.qty <= 2 ? "badge-danger" : "badge-success";
-                    
                     stockCategoryContainerHtml += `<tr>
                         <td><b>${st.id}</b></td>
                         <td style="text-align:left;">${st.name}</td>
@@ -926,15 +737,15 @@
                         <td>${st.unit}</td>
                     </tr>`;
 
-                    extraSelectHtml += `<option value="${st.id}">[${st.id}] ${st.name} (คงเหลือ: ${st.qty} ${st.unit})</option>`;
+                    globalIndex++;
                 });
 
+                checklistHtml += `</div></div>`;
                 stockCategoryContainerHtml += `</tbody></table></div>`;
-                extraSelectHtml += `</optgroup>`;
             }
 
+            document.getElementById("checklistCategoriesContainer").innerHTML = checklistHtml || `<p>ไม่มีข้อมูลอุปกรณ์ในสต็อก</p>`;
             document.getElementById("stockCategoryContainer").innerHTML = stockCategoryContainerHtml || `<p>ไม่มีข้อมูลสต็อก</p>`;
-            document.getElementById("extraStockSelect").innerHTML = extraSelectHtml;
 
             filterHistoryLogs();
             filterStockLogs();
@@ -1005,7 +816,7 @@
                         📦 ดูรายการที่นำไป
                     </button>
                 </td>
-                <td>${log.missing || log.note || '-'}</td>
+                <td>${log.note || '-'}</td>
             </tr>`;
         });
 
