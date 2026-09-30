@@ -216,7 +216,7 @@
             </div>
         </div>
 
-        <!-- 🔽 เมนูดรอปดาวน์เลือกหน้า (ตัด 'ประวัติการตรวจเช็ค' ออกแล้ว) -->
+        <!-- เมนูดรอปดาวน์เลือกหน้า -->
         <div class="nav-dropdown-container">
             <label for="navSelect">📌 เลือกเมนูการใช้งาน:</label>
             <select id="navSelect" onchange="onNavDropdownChange(this)">
@@ -227,7 +227,7 @@
             </select>
         </div>
 
-        <!-- 📑 Tab 1: แบบฟอร์มตรวจเช็ค -->
+        <!-- Tab 1: แบบฟอร์มตรวจเช็ค -->
         <div id="tab-checklist" class="tab-content active">
             <div class="section-box" style="border-left: 5px solid var(--primary);">
                 <h3 style="color: var(--primary);">🚚 แบบฟอร์มตรวจเช็คอุปกรณ์ก่อนออกหน้างาน</h3>
@@ -298,7 +298,7 @@
             </div>
         </div>
 
-        <!-- 📑 Tab 2: สต็อกคงเหลือ -->
+        <!-- Tab 2: สต็อกคงเหลือ -->
         <div id="tab-stock" class="tab-content">
             <div class="section-box">
                 <h3>📦 สต็อกคงเหลือปัจจุบันในคลัง (แยกตามหมวดหมู่ พร้อมรายการ Serial ย่อย)</h3>
@@ -308,7 +308,7 @@
             </div>
         </div>
 
-        <!-- 📑 Tab 3: คืนอุปกรณ์เข้าคลัง -->
+        <!-- Tab 3: คืนอุปกรณ์เข้าคลัง -->
         <div id="tab-return" class="tab-content">
             <div class="section-box" style="border-left: 5px solid var(--success);">
                 <h3 style="color: var(--success);">📥 ฟอร์มคืนอุปกรณ์ / เครื่องมือวัดกลับเข้าคลัง</h3>
@@ -367,7 +367,7 @@
             </div>
         </div>
 
-        <!-- 📑 Tab 4: ประวัติการคืนสินค้า -->
+        <!-- Tab 4: ประวัติการคืนสินค้า -->
         <div id="tab-returnhistory" class="tab-content">
             <div class="section-box">
                 <h3>📥📜 ประวัติการคืน/ยืมอุปกรณ์</h3>
@@ -402,7 +402,8 @@
 </div>
 
 <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwYU_TMNkc7Tb5tDt-f3bfYEEH6VAwE2JAmrwn9DaS7wBlhSsfvth55riyrobE9fzaOiQ/exec";
+    // ⚠️ ใส่ Web App URL ของคุณที่นี่
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbys4cqalf0f2y2C_p9gfLscEQivqoZlWpH1aiJjazbQ1uK823aLjOIhSYOQulhOb8xyiQ/exec";
     
     let currentUserName = "";
     let currentUsernameId = "";
