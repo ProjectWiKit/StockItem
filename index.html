@@ -326,14 +326,23 @@
                 </div>
 
                 <div class="picker-box">
-                    <h4 style="margin: 0 0 8px 0; font-size: 14px; color: #334155;">➕ เลือกอุปกรณ์จากคลัง (รองรับทั้ง 3 หมวดหมู่):</h4>
+                    <h4 style="margin: 0 0 8px 0; font-size: 14px; color: #334155;">➕ เลือกอุปกรณ์จากคลัง (รองรับรุ่น / Serial No.):</h4>
                     <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end;">
                         <div style="flex: 2; min-width: 240px; margin: 0;">
                             <label style="font-size: 11px; font-weight: 600; color: #64748b; display: block; margin-bottom: 3px;">เลือกรายการอุปกรณ์:</label>
-                            <select id="itemSelectDropdown" style="margin: 0;">
+                            <select id="itemSelectDropdown" style="margin: 0;" onchange="onItemDropdownChange()">
                                 <option value="">-- กรุณาเลือกอุปกรณ์จากคลัง --</option>
                             </select>
                         </div>
+                        
+                        <!-- ช่องเลือกรุ่น/Serial ย่อย (จะแสดงอัตโนมัติถ้ามีข้อมูล) -->
+                        <div id="subSerialContainer" style="flex: 2; min-width: 220px; margin: 0; display: none;">
+                            <label style="font-size: 11px; font-weight: 600; color: #0284c7; display: block; margin-bottom: 3px;">🔖 เลือกรุ่น / หมายเลขเครื่อง (Serial No.):</label>
+                            <select id="subSerialDropdown" style="margin: 0; border-color: var(--primary); background: #f0f9ff;">
+                                <option value="">-- เลือกรุ่น/เครื่อง --</option>
+                            </select>
+                        </div>
+
                         <div style="flex: 1; min-width: 90px; margin: 0;">
                             <label style="font-size: 11px; font-weight: 600; color: #64748b; display: block; margin-bottom: 3px;">จำนวน:</label>
                             <input type="number" id="itemQtyInput" value="1" min="1" style="margin: 0; text-align: center;">
@@ -349,11 +358,11 @@
                     <table class="selected-items-table">
                         <thead>
                             <tr>
-                                <th style="width: 10%;">ลำดับ</th>
-                                <th style="width: 20%;">หมวดหมู่</th>
-                                <th style="width: 35%;">ชื่ออุปกรณ์</th>
-                                <th style="width: 15%;">จำนวน</th>
-                                <th style="width: 15%;">เงื่อนไขการคืน</th>
+                                <th style="width: 8%;">ลำดับ</th>
+                                <th style="width: 18%;">หมวดหมู่</th>
+                                <th style="width: 32%;">ชื่ออุปกรณ์ / รุ่น (S/N)</th>
+                                <th style="width: 12%;">จำนวน</th>
+                                <th style="width: 25%;">เงื่อนไขการคืน</th>
                                 <th style="width: 5%;">จัดการ</th>
                             </tr>
                         </thead>
@@ -382,7 +391,7 @@
             </div>
         </div>
 
-        <!-- 📑 Tab 3: คืนอุปกรณ์เข้าคลัง (ปรับปรุงใหม่ตามประวัติการเบิก) -->
+        <!-- 📑 Tab 3: คืนอุปกรณ์เข้าคลัง -->
         <div id="tab-return" class="tab-content">
             <div class="section-box" style="border-left: 5px solid var(--success);">
                 <h3 style="color: var(--success);">📥 ฟอร์มคืนอุปกรณ์ / เครื่องมือวัดกลับเข้าคลัง</h3>
@@ -391,7 +400,7 @@
                 <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 15px;">
                     <div class="input-group" style="flex: 1; min-width: 220px; margin: 0;">
                         <label>รหัสงาน / ไซท์งานอ้างอิง (Site ID):</label>
-                        <input type="text" id="returnSiteIdInput" placeholder="เช่น q หรือ SITE-BKK-01" style="margin:0;" oninput="updateReturnDropdownBySite()">
+                        <input type="text" id="returnSiteIdInput" placeholder="เช่น SITE-BKK-01" style="margin:0;" oninput="updateReturnDropdownBySite()">
                     </div>
                 </div>
 
@@ -537,12 +546,13 @@
 </div>
 
 <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw5D7nK8OHA8mrBFkl_p7xzvHfjK0Z9fc1bzHLFpbfMi43JqUYgpgwqywdwYv-0nreI/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxV9KGVT1ZPYoACt_H62LFQ24E6skoTyga_IHyeNnqIKDfTzykmRG9D2Y2DzT68PGLJfw/exec";
     
     let currentUserName = "";
     let currentUsernameId = "";
     let currentUserRole = "";
     let globalStockMap = {};
+    let globalSerialMap = {}; // เก็บข้อมูลรุ่น/Serial รายชิ้น
     let globalRawLogs = [];
     let globalStockLogs = [];
     let selectedDispatchItems = []; 
@@ -628,13 +638,46 @@
         toggleAuth('login');
     }
 
+    // ฟังก์ชันตรวจจับเมื่อเปลี่ยนค่า Dropdown อุปกรณ์หลัก เพื่อดูว่ามี Serial ย่อยไหม
+    function onItemDropdownChange() {
+        let stockId = document.getElementById("itemSelectDropdown").value;
+        let subContainer = document.getElementById("subSerialContainer");
+        let subDropdown = document.getElementById("subSerialDropdown");
+
+        subDropdown.innerHTML = `<option value="">-- เลือกรุ่น/เครื่อง --</option>`;
+
+        if (stockId && globalSerialMap[stockId] && globalSerialMap[stockId].length > 0) {
+            globalSerialMap[stockId].forEach(sNo => {
+                let opt = document.createElement("option");
+                opt.value = sNo;
+                opt.textContent = sNo;
+                subDropdown.appendChild(opt);
+            });
+            subContainer.style.display = "block";
+        } else {
+            subContainer.style.display = "none";
+        }
+    }
+
     function addSelectedItemToDispatch() {
         let dropdown = document.getElementById("itemSelectDropdown");
         let stockId = dropdown.value;
         let qtyInput = document.getElementById("itemQtyInput");
         let qty = parseInt(qtyInput.value) || 1;
 
+        let subContainer = document.getElementById("subSerialContainer");
+        let subDropdown = document.getElementById("subSerialDropdown");
+        let serialNo = "-";
+
         if (!stockId) { alert("กรุณาเลือกอุปกรณ์จากคลังก่อน"); return; }
+
+        if (subContainer.style.display !== "none") {
+            serialNo = subDropdown.value;
+            if (!serialNo) {
+                alert("กรุณาเลือกรุ่นหรือหมายเลขเครื่อง (Serial No.) ย่อยของอุปกรณ์นี้ก่อนครับ");
+                return;
+            }
+        }
 
         let itemData = globalStockMap[stockId];
         if (!itemData) return;
@@ -644,7 +687,7 @@
             return;
         }
 
-        let existing = selectedDispatchItems.find(i => i.id === stockId);
+        let existing = selectedDispatchItems.find(i => i.id === stockId && i.serial === serialNo);
         let totalQty = existing ? existing.qty + qty : qty;
 
         if (itemData.qty < totalQty) {
@@ -666,11 +709,14 @@
                 category: itemData.category,
                 unit: itemData.unit,
                 qty: qty,
+                serial: serialNo,
                 returnRule: returnRule
             });
         }
 
         dropdown.value = "";
+        subContainer.style.display = "none";
+        subDropdown.innerHTML = `<option value="">-- เลือกรุ่น/เครื่อง --</option>`;
         qtyInput.value = "1";
         renderDispatchSelectedTable();
     }
@@ -690,10 +736,15 @@
         let html = "";
         selectedDispatchItems.forEach((item, idx) => {
             let badgeClass = item.category === "อุปกรณ์สายอากาศ" ? "badge-danger" : (item.category === "เครื่องมือวัด" ? "badge-warning" : "badge-info");
+            let displayName = `[${item.id}] ${item.name}`;
+            if (item.serial && item.serial !== "-") {
+                displayName += `<br><small style="color:var(--primary); font-weight:600;">รุ่น/SN: ${item.serial}</small>`;
+            }
+
             html += `<tr>
                 <td>${idx + 1}</td>
                 <td><span class="badge ${badgeClass}">${item.category}</span></td>
-                <td style="text-align: left;">[${item.id}] ${item.name}</td>
+                <td style="text-align: left;">${displayName}</td>
                 <td><b>${item.qty}</b> ${item.unit}</td>
                 <td><span style="font-size: 11px; font-weight: 600; color: ${item.category === 'อุปกรณ์สายอากาศ' ? '#dc2626' : '#0284c7'};">${item.returnRule}</span></td>
                 <td><button type="button" onclick="removeDispatchItem(${idx})" style="background: #ef4444; padding: 2px 6px; font-size: 11px; width: auto; margin:0;">ลบ</button></td>
@@ -714,11 +765,18 @@
         let usedItems = [];
 
         selectedDispatchItems.forEach(item => {
-            checkedItemsList.push(`${item.name} (${item.qty} ${item.unit}) [${item.returnRule}]`);
+            let itemStr = `${item.name} (${item.qty} ${item.unit})`;
+            if (item.serial && item.serial !== "-") {
+                itemStr += ` [รุ่น/SN: ${item.serial}]`;
+            }
+            itemStr += ` [${item.returnRule}]`;
+            checkedItemsList.push(itemStr);
+
             usedItems.push({
                 id: item.id,
                 deductQty: item.qty,
-                category: item.category
+                category: item.category,
+                serial: item.serial
             });
         });
 
@@ -753,7 +811,6 @@
         });
     }
 
-    // ฟังก์ชันกรองและอัปเดต Dropdown คืนของตาม Site ID ที่ผู้ใช้พิมพ์
     function updateReturnDropdownBySite() {
         let siteInput = document.getElementById("returnSiteIdInput").value.trim().toLowerCase();
         let returnDropdown = document.getElementById("returnItemSelectDropdown");
@@ -763,7 +820,6 @@
             return;
         }
 
-        // ค้นหาใน globalStockLogs เฉพาะรายการของไซท์นี้ และเป็นประเภท "ยืม-คืนอุปกรณ์"
         let matchedLogs = globalStockLogs.filter(sLog => {
             let matchSite = sLog.siteId && sLog.siteId.toLowerCase() === siteInput;
             let isReturnableType = sLog.returnType && sLog.returnType.includes("ยืม-คืนอุปกรณ์");
@@ -897,10 +953,10 @@
         .then(res => res.json())
         .then(data => {
             globalStockMap = data.stock || {};
+            globalSerialMap = data.serials || {};
             globalRawLogs = data.logs || [];
             globalStockLogs = data.stockLogs || [];
 
-            // Dropdown สำหรับเบิกหน้าหลัก
             let dropdown = document.getElementById("itemSelectDropdown");
             let dropdownHtml = `<option value="">-- กรุณาเลือกอุปกรณ์จากคลัง --</option>`;
             
