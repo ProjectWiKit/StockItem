@@ -338,7 +338,7 @@
                         <!-- ช่องเลือกรุ่น/Serial ย่อย (จะแสดงอัตโนมัติถ้ามีข้อมูล) -->
                         <div id="subSerialContainer" style="flex: 2; min-width: 220px; margin: 0; display: none;">
                             <label style="font-size: 11px; font-weight: 600; color: #0284c7; display: block; margin-bottom: 3px;">🔖 เลือกรุ่น / หมายเลขเครื่อง (Serial No.):</label>
-                            <select id="subSerialDropdown" style="margin: 0; border-color: var(--primary); background: #f0f9ff;">
+                            <select id="subSerialDropdown" style="margin: 0; border-color: var(--primary); background: #f0f9ff;" onchange="onSubSerialChange()">
                                 <option value="">-- เลือกรุ่น/เครื่อง --</option>
                             </select>
                         </div>
@@ -546,13 +546,13 @@
 </div>
 
 <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwQTBQUtazVHs6a3xtgqY1u6lsDLe7wzCXp1bwnTyKRLQONZcIhVXO14RcvogrFVVog/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwZ47N9idM6Ej8nTO6Zugr2K5WhsPqOji4PZJnuIC6wBCjg45ZnZBy0864jTge-vNYjjg/exec";
     
     let currentUserName = "";
     let currentUsernameId = "";
     let currentUserRole = "";
     let globalStockMap = {};
-    let globalSerialMap = {}; // เก็บข้อมูลรุ่น/Serial รายชิ้น
+    let globalSerialDetailMap = {}; // เก็บข้อมูลรายละเอียด Serial พร้อม Qty และ Unit
     let globalRawLogs = [];
     let globalStockLogs = [];
     let selectedDispatchItems = []; 
@@ -638,24 +638,40 @@
         toggleAuth('login');
     }
 
-    // ฟังก์ชันตรวจจับเมื่อเปลี่ยนค่า Dropdown อุปกรณ์หลัก เพื่อดูว่ามี Serial ย่อยไหม
+    // ฟังก์ชันตรวจจับเมื่อเปลี่ยนค่า Dropdown อุปกรณ์หลัก (วงเขียว)
     function onItemDropdownChange() {
         let stockId = document.getElementById("itemSelectDropdown").value;
         let subContainer = document.getElementById("subSerialContainer");
         let subDropdown = document.getElementById("subSerialDropdown");
+        let qtyInput = document.getElementById("itemQtyInput");
 
         subDropdown.innerHTML = `<option value="">-- เลือกรุ่น/เครื่อง --</option>`;
 
-        if (stockId && globalSerialMap[stockId] && globalSerialMap[stockId].length > 0) {
-            globalSerialMap[stockId].forEach(sNo => {
+        if (stockId && globalSerialDetailMap[stockId] && globalSerialDetailMap[stockId].length > 0) {
+            globalSerialDetailMap[stockId].forEach(item => {
                 let opt = document.createElement("option");
-                opt.value = sNo;
-                opt.textContent = sNo;
+                opt.value = item.serialNo;
+                opt.textContent = `${item.serialNo} (${item.qty} ${item.unit})`;
+                opt.setAttribute("data-qty", item.qty);
                 subDropdown.appendChild(opt);
             });
             subContainer.style.display = "block";
+            qtyInput.value = "1";
         } else {
             subContainer.style.display = "none";
+            qtyInput.value = "1";
+        }
+    }
+
+    // ฟังก์ชันตรวจจับเมื่อเลือก Serial ในวงแดง เพื่อให้จำนวนในวงดำอ้างอิงตาม Qty ทันที
+    function onSubSerialChange() {
+        let subDropdown = document.getElementById("subSerialDropdown");
+        let qtyInput = document.getElementById("itemQtyInput");
+        let selectedOption = subDropdown.options[subDropdown.selectedIndex];
+
+        if (selectedOption && selectedOption.value) {
+            let maxQty = parseInt(selectedOption.getAttribute("data-qty")) || 1;
+            qtyInput.value = maxQty; // ดึงจำนวน Qty มาใส่ในวงดำอัตโนมัติ
         }
     }
 
@@ -675,6 +691,12 @@
             serialNo = subDropdown.value;
             if (!serialNo) {
                 alert("กรุณาเลือกรุ่นหรือหมายเลขเครื่อง (Serial No.) ย่อยของอุปกรณ์นี้ก่อนครับ");
+                return;
+            }
+            let selectedOption = subDropdown.options[subDropdown.selectedIndex];
+            let maxQty = parseInt(selectedOption.getAttribute("data-qty")) || 1;
+            if (qty > maxQty) {
+                alert(`❌ จำนวนที่ระบุเกินกว่าจำนวนที่มีในรายการย่อยนี้ (สูงสุด ${maxQty})`);
                 return;
             }
         }
@@ -953,7 +975,7 @@
         .then(res => res.json())
         .then(data => {
             globalStockMap = data.stock || {};
-            globalSerialMap = data.serials || {};
+            globalSerialDetailMap = data.serials || {};
             globalRawLogs = data.logs || [];
             globalStockLogs = data.stockLogs || [];
 
