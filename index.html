@@ -574,7 +574,7 @@
 </div>
 
 <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyh_QO45zeNS0IiB3IMDaAx-h9gRGRT_97oVbzg8Rk74b64WHMWYG4OoYqJH4Ij5F0CjQ/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyImV2RVpEDVWSRoiOSuyPVPeG0056da1TiCgj8lGdgdrBtLsk2x_KiY2aknOG7q7a_7g/exec";
     
     let currentUserName = "";
     let currentUsernameId = "";
@@ -1171,8 +1171,9 @@
         let keyword = document.getElementById("returnLogSearchKeyword").value.trim().toLowerCase();
 
         let filtered = globalStockLogs.slice().reverse().filter(sLog => {
-            let isReturn = sLog.returnType && sLog.returnType.includes("คืนอุปกรณ์");
-            if (!isReturn) return false;
+            // เช็คเฉพาะรายการที่เป็นการคืนอุปกรณ์เข้าคลังจริง ๆ เท่านั้น
+            let isReturnAction = sLog.returnType && sLog.returnType.includes("📥 คืนอุปกรณ์เข้าคลัง");
+            if (!isReturnAction) return false;
 
             return !keyword || 
                 (sLog.siteId && sLog.siteId.toLowerCase().includes(keyword)) ||
