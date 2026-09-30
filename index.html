@@ -309,7 +309,7 @@
             <button class="nav-tab-btn" onclick="switchTab('tab-stocklogs', this)">🔄 ประวัติการเบิกสินค้า</button>
         </div>
 
-        <!-- 📑 Tab 1: แบบฟอร์มตรวจเช็ค (Dropdown อิสระ 3 หมวดหมู่) -->
+        <!-- 📑 Tab 1: แบบฟอร์มตรวจเช็ค -->
         <div id="tab-checklist" class="tab-content active">
             <div class="section-box" style="border-left: 5px solid var(--primary);">
                 <h3 style="color: var(--primary);">🚚 แบบฟอร์มตรวจเช็คอุปกรณ์ก่อนออกหน้างาน</h3>
@@ -382,26 +382,26 @@
             </div>
         </div>
 
-        <!-- 📑 Tab 3: คืนอุปกรณ์เข้าคลัง -->
+        <!-- 📑 Tab 3: คืนอุปกรณ์เข้าคลัง (ปรับปรุงใหม่ตามประวัติการเบิก) -->
         <div id="tab-return" class="tab-content">
             <div class="section-box" style="border-left: 5px solid var(--success);">
                 <h3 style="color: var(--success);">📥 ฟอร์มคืนอุปกรณ์ / เครื่องมือวัดกลับเข้าคลัง</h3>
-                <p style="font-size: 13px; color: #64748b; margin-top: -5px;">เลือกรายการอุปกรณ์ที่เคยเบิกไปใช้งานและต้องการนำกลับมาคืนเข้าคลังระบบ</p>
+                <p style="font-size: 13px; color: #64748b; margin-top: -5px;">กรอกรหัสงาน (Site ID) เพื่อดึงรายการอุปกรณ์ที่เคยเบิกแบบ <strong>"ยืม-คืน"</strong> มาให้เลือกคืน</p>
                 
                 <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 15px;">
                     <div class="input-group" style="flex: 1; min-width: 220px; margin: 0;">
                         <label>รหัสงาน / ไซท์งานอ้างอิง (Site ID):</label>
-                        <input type="text" id="returnSiteIdInput" placeholder="เช่น SITE-BKK-01" style="margin:0;">
+                        <input type="text" id="returnSiteIdInput" placeholder="เช่น q หรือ SITE-BKK-01" style="margin:0;" oninput="updateReturnDropdownBySite()">
                     </div>
                 </div>
 
                 <div class="picker-box">
-                    <h4 style="margin: 0 0 8px 0; font-size: 14px; color: #334155;">➕ เลือกอุปกรณ์ที่ต้องการคืน:</h4>
+                    <h4 style="margin: 0 0 8px 0; font-size: 14px; color: #334155;">➕ เลือกอุปกรณ์จากประวัติเบิกของไซท์นี้:</h4>
                     <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end;">
                         <div style="flex: 2; min-width: 240px; margin: 0;">
-                            <label style="font-size: 11px; font-weight: 600; color: #64748b; display: block; margin-bottom: 3px;">เลือกอุปกรณ์ (เฉพาะหมวดที่ต้องคืน):</label>
+                            <label style="font-size: 11px; font-weight: 600; color: #64748b; display: block; margin-bottom: 3px;">เลือกอุปกรณ์ที่ต้องคืน:</label>
                             <select id="returnItemSelectDropdown" style="margin: 0;">
-                                <option value="">-- กรุณาเลือกอุปกรณ์ที่จะคืน --</option>
+                                <option value="">-- กรุณากรอกรหัสไซท์งานก่อน --</option>
                             </select>
                         </div>
                         <div style="flex: 1; min-width: 90px; margin: 0;">
@@ -537,7 +537,7 @@
 </div>
 
 <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby2UmcyOFCIxthbTFsFuQF2AuTgXqLwEq3cta0J5OR2BKNzt-h239T1GJWpJXhBMY4DYg/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw5D7nK8OHA8mrBFkl_p7xzvHfjK0Z9fc1bzHLFpbfMi43JqUYgpgwqywdwYv-0nreI/exec";
     
     let currentUserName = "";
     let currentUsernameId = "";
@@ -545,8 +545,8 @@
     let globalStockMap = {};
     let globalRawLogs = [];
     let globalStockLogs = [];
-    let selectedDispatchItems = []; // รายการอุปกรณ์ที่ผู้ใช้กดเลือกสะสมไว้ (เบิก)
-    let selectedReturnItems = [];   // รายการอุปกรณ์ที่ผู้ใช้กดเลือกสะสมไว้ (คืน)
+    let selectedDispatchItems = []; 
+    let selectedReturnItems = [];   
 
     window.onload = function() {
         checkSession();
@@ -608,9 +608,6 @@
             } else {
                 alert(result.message);
             }
-        })
-        .catch(err => {
-            alert("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์");
         });
     }
 
@@ -637,16 +634,13 @@
         let qtyInput = document.getElementById("itemQtyInput");
         let qty = parseInt(qtyInput.value) || 1;
 
-        if (!stockId) {
-            alert("กรุณาเลือกอุปกรณ์จากคลังก่อน");
-            return;
-        }
+        if (!stockId) { alert("กรุณาเลือกอุปกรณ์จากคลังก่อน"); return; }
 
         let itemData = globalStockMap[stockId];
         if (!itemData) return;
 
         if (itemData.qty < qty) {
-            alert(`❌ อุปกรณ์ (${itemData.name}) ในคลังเหลือเพียง ${itemData.qty} ${itemData.unit} เท่านั้น ไม่สามารถเลือกเกินจำนวนที่มีได้`);
+            alert(`❌ อุปกรณ์ (${itemData.name}) ในคลังเหลือเพียง ${itemData.qty} ${itemData.unit} เท่านั้น`);
             return;
         }
 
@@ -654,7 +648,7 @@
         let totalQty = existing ? existing.qty + qty : qty;
 
         if (itemData.qty < totalQty) {
-            alert(`❌ ยอดรวมที่เลือก (${totalQty} ${itemData.unit}) เกินกว่าจำนวนคงเหลือในคลัง (${itemData.qty} ${itemData.unit})`);
+            alert(`❌ ยอดรวมที่เลือกเกินจำนวนคงเหลือในคลัง`);
             return;
         }
 
@@ -759,31 +753,70 @@
         });
     }
 
-    // ฟังก์ชันจัดการเพิ่มรายการคืน
+    // ฟังก์ชันกรองและอัปเดต Dropdown คืนของตาม Site ID ที่ผู้ใช้พิมพ์
+    function updateReturnDropdownBySite() {
+        let siteInput = document.getElementById("returnSiteIdInput").value.trim().toLowerCase();
+        let returnDropdown = document.getElementById("returnItemSelectDropdown");
+
+        if (!siteInput) {
+            returnDropdown.innerHTML = `<option value="">-- กรุณากรอกรหัสไซท์งานก่อน --</option>`;
+            return;
+        }
+
+        // ค้นหาใน globalStockLogs เฉพาะรายการของไซท์นี้ และเป็นประเภท "ยืม-คืนอุปกรณ์"
+        let matchedLogs = globalStockLogs.filter(sLog => {
+            let matchSite = sLog.siteId && sLog.siteId.toLowerCase() === siteInput;
+            let isReturnableType = sLog.returnType && sLog.returnType.includes("ยืม-คืนอุปกรณ์");
+            return matchSite && isReturnableType;
+        });
+
+        if (matchedLogs.length === 0) {
+            returnDropdown.innerHTML = `<option value="">-- ไม่พบประวัติการยืมอุปกรณ์ที่ต้องคืนของไซท์นี้ --</option>`;
+            return;
+        }
+
+        let html = `<option value="">-- เลือกอุปกรณ์ที่จะคืน (ไซท์: ${siteInput}) --</option>`;
+        matchedLogs.forEach(log => {
+            html += `<option value="${log.stockId}" data-qty="${log.qty}">[${log.stockId}] ${log.itemName} (เบิกไป: ${log.qty} ${log.unit})</option>`;
+        });
+        returnDropdown.innerHTML = html;
+    }
+
     function addSelectedItemToReturn() {
         let dropdown = document.getElementById("returnItemSelectDropdown");
         let stockId = dropdown.value;
         let qtyInput = document.getElementById("returnItemQtyInput");
         let qty = parseInt(qtyInput.value) || 1;
 
-        if (!stockId) {
-            alert("กรุณาเลือกอุปกรณ์ที่ต้องการคืนก่อน");
+        if (!stockId) { alert("กรุณาเลือกอุปกรณ์ที่ต้องการคืนก่อน"); return; }
+
+        let selectedOption = dropdown.options[dropdown.selectedIndex];
+        let maxQty = parseInt(selectedOption.getAttribute("data-qty")) || 9999;
+
+        if (qty > maxQty) {
+            alert(`❌ จำนวนคืน (${qty}) มากกว่าจำนวนที่เคยเบิกไป (${maxQty})`);
             return;
         }
 
         let itemData = globalStockMap[stockId];
-        if (!itemData) return;
+        let itemName = itemData ? itemData.name : stockId;
+        let itemUnit = itemData ? itemData.unit : "ชิ้น";
 
         let existing = selectedReturnItems.find(i => i.id === stockId);
         let totalQty = existing ? existing.qty + qty : qty;
+
+        if (totalQty > maxQty) {
+            alert(`❌ ยอดรวมที่เลือกคืนเกินจำนวนที่เคยเบิกไป (${maxQty})`);
+            return;
+        }
 
         if (existing) {
             existing.qty = totalQty;
         } else {
             selectedReturnItems.push({
-                id: itemData.id,
-                name: itemData.name,
-                unit: itemData.unit,
+                id: stockId,
+                name: itemName,
+                unit: itemUnit,
                 qty: qty
             });
         }
@@ -867,14 +900,10 @@
             globalRawLogs = data.logs || [];
             globalStockLogs = data.stockLogs || [];
 
-            // Dropdown สำหรับเบิก
+            // Dropdown สำหรับเบิกหน้าหลัก
             let dropdown = document.getElementById("itemSelectDropdown");
             let dropdownHtml = `<option value="">-- กรุณาเลือกอุปกรณ์จากคลัง --</option>`;
             
-            // Dropdown สำหรับคืน (กรองเฉพาะหมวดเครื่องมือวัดหรืออุปกรณ์ทั่วไปที่ไม่ใช่ตัดสต็อกถาวร)
-            let returnDropdown = document.getElementById("returnItemSelectDropdown");
-            let returnDropdownHtml = `<option value="">-- กรุณาเลือกอุปกรณ์ที่จะคืน --</option>`;
-
             let stockGrouped = {};
             for (let id in globalStockMap) {
                 let st = globalStockMap[id];
@@ -885,30 +914,18 @@
 
             for (let catName in stockGrouped) {
                 dropdownHtml += `<optgroup label="📂 หมวด: ${catName}">`;
-                if (catName !== "อุปกรณ์สายอากาศ") {
-                    returnDropdownHtml += `<optgroup label="📂 หมวด: ${catName}">`;
-                }
-
                 stockGrouped[catName].forEach(st => {
                     dropdownHtml += `<option value="${st.id}">[${st.id}] ${st.name} (คงเหลือ: ${st.qty} ${st.unit})</option>`;
-                    if (catName !== "อุปกรณ์สายอากาศ") {
-                        returnDropdownHtml += `<option value="${st.id}">[${st.id}] ${st.name} (คงเหลือในคลัง: ${st.qty} ${st.unit})</option>`;
-                    }
                 });
-
                 dropdownHtml += `</optgroup>`;
-                if (catName !== "อุปกรณ์สายอากาศ") {
-                    returnDropdownHtml += `</optgroup>`;
-                }
             }
             dropdown.innerHTML = dropdownHtml;
-            returnDropdown.innerHTML = returnDropdownHtml;
 
             let stockCategoryContainerHtml = "";
             for (let catName in stockGrouped) {
                 stockCategoryContainerHtml += `
                     <div style="margin-bottom: 20px;">
-                        <h4 style="margin: 0 0 6px 0; color: var(--primary); font-size: 14px;">📂 หมวดหมู่: ${catName} (${catName === 'อุปกรณ์สายอากาศ' ? 'เบิกแล้วตัดสต็อกถาวร' : 'เบิกแล้วต้องนำกลับมาคืน'})</h4>
+                        <h4 style="margin: 0 0 6px 0; color: var(--primary); font-size: 14px;">📂 หมวดหมู่: ${catName}</h4>
                         <table>
                             <thead>
                                 <tr>
@@ -936,6 +953,7 @@
 
             filterHistoryLogs();
             filterStockLogs();
+            updateReturnDropdownBySite();
         });
     }
 
