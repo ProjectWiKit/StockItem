@@ -381,10 +381,10 @@
             </div>
         </div>
 
-        <!-- 📑 Tab 2: สต็อกคงเหลือ -->
+        <!-- 📑 Tab 2: สต็อกคงเหลือ (พร้อมโชว์รายการ Serial ย่อย) -->
         <div id="tab-stock" class="tab-content">
             <div class="section-box">
-                <h3>📦 สต็อกคงเหลือปัจจุบันในคลัง (แยกตาม 3 หมวดหมู่)</h3>
+                <h3>📦 สต็อกคงเหลือปัจจุบันในคลัง (แยกตาม 3 หมวดหมู่ พร้อมรายการ Serial ย่อย)</h3>
                 <div id="stockCategoryContainer">
                     <p>กำลังโหลดข้อมูลสต็อก...</p>
                 </div>
@@ -546,7 +546,7 @@
 </div>
 
 <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwSbmdbambGN7J9m8znXXD4PvMlBkawxoukm-hCIjFI4WwN6HOK5zXmdMKjp3fdJEVH-Q/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbynas1Qh_0PpqBLO6g6RfF4daBoe94R009qy5sAXixWqH7NK9tMofLRuDTp0w8x-brExQ/exec";
     
     let currentUserName = "";
     let currentUsernameId = "";
@@ -638,7 +638,6 @@
         toggleAuth('login');
     }
 
-    // ฟังก์ชันตรวจจับเมื่อเปลี่ยนค่า Dropdown อุปกรณ์หลัก (วงเขียว)
     function onItemDropdownChange() {
         let stockId = document.getElementById("itemSelectDropdown").value;
         let subContainer = document.getElementById("subSerialContainer");
@@ -663,7 +662,6 @@
         }
     }
 
-    // ฟังก์ชันตรวจจับเมื่อเลือก Serial ในวงแดง เพื่อดึง Qty มาใส่วงดำอัตโนมัติ
     function onSubSerialChange() {
         let subDropdown = document.getElementById("subSerialDropdown");
         let qtyInput = document.getElementById("itemQtyInput");
@@ -999,6 +997,7 @@
             }
             dropdown.innerHTML = dropdownHtml;
 
+            // 📦 เรนเดอร์หน้าสต็อก พร้อมแทรกรายการ Serial ย่อย
             let stockCategoryContainerHtml = "";
             for (let catName in stockGrouped) {
                 stockCategoryContainerHtml += `
@@ -1008,8 +1007,8 @@
                             <thead>
                                 <tr>
                                     <th style="width: 15%;">รหัส</th>
-                                    <th style="width: 45%;">ชื่ออุปกรณ์/วัสดุ</th>
-                                    <th style="width: 25%;">จำนวนคงเหลือ</th>
+                                    <th style="width: 45%;">ชื่ออุปกรณ์/วัสดุ & รายละเอียด Serial</th>
+                                    <th style="width: 25%;">จำนวนคงเหลือรวม</th>
                                     <th style="width: 15%;">หน่วยนับ</th>
                                 </tr>
                             </thead>
@@ -1018,9 +1017,25 @@
 
                 stockGrouped[catName].forEach(st => {
                     let badgeClass = st.qty <= 2 ? "badge-danger" : "badge-success";
+                    let stIdUpper = st.id.toUpperCase();
+                    let serialsHtml = "";
+
+                    if (globalSerialDetailMap[stIdUpper] && globalSerialDetailMap[stIdUpper].length > 0) {
+                        serialsHtml = `<div style="margin-top: 6px; padding-top: 6px; border-top: 1px dashed #e2e8f0; font-size: 12px; text-align: left;">
+                            <span style="color: var(--primary); font-weight: 600;">🔖 รุ่น / หมายเลขเครื่อง (Serial No.):</span>
+                            <ul style="margin: 4px 0 0 16px; padding: 0; color: #334155;">`;
+                        globalSerialDetailMap[stIdUpper].forEach(sItem => {
+                            serialsHtml += `<li><b>${sItem.serialNo}</b> — เหลือ <b>${sItem.qty}</b> ${sItem.unit}</li>`;
+                        });
+                        serialsHtml += `</ul></div>`;
+                    }
+
                     stockCategoryContainerHtml += `<tr>
                         <td><b>${st.id}</b></td>
-                        <td style="text-align:left;">${st.name}</td>
+                        <td style="text-align:left;">
+                            <div style="font-weight: 600; color: #0f172a;">${st.name}</div>
+                            ${serialsHtml}
+                        </td>
                         <td><span class="badge ${badgeClass}">${st.qty}</span></td>
                         <td>${st.unit}</td>
                     </tr>`;
