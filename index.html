@@ -573,7 +573,7 @@
 </div>
 
 <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyHQ28iD4UxwFIbVs4UPZO1wrMo6LYZT21fADceOyBfbcgQjvpDyeTDS6aZfENeCV6gNg/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzaFo_lln1zHP8MXWoLZcIzjA81oLcrb8ykjbujyChiKqZgi3eZpPgDiDUNybJaSeZhAA/exec";
     
     let currentUserName = "";
     let currentUsernameId = "";
@@ -1136,7 +1136,7 @@
         let keyword = document.getElementById("stockLogSearchKeyword").value.trim().toLowerCase();
 
         let filtered = globalStockLogs.slice().reverse().filter(sLog => {
-            let isReturn = sLog.returnType && sLog.returnType.includes("คืนอุปกรณ์");
+            let isReturn = sLog.returnType && (sLog.returnType.includes("คืนอุปกรณ์") || sLog.returnType.includes("คืน"));
             if (isReturn) return false;
 
             return !keyword || 
@@ -1170,7 +1170,7 @@
         let keyword = document.getElementById("returnLogSearchKeyword").value.trim().toLowerCase();
 
         let filtered = globalStockLogs.slice().reverse().filter(sLog => {
-            let isReturn = sLog.returnType && sLog.returnType.includes("คืนอุปกรณ์");
+            let isReturn = sLog.returnType && (sLog.returnType.includes("คืนอุปกรณ์") || sLog.returnType.includes("คืน"));
             if (!isReturn) return false;
 
             return !keyword || 
