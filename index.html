@@ -382,7 +382,7 @@
         <!-- 📑 Tab 2: สต็อกคงเหลือ -->
         <div id="tab-stock" class="tab-content">
             <div class="section-box">
-                <h3>📦 สต็อกคงเหลือปัจจุบันในคลัง (แยกตาม 3 หมวดหมู่ พร้อมรายการ Serial ย่อย)</h3>
+                <h3>📦 สต็อกคงเหลือปัจจุบันในคลัง (แยกตามหมวดหมู่ พร้อมรายการ Serial ย่อย)</h3>
                 <div id="stockCategoryContainer">
                     <p>กำลังโหลดข้อมูลสต็อก...</p>
                 </div>
@@ -574,7 +574,7 @@
 </div>
 
 <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyImV2RVpEDVWSRoiOSuyPVPeG0056da1TiCgj8lGdgdrBtLsk2x_KiY2aknOG7q7a_7g/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzW4Zfu3J9ctmTJkrmQoYa_OPt477BezmDSizF7YV16cNdAPRq4F2NY7XZvszLOB-Ss/exec";
     
     let currentUserName = "";
     let currentUsernameId = "";
@@ -1171,9 +1171,8 @@
         let keyword = document.getElementById("returnLogSearchKeyword").value.trim().toLowerCase();
 
         let filtered = globalStockLogs.slice().reverse().filter(sLog => {
-            // เช็คเฉพาะรายการที่เป็นการคืนอุปกรณ์เข้าคลังจริง ๆ เท่านั้น
-            let isReturnAction = sLog.returnType && sLog.returnType.includes("📥 คืนอุปกรณ์เข้าคลัง");
-            if (!isReturnAction) return false;
+            let isReturn = sLog.returnType && sLog.returnType.includes("คืนอุปกรณ์");
+            if (!isReturn) return false;
 
             return !keyword || 
                 (sLog.siteId && sLog.siteId.toLowerCase().includes(keyword)) ||
